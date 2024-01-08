@@ -129,4 +129,51 @@ mod tests {
 
         anyhow::Ok(())
     }
+
+    #[test]
+    fn default_key_test() {
+        let k = crate::emit::random_key_message::RandomKeyMessage::default();
+        let v = k.get_key();
+        assert!(v.len() == 32);
+        let s = String::from_utf8(v.to_vec()).unwrap();
+        assert!(s == crate::constants::DEFAULT_AES_KEY)
+    }
+
+    #[test]
+    fn test_zip() {
+        let en = crate::process::encrypt::Enctypt {
+            file_path: [r"D:\github_repo\easy_crypt\lib".to_string()].to_vec(),
+            key: crate::emit::random_key_message::RandomKeyMessage::default().key,
+            save_dir: r"D:\github_repo\easy_crypt\native".to_owned(),
+        };
+
+        let r = en.encrypt();
+        match r {
+            Ok(_) => {}
+            Err(e) => {
+                println!("error {:?}", e)
+            }
+        }
+    }
+
+    #[test]
+    fn test_zip_multi_entry() {
+        let en = crate::process::encrypt::Enctypt {
+            file_path: [
+                r"D:\github_repo\easy_crypt\lib".to_string(),
+                r"C:\Users\xiaoshuyui\Desktop\无标题-2023-02-27-0936.png".to_string(),
+            ]
+            .to_vec(),
+            key: crate::emit::random_key_message::RandomKeyMessage::default().key,
+            save_dir: r"D:\github_repo\easy_crypt\native".to_owned(),
+        };
+
+        let r = en.encrypt();
+        match r {
+            Ok(_) => {}
+            Err(e) => {
+                println!("error {:?}", e)
+            }
+        }
+    }
 }

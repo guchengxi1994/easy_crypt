@@ -3,6 +3,10 @@
 #include <stdlib.h>
 typedef struct _Dart_Handle* Dart_Handle;
 
+#define ONE_MB (1024 * 1024)
+
+#define AES_ENCRYPT_ONE_MB 1048592
+
 typedef struct DartCObject DartCObject;
 
 typedef int64_t DartPort;
@@ -23,11 +27,14 @@ intptr_t init_frb_dart_api_dl(void *obj);
 
 void wire_test_encrypt(int64_t port_);
 
+void wire_native_message_stream(int64_t port_);
+
 void free_WireSyncReturn(WireSyncReturn ptr);
 
 static int64_t dummy_method_to_enforce_bundling(void) {
     int64_t dummy_var = 0;
     dummy_var ^= ((int64_t) (void*) wire_test_encrypt);
+    dummy_var ^= ((int64_t) (void*) wire_native_message_stream);
     dummy_var ^= ((int64_t) (void*) free_WireSyncReturn);
     dummy_var ^= ((int64_t) (void*) store_dart_post_cobject);
     dummy_var ^= ((int64_t) (void*) get_dart_object);

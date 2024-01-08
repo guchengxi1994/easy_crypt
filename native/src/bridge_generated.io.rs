@@ -6,6 +6,11 @@ pub extern "C" fn wire_test_encrypt(port_: i64) {
     wire_test_encrypt_impl(port_)
 }
 
+#[no_mangle]
+pub extern "C" fn wire_native_message_stream(port_: i64) {
+    wire_native_message_stream_impl(port_)
+}
+
 // Section: allocate functions
 
 // Section: related functions

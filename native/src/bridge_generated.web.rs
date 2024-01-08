@@ -6,6 +6,11 @@ pub fn wire_test_encrypt(port_: MessagePort) {
     wire_test_encrypt_impl(port_)
 }
 
+#[wasm_bindgen]
+pub fn wire_native_message_stream(port_: MessagePort) {
+    wire_native_message_stream_impl(port_)
+}
+
 // Section: allocate functions
 
 // Section: related functions

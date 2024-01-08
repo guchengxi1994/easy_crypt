@@ -32,6 +32,18 @@ fn wire_test_encrypt_impl(port_: MessagePort) {
         move || move |task_callback| Result::<_, ()>::Ok(test_encrypt()),
     )
 }
+fn wire_native_message_stream_impl(port_: MessagePort) {
+    FLUTTER_RUST_BRIDGE_HANDLER.wrap::<_, _, _, (), _>(
+        WrapInfo {
+            debug_name: "native_message_stream",
+            port: Some(port_),
+            mode: FfiCallMode::Stream,
+        },
+        move || {
+            move |task_callback| native_message_stream(task_callback.stream_sink::<_, String>())
+        },
+    )
+}
 // Section: wrapper structs
 
 // Section: static checks
