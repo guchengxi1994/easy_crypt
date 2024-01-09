@@ -19,6 +19,14 @@ abstract class Native {
 
   FlutterRustBridgeTaskConstMeta get kNativeMessageStreamConstMeta;
 
+  Future<String> defaultKey({dynamic hint});
+
+  FlutterRustBridgeTaskConstMeta get kDefaultKeyConstMeta;
+
+  Future<String> randomKey({dynamic hint});
+
+  FlutterRustBridgeTaskConstMeta get kRandomKeyConstMeta;
+
   Future<String> encrypt(
       {required String saveDir,
       required List<String> files,
@@ -68,6 +76,40 @@ class NativeImpl implements Native {
   FlutterRustBridgeTaskConstMeta get kNativeMessageStreamConstMeta =>
       const FlutterRustBridgeTaskConstMeta(
         debugName: "native_message_stream",
+        argNames: [],
+      );
+
+  Future<String> defaultKey({dynamic hint}) {
+    return _platform.executeNormal(FlutterRustBridgeTask(
+      callFfi: (port_) => _platform.inner.wire_default_key(port_),
+      parseSuccessData: _wire2api_String,
+      parseErrorData: null,
+      constMeta: kDefaultKeyConstMeta,
+      argValues: [],
+      hint: hint,
+    ));
+  }
+
+  FlutterRustBridgeTaskConstMeta get kDefaultKeyConstMeta =>
+      const FlutterRustBridgeTaskConstMeta(
+        debugName: "default_key",
+        argNames: [],
+      );
+
+  Future<String> randomKey({dynamic hint}) {
+    return _platform.executeNormal(FlutterRustBridgeTask(
+      callFfi: (port_) => _platform.inner.wire_random_key(port_),
+      parseSuccessData: _wire2api_String,
+      parseErrorData: null,
+      constMeta: kRandomKeyConstMeta,
+      argValues: [],
+      hint: hint,
+    ));
+  }
+
+  FlutterRustBridgeTaskConstMeta get kRandomKeyConstMeta =>
+      const FlutterRustBridgeTaskConstMeta(
+        debugName: "random_key",
         argNames: [],
       );
 
@@ -283,6 +325,34 @@ class NativeWire implements FlutterRustBridgeWireBase {
           'wire_native_message_stream');
   late final _wire_native_message_stream =
       _wire_native_message_streamPtr.asFunction<void Function(int)>();
+
+  void wire_default_key(
+    int port_,
+  ) {
+    return _wire_default_key(
+      port_,
+    );
+  }
+
+  late final _wire_default_keyPtr =
+      _lookup<ffi.NativeFunction<ffi.Void Function(ffi.Int64)>>(
+          'wire_default_key');
+  late final _wire_default_key =
+      _wire_default_keyPtr.asFunction<void Function(int)>();
+
+  void wire_random_key(
+    int port_,
+  ) {
+    return _wire_random_key(
+      port_,
+    );
+  }
+
+  late final _wire_random_keyPtr =
+      _lookup<ffi.NativeFunction<ffi.Void Function(ffi.Int64)>>(
+          'wire_random_key');
+  late final _wire_random_key =
+      _wire_random_keyPtr.asFunction<void Function(int)>();
 
   void wire_encrypt(
     int port_,

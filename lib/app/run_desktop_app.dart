@@ -16,6 +16,7 @@ void runAPP() async {
   windowManager.setBackgroundColor(Colors.transparent);
   runApp(const ProviderScope(
     child: MaterialApp(
+      debugShowCheckedModeBanner: false,
       home: Layout(),
     ),
   ));

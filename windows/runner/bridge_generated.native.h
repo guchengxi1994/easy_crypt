@@ -47,6 +47,10 @@ void wire_test_encrypt(int64_t port_);
 
 void wire_native_message_stream(int64_t port_);
 
+void wire_default_key(int64_t port_);
+
+void wire_random_key(int64_t port_);
+
 void wire_encrypt(int64_t port_,
                   struct wire_uint_8_list *save_dir,
                   struct wire_StringList *files,
@@ -62,6 +66,8 @@ static int64_t dummy_method_to_enforce_bundling(void) {
     int64_t dummy_var = 0;
     dummy_var ^= ((int64_t) (void*) wire_test_encrypt);
     dummy_var ^= ((int64_t) (void*) wire_native_message_stream);
+    dummy_var ^= ((int64_t) (void*) wire_default_key);
+    dummy_var ^= ((int64_t) (void*) wire_random_key);
     dummy_var ^= ((int64_t) (void*) wire_encrypt);
     dummy_var ^= ((int64_t) (void*) new_StringList_0);
     dummy_var ^= ((int64_t) (void*) new_uint_8_list_0);

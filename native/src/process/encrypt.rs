@@ -165,8 +165,9 @@ impl Enctypt {
         let mut file = std::fs::File::open(p.clone())?;
         let mut file_save = std::fs::File::create(file_save_path.clone())?;
         let mut buffer = vec![0; crate::constants::ONE_MB.try_into().unwrap()];
+
         let cipher = Aes256GcmSiv::new(self.key.as_bytes().into());
-        let nonce = Nonce::from_slice(b"EasyCrypt");
+        let nonce = Nonce::from_slice(b"_EasyCrypt__"); // 96-bits; unique per message
         let meta = fs::metadata(p.clone())?;
 
         let mut message = crate::emit::encrypt_message::EncryptMessage::default();

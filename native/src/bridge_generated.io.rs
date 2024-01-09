@@ -12,6 +12,16 @@ pub extern "C" fn wire_native_message_stream(port_: i64) {
 }
 
 #[no_mangle]
+pub extern "C" fn wire_default_key(port_: i64) {
+    wire_default_key_impl(port_)
+}
+
+#[no_mangle]
+pub extern "C" fn wire_random_key(port_: i64) {
+    wire_random_key_impl(port_)
+}
+
+#[no_mangle]
 pub extern "C" fn wire_encrypt(
     port_: i64,
     save_dir: *mut wire_uint_8_list,

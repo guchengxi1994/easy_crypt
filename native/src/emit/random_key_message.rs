@@ -1,7 +1,5 @@
-use aes_gcm_siv::{
-    aead::{KeyInit, OsRng},
-    Aes256GcmSiv,
-};
+use rand::distributions::Alphanumeric;
+use rand::{thread_rng, Rng};
 use serde::{Deserialize, Serialize};
 
 use super::emitter::Emitter;
@@ -23,10 +21,15 @@ impl RandomKeyMessage {
     }
 
     pub fn random() -> anyhow::Result<Self> {
-        let key = Aes256GcmSiv::generate_key(&mut OsRng);
+        // let key = Aes256GcmSiv::generate_key(&mut OsRng);
+        let rand_string: String = thread_rng()
+            .sample_iter(&Alphanumeric)
+            .take(32)
+            .map(char::from)
+            .collect();
 
         anyhow::Ok(Self {
-            key: String::from_utf8(key.to_vec())?,
+            key: rand_string.to_lowercase(),
             _type: crate::constants::TYPE_KEY,
         })
     }

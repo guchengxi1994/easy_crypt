@@ -16,6 +16,18 @@ pub fn native_message_stream(s: StreamSink<String>) -> anyhow::Result<()> {
     anyhow::Ok(())
 }
 
+pub fn default_key() -> String {
+    crate::emit::random_key_message::RandomKeyMessage::default().key
+}
+
+pub fn random_key() -> String {
+    let r = crate::emit::random_key_message::RandomKeyMessage::random();
+    match r {
+        Ok(_r) => _r.key,
+        Err(_) => crate::constants::DEFAULT_AES_KEY.to_owned(),
+    }
+}
+
 pub fn encrypt(save_dir: String, files: Vec<String>, key: String) -> String {
     let en = crate::process::encrypt::Enctypt {
         file_path: files,

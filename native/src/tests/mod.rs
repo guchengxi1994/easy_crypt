@@ -51,6 +51,8 @@ mod tests {
         Nonce, // Or `Aes128GcmSiv`
     };
 
+    use crate::emit;
+
     #[test]
     fn key() {
         let key = Aes256GcmSiv::generate_key(&mut OsRng);
@@ -173,6 +175,34 @@ mod tests {
             Ok(_) => {}
             Err(e) => {
                 println!("error {:?}", e)
+            }
+        }
+    }
+
+    #[test]
+    fn test_encrypt2() {
+        let k = crate::emit::random_key_message::RandomKeyMessage::random();
+        match k {
+            Ok(_k) => {
+                let en = crate::process::encrypt::Enctypt {
+                    file_path: [r"C:\Users\xiaoshuyui\Documents\data_base.isar".to_owned()]
+                        .to_vec(),
+                    key: _k.key,
+                    save_dir: r"D:\github_repo\easy_crypt\build\windows\x64\runner\Debug\cache"
+                        .to_owned(),
+                };
+                let s = en.encrypt();
+                match s {
+                    Ok(_s) => {
+                        println!("{:?}", _s);
+                    }
+                    Err(e) => {
+                        println!("[rust] error {:?}", e);
+                    }
+                }
+            }
+            Err(_e) => {
+                println!("error {:?}", _e);
             }
         }
     }

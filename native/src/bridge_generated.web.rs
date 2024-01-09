@@ -12,6 +12,16 @@ pub fn wire_native_message_stream(port_: MessagePort) {
 }
 
 #[wasm_bindgen]
+pub fn wire_default_key(port_: MessagePort) {
+    wire_default_key_impl(port_)
+}
+
+#[wasm_bindgen]
+pub fn wire_random_key(port_: MessagePort) {
+    wire_random_key_impl(port_)
+}
+
+#[wasm_bindgen]
 pub fn wire_encrypt(port_: MessagePort, save_dir: String, files: JsValue, key: String) {
     wire_encrypt_impl(port_, save_dir, files, key)
 }
