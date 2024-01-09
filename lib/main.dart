@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:logging/logging.dart';
 
 import 'app/run_desktop_app.dart';
+import 'isar/database.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -14,6 +15,9 @@ void main() async {
   Logger.root.onRecord.listen((record) {
     print('${record.level.name}: ${record.time}: ${record.message}');
   });
+
+  final IsarDatabase database = IsarDatabase();
+  await database.initialDatabase();
 
   if (!Directory(DevUtils.cachePath).existsSync()) {
     Directory(DevUtils.cachePath).createSync();
