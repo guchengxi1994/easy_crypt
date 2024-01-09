@@ -9,6 +9,8 @@ use super::emitter::Emitter;
 #[derive(Serialize, Deserialize, Debug)]
 pub struct RandomKeyMessage {
     pub key: String,
+    #[serde(rename = "type")]
+    pub _type: i8,
 }
 
 #[allow(dead_code)]
@@ -16,6 +18,7 @@ impl RandomKeyMessage {
     pub fn default() -> Self {
         Self {
             key: String::from(crate::constants::DEFAULT_AES_KEY),
+            _type: crate::constants::TYPE_KEY,
         }
     }
 
@@ -24,6 +27,7 @@ impl RandomKeyMessage {
 
         anyhow::Ok(Self {
             key: String::from_utf8(key.to_vec())?,
+            _type: crate::constants::TYPE_KEY,
         })
     }
 

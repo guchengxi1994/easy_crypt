@@ -44,6 +44,26 @@ fn wire_native_message_stream_impl(port_: MessagePort) {
         },
     )
 }
+fn wire_encrypt_impl(
+    port_: MessagePort,
+    save_dir: impl Wire2Api<String> + UnwindSafe,
+    files: impl Wire2Api<Vec<String>> + UnwindSafe,
+    key: impl Wire2Api<String> + UnwindSafe,
+) {
+    FLUTTER_RUST_BRIDGE_HANDLER.wrap::<_, _, _, String, _>(
+        WrapInfo {
+            debug_name: "encrypt",
+            port: Some(port_),
+            mode: FfiCallMode::Normal,
+        },
+        move || {
+            let api_save_dir = save_dir.wire2api();
+            let api_files = files.wire2api();
+            let api_key = key.wire2api();
+            move |task_callback| Result::<_, ()>::Ok(encrypt(api_save_dir, api_files, api_key))
+        },
+    )
+}
 // Section: wrapper structs
 
 // Section: static checks
@@ -66,6 +86,13 @@ where
         (!self.is_null()).then(|| self.wire2api())
     }
 }
+
+impl Wire2Api<u8> for u8 {
+    fn wire2api(self) -> u8 {
+        self
+    }
+}
+
 // Section: impl IntoDart
 
 // Section: executor
@@ -73,13 +100,6 @@ where
 support::lazy_static! {
     pub static ref FLUTTER_RUST_BRIDGE_HANDLER: support::DefaultHandler = Default::default();
 }
-
-/// cbindgen:ignore
-#[cfg(target_family = "wasm")]
-#[path = "bridge_generated.web.rs"]
-mod web;
-#[cfg(target_family = "wasm")]
-pub use self::web::*;
 
 #[cfg(not(target_family = "wasm"))]
 #[path = "bridge_generated.io.rs"]

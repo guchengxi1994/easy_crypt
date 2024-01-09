@@ -15,3 +15,19 @@ pub fn native_message_stream(s: StreamSink<String>) -> anyhow::Result<()> {
     *stream = Some(s);
     anyhow::Ok(())
 }
+
+pub fn encrypt(save_dir: String, files: Vec<String>, key: String) -> String {
+    let en = crate::process::encrypt::Enctypt {
+        file_path: files,
+        key,
+        save_dir,
+    };
+    let s = en.encrypt();
+    match s {
+        Ok(_s) => _s,
+        Err(e) => {
+            println!("[rust] error {:?}", e);
+            return "".to_owned();
+        }
+    }
+}

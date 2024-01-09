@@ -1,6 +1,7 @@
 use serde::Serialize;
 
 pub trait Emitter {
+    #[inline]
     fn to_json(&self) -> String
     where
         Self: Serialize,
@@ -8,6 +9,7 @@ pub trait Emitter {
         serde_json::to_string(self).unwrap_or("".to_owned())
     }
 
+    #[inline]
     fn send_message(&self)
     where
         Self: Serialize,
