@@ -1,8 +1,10 @@
+import 'dart:convert';
+
 import 'package:easy_crypt/bridge/native.dart';
 import 'package:easy_crypt/common/logger.dart';
-import 'package:easy_crypt/process/process.dart';
 import 'package:easy_crypt/style/app_style.dart';
-import 'package:file_selector/file_selector.dart';
+import 'package:easy_crypt/workboard/notifiers/encrypt_records_notifier.dart';
+import 'package:easy_crypt/workboard/workboard.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:window_manager/window_manager.dart';
@@ -20,8 +22,14 @@ class _LayoutState extends ConsumerState<Layout> {
   @override
   void initState() {
     super.initState();
+    // print("stream.isBroadcast  ${stream.isBroadcast}");   // ----> false <----
     stream.listen((event) {
       logger.info(event);
+      final j = jsonDecode(event);
+      if (j["type"] == 2) {
+        ref.read(encryptRecordsProvider.notifier).changeProgress(
+            j["file_path"], j["encrypt_size"] / j["total_size"]);
+      }
     });
   }
 
@@ -32,8 +40,8 @@ class _LayoutState extends ConsumerState<Layout> {
       appBar: PreferredSize(
         preferredSize: const Size.fromHeight(AppStyle.appbarHeight),
         child: WindowCaption(
-          brightness: Brightness.dark,
-          backgroundColor: Colors.transparent,
+          brightness: Brightness.light,
+          backgroundColor: AppStyle.appColor,
           title: Row(
             children: [
               SizedBox(
@@ -43,16 +51,17 @@ class _LayoutState extends ConsumerState<Layout> {
           ),
         ),
       ),
-      body: Center(
-        child: TextButton(
-            onPressed: () async {
-              final XFile? file = await openFile();
-              if (file != null) {
-                CryptProcess.encrypt([file.path], await api.randomKey());
-              }
-            },
-            child: const Text("test encrypt")),
-      ),
+      // body: Center(
+      //   child: TextButton(
+      //       onPressed: () async {
+      //         final XFile? file = await openFile();
+      //         if (file != null) {
+      //           CryptProcess.encrypt([file.path], await api.randomKey());
+      //         }
+      //       },
+      //       child: const Text("test encrypt")),
+      // ),
+      body: const Workboard(),
     );
   }
 }

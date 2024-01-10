@@ -1,4 +1,5 @@
 import 'package:easy_crypt/layout/desktop_layout.dart';
+import 'package:easy_crypt/style/app_style.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:window_manager/window_manager.dart';
@@ -14,10 +15,15 @@ void runAPP() async {
     await windowManager.setHasShadow(true);
   });
   windowManager.setBackgroundColor(Colors.transparent);
-  runApp(const ProviderScope(
+  runApp(ProviderScope(
     child: MaterialApp(
+      theme: ThemeData(
+        fontFamily: "NotoSns",
+        colorScheme: ColorScheme.fromSeed(seedColor: AppStyle.appColor),
+        useMaterial3: true,
+      ),
       debugShowCheckedModeBanner: false,
-      home: Layout(),
+      home: const Layout(),
     ),
   ));
 }

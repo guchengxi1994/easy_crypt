@@ -9,6 +9,8 @@ class AppStyle {
   static const leftTopRadius = BorderRadius.only(topLeft: Radius.circular(10));
   static const titleTextColor = Color.fromARGB(255, 117, 117, 117);
 
+  static const appColor = Color.fromARGB(255, 114, 245, 241);
+
   static List<Color> catalogCardBorderColors = [
     Colors.yellow,
     Colors.blue,

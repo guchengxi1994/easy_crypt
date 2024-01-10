@@ -29,7 +29,7 @@ impl RandomKeyMessage {
             .collect();
 
         anyhow::Ok(Self {
-            key: rand_string.to_lowercase(),
+            key: rand_string,
             _type: crate::constants::TYPE_KEY,
         })
     }

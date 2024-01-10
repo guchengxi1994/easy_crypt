@@ -217,6 +217,30 @@ packages:
       url: "https://pub.flutter-io.cn"
     source: hosted
     version: "1.2.0"
+  data_table_2:
+    dependency: "direct main"
+    description:
+      name: data_table_2
+      sha256: cec4010dd756bd7d0cc3eb8a30932b8109608132c6c8d643e80ea412d3e51a9c
+      url: "https://pub.flutter-io.cn"
+    source: hosted
+    version: "2.5.10"
+  date_format:
+    dependency: "direct main"
+    description:
+      name: date_format
+      sha256: "8e5154ca363411847220c8cbc43afcf69c08e8debe40ba09d57710c25711760c"
+      url: "https://pub.flutter-io.cn"
+    source: hosted
+    version: "2.0.7"
+  desktop_drop:
+    dependency: "direct main"
+    description:
+      name: desktop_drop
+      sha256: d55a010fe46c8e8fcff4ea4b451a9ff84a162217bdb3b2a0aa1479776205e15d
+      url: "https://pub.flutter-io.cn"
+    source: hosted
+    version: "0.4.4"
   fake_async:
     dependency: transitive
     description:
