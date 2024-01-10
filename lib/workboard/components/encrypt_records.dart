@@ -9,6 +9,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 // ignore: depend_on_referenced_packages
 import 'package:collection/collection.dart';
+import 'package:super_clipboard/super_clipboard.dart';
 
 import '../models/encrypt_records_state.dart';
 
@@ -21,6 +22,8 @@ class EncryptRecordsWidget extends ConsumerStatefulWidget {
 }
 
 class _EncryptRecordsWidgetState extends ConsumerState<EncryptRecordsWidget> {
+  final clipboard = SystemClipboard.instance;
+
   @override
   Widget build(BuildContext context) {
     final encrypts = ref.watch(encryptRecordsProvider);
@@ -70,20 +73,42 @@ class _EncryptRecordsWidgetState extends ConsumerState<EncryptRecordsWidget> {
           overflow: TextOverflow.ellipsis,
         ),
       )),
-      DataCell(Tooltip(
-        message: f.savePath.toString(),
-        child:
-            f.status == EncryptStatus.unstart || f.status == EncryptStatus.done
-                ? Text(
-                    f.savePath.toString(),
-                    maxLines: 1,
-                    softWrap: true,
-                    overflow: TextOverflow.ellipsis,
-                  )
-                : LinearProgressIndicator(
-                    value: f.progress,
-                  ),
-      )),
+      DataCell(
+        f.status == EncryptStatus.unstart || f.status == EncryptStatus.done
+            ? Row(
+                children: [
+                  Expanded(
+                      child: Tooltip(
+                          message:
+                              f.savePath == null ? "" : f.savePath.toString(),
+                          child: Text(
+                            f.savePath.toString(),
+                            maxLines: 1,
+                            softWrap: true,
+                            overflow: TextOverflow.ellipsis,
+                          ))),
+                  if (f.savePath != null)
+                    InkWell(
+                      onTap: () async {
+                        if (clipboard == null) {
+                          return;
+                        }
+                        final item = DataWriterItem();
+                        item.add(
+                            Formats.fileUri(Uri.file(f.savePath.toString())));
+                        await clipboard!.write([item]);
+                      },
+                      child: const Icon(
+                        Icons.copy_all,
+                        size: 15,
+                      ),
+                    )
+                ],
+              )
+            : LinearProgressIndicator(
+                value: f.progress,
+              ),
+      ),
       DataCell(Row(
         children: [
           Expanded(
