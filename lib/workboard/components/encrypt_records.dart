@@ -1,14 +1,19 @@
+import 'dart:io';
+
 import 'package:data_table_2/data_table_2.dart';
 import 'package:date_format/date_format.dart';
 import 'package:desktop_drop/desktop_drop.dart';
+import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:easy_crypt/bridge/native.dart';
 import 'package:easy_crypt/common/clipboard_utils.dart';
 import 'package:easy_crypt/common/dev_utils.dart';
+import 'package:easy_crypt/style/app_style.dart';
 import 'package:easy_crypt/workboard/notifiers/encrypt_records_notifier.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 // ignore: depend_on_referenced_packages
 import 'package:collection/collection.dart';
+import 'package:open_file/open_file.dart';
 import 'package:super_clipboard/super_clipboard.dart';
 
 import '../models/encrypt_records_state.dart';
@@ -100,7 +105,67 @@ class _EncryptRecordsWidgetState extends ConsumerState<EncryptRecordsWidget> {
                       },
                       child: const Icon(
                         Icons.copy_all,
-                        size: 15,
+                        size: AppStyle.rowIconSize,
+                      ),
+                    ),
+                  if (f.savePath != null)
+                    DropdownButtonHideUnderline(
+                      child: DropdownButton2(
+                        customButton: Transform.rotate(
+                          angle: 3.14 / 2,
+                          child: const Icon(
+                            Icons.arrow_right,
+                            size: AppStyle.rowIconSize,
+                            color: Colors.black,
+                          ),
+                        ),
+                        onChanged: (value) {
+                          // print(value);
+                        },
+                        dropdownStyleData: DropdownStyleData(
+                          width: 250,
+                          padding: const EdgeInsets.symmetric(vertical: 6),
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(4),
+                            color: Colors.white,
+                          ),
+                          offset: const Offset(0, 8),
+                        ),
+                        menuItemStyleData: const MenuItemStyleData(
+                          padding: EdgeInsets.only(left: 16, right: 16),
+                        ),
+                        items: [
+                          DropdownMenuItem(
+                            value: 1,
+                            onTap: () async {
+                              final d = File(f.savePath!).parent.path;
+
+                              OpenFile.open(d);
+                            },
+                            child: const Row(
+                              children: [
+                                Icon(Icons.open_in_browser),
+                                SizedBox(
+                                  width: 10,
+                                ),
+                                Text("Open folder")
+                              ],
+                            ),
+                          ),
+                          DropdownMenuItem(
+                            value: 2,
+                            onTap: () async {},
+                            child: const Row(
+                              children: [
+                                Icon(Icons.delete),
+                                SizedBox(
+                                  width: 10,
+                                ),
+                                Text("Remove file")
+                              ],
+                            ),
+                          ),
+                        ],
                       ),
                     )
                 ],
@@ -125,7 +190,7 @@ class _EncryptRecordsWidgetState extends ConsumerState<EncryptRecordsWidget> {
               },
               child: const Icon(
                 Icons.copy,
-                size: 15,
+                size: AppStyle.rowIconSize,
               ),
             )
         ],

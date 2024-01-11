@@ -11,6 +11,8 @@ class AppStyle {
 
   static const appColor = Color.fromARGB(255, 114, 245, 241);
 
+  static const double rowIconSize = 18;
+
   static List<Color> catalogCardBorderColors = [
     Colors.yellow,
     Colors.blue,
