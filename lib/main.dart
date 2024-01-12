@@ -3,6 +3,7 @@
 import 'dart:io';
 
 import 'package:easy_crypt/common/dev_utils.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:logging/logging.dart';
 
@@ -13,7 +14,9 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   Logger.root.level = Level.ALL; // defaults to Level.INFO
   Logger.root.onRecord.listen((record) {
-    print('${record.level.name}: ${record.time}: ${record.message}');
+    if (kDebugMode) {
+      print('${record.level.name}: ${record.time}: ${record.message}');
+    }
   });
 
   final IsarDatabase database = IsarDatabase();

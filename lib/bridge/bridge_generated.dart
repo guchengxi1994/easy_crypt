@@ -34,6 +34,11 @@ abstract class Native {
       dynamic hint});
 
   FlutterRustBridgeTaskConstMeta get kEncryptConstMeta;
+
+  Future<String> compress(
+      {required List<String> paths, required String saveDir, dynamic hint});
+
+  FlutterRustBridgeTaskConstMeta get kCompressConstMeta;
 }
 
 class EncryptItem {
@@ -147,6 +152,26 @@ class NativeImpl implements Native {
         argNames: ["saveDir", "files", "key"],
       );
 
+  Future<String> compress(
+      {required List<String> paths, required String saveDir, dynamic hint}) {
+    var arg0 = _platform.api2wire_StringList(paths);
+    var arg1 = _platform.api2wire_String(saveDir);
+    return _platform.executeNormal(FlutterRustBridgeTask(
+      callFfi: (port_) => _platform.inner.wire_compress(port_, arg0, arg1),
+      parseSuccessData: _wire2api_String,
+      parseErrorData: null,
+      constMeta: kCompressConstMeta,
+      argValues: [paths, saveDir],
+      hint: hint,
+    ));
+  }
+
+  FlutterRustBridgeTaskConstMeta get kCompressConstMeta =>
+      const FlutterRustBridgeTaskConstMeta(
+        debugName: "compress",
+        argNames: ["paths", "saveDir"],
+      );
+
   void dispose() {
     _platform.dispose();
   }
@@ -190,6 +215,15 @@ class NativePlatform extends FlutterRustBridgeBase<NativeWire> {
   @protected
   ffi.Pointer<wire_uint_8_list> api2wire_String(String raw) {
     return api2wire_uint_8_list(utf8.encoder.convert(raw));
+  }
+
+  @protected
+  ffi.Pointer<wire_StringList> api2wire_StringList(List<String> raw) {
+    final ans = inner.new_StringList_0(raw.length);
+    for (var i = 0; i < raw.length; i++) {
+      ans.ref.ptr[i] = api2wire_String(raw[i]);
+    }
+    return ans;
   }
 
   @protected
@@ -404,6 +438,40 @@ class NativeWire implements FlutterRustBridgeWireBase {
           ffi.Pointer<wire_list_encrypt_item>,
           ffi.Pointer<wire_uint_8_list>)>();
 
+  void wire_compress(
+    int port_,
+    ffi.Pointer<wire_StringList> paths,
+    ffi.Pointer<wire_uint_8_list> save_dir,
+  ) {
+    return _wire_compress(
+      port_,
+      paths,
+      save_dir,
+    );
+  }
+
+  late final _wire_compressPtr = _lookup<
+      ffi.NativeFunction<
+          ffi.Void Function(ffi.Int64, ffi.Pointer<wire_StringList>,
+              ffi.Pointer<wire_uint_8_list>)>>('wire_compress');
+  late final _wire_compress = _wire_compressPtr.asFunction<
+      void Function(
+          int, ffi.Pointer<wire_StringList>, ffi.Pointer<wire_uint_8_list>)>();
+
+  ffi.Pointer<wire_StringList> new_StringList_0(
+    int len,
+  ) {
+    return _new_StringList_0(
+      len,
+    );
+  }
+
+  late final _new_StringList_0Ptr = _lookup<
+          ffi.NativeFunction<ffi.Pointer<wire_StringList> Function(ffi.Int32)>>(
+      'new_StringList_0');
+  late final _new_StringList_0 = _new_StringList_0Ptr
+      .asFunction<ffi.Pointer<wire_StringList> Function(int)>();
+
   ffi.Pointer<wire_list_encrypt_item> new_list_encrypt_item_0(
     int len,
   ) {
@@ -467,6 +535,13 @@ final class wire_EncryptItem extends ffi.Struct {
 
 final class wire_list_encrypt_item extends ffi.Struct {
   external ffi.Pointer<wire_EncryptItem> ptr;
+
+  @ffi.Int32()
+  external int len;
+}
+
+final class wire_StringList extends ffi.Struct {
+  external ffi.Pointer<ffi.Pointer<wire_uint_8_list>> ptr;
 
   @ffi.Int32()
   external int len;

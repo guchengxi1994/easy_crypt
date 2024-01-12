@@ -86,6 +86,24 @@ fn wire_encrypt_impl(
         },
     )
 }
+fn wire_compress_impl(
+    port_: MessagePort,
+    paths: impl Wire2Api<Vec<String>> + UnwindSafe,
+    save_dir: impl Wire2Api<String> + UnwindSafe,
+) {
+    FLUTTER_RUST_BRIDGE_HANDLER.wrap::<_, _, _, String, _>(
+        WrapInfo {
+            debug_name: "compress",
+            port: Some(port_),
+            mode: FfiCallMode::Normal,
+        },
+        move || {
+            let api_paths = paths.wire2api();
+            let api_save_dir = save_dir.wire2api();
+            move |task_callback| Result::<_, ()>::Ok(compress(api_paths, api_save_dir))
+        },
+    )
+}
 // Section: wrapper structs
 
 // Section: static checks

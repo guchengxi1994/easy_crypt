@@ -4,6 +4,8 @@ class AppStyle {
   static const double appbarHeight = 40;
   static const double sidebarWidth = 150;
 
+  static Color progressColor = Colors.lightBlueAccent;
+
   AppStyle._();
 
   static const leftTopRadius = BorderRadius.only(topLeft: Radius.circular(10));
@@ -12,6 +14,7 @@ class AppStyle {
   static const appColor = Color.fromARGB(255, 114, 245, 241);
 
   static const double rowIconSize = 18;
+  static const double rowImageSize = 25;
 
   static List<Color> catalogCardBorderColors = [
     Colors.yellow,

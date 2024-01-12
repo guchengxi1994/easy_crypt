@@ -14,10 +14,15 @@ class EncryptRecordsNotifier
     extends AutoDisposeAsyncNotifier<EncryptRecordsState> {
   final IsarDatabase database = IsarDatabase();
 
+  static const pageSize = 10;
+
   @override
   FutureOr<EncryptRecordsState> build() async {
-    List<EncryptLogs> logs =
-        await database.isar!.encryptLogs.where().offset(0).limit(10).findAll();
+    List<EncryptLogs> logs = await database.isar!.encryptLogs
+        .where()
+        .offset(0)
+        .limit(pageSize)
+        .findAll();
     return EncryptRecordsState(
         list: logs.map((e) => EncryptRecord.fromModel(e)).toList());
   }
@@ -47,7 +52,7 @@ class EncryptRecordsNotifier
       List<EncryptLogs> logs = await database.isar!.encryptLogs
           .where()
           .offset(0)
-          .limit(10)
+          .limit(pageSize)
           .findAll();
       return EncryptRecordsState(
           list: logs.map((e) => EncryptRecord.fromModel(e)).toList());
@@ -105,8 +110,8 @@ class EncryptRecordsNotifier
       state = await AsyncValue.guard(() async {
         List<EncryptLogs> logs = await database.isar!.encryptLogs
             .where()
-            .offset((state.value!.pageId - 1) * 10)
-            .limit(10)
+            .offset((state.value!.pageId - 1) * pageSize)
+            .limit(pageSize)
             .findAll();
         return EncryptRecordsState(
             list: logs.map((e) => EncryptRecord.fromModel(e)).toList());
@@ -134,13 +139,46 @@ class EncryptRecordsNotifier
       state = await AsyncValue.guard(() async {
         List<EncryptLogs> logs = await database.isar!.encryptLogs
             .where()
-            .offset((state.value!.pageId - 1) * 10)
-            .limit(10)
+            .offset((state.value!.pageId - 1) * pageSize)
+            .limit(pageSize)
             .findAll();
         return EncryptRecordsState(
             list: logs.map((e) => EncryptRecord.fromModel(e)).toList());
       });
     }
+  }
+
+  prevPage() async {
+    if (state.value!.pageId == 1) {
+      return;
+    }
+    state = const AsyncValue.loading();
+
+    state = await AsyncValue.guard(() async {
+      List<EncryptLogs> logs = await database.isar!.encryptLogs
+          .where()
+          .offset((state.value!.pageId - 2) * pageSize)
+          .limit(pageSize)
+          .findAll();
+      return EncryptRecordsState(
+          list: logs.map((e) => EncryptRecord.fromModel(e)).toList(),
+          pageId: state.value!.pageId - 1);
+    });
+  }
+
+  nextPage() async {
+    state = const AsyncValue.loading();
+
+    state = await AsyncValue.guard(() async {
+      List<EncryptLogs> logs = await database.isar!.encryptLogs
+          .where()
+          .offset((state.value!.pageId) * pageSize)
+          .limit(pageSize)
+          .findAll();
+      return EncryptRecordsState(
+          list: logs.map((e) => EncryptRecord.fromModel(e)).toList(),
+          pageId: state.value!.pageId + 1);
+    });
   }
 }
 

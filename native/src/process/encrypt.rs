@@ -83,14 +83,13 @@ impl Enctypt {
         )?;
         println!("{:?}", s);
         // encrypt
-        /// TODO; FIXME
-        /// multi files have no id because compress into a zip file
+        // multi files have no id because compress into a zip file
         let res = self.encrypt_file(s, None)?;
 
         anyhow::Ok(res)
     }
 
-    fn compress_dir(paths: Vec<String>, save_dir: String) -> anyhow::Result<String> {
+    pub fn compress_dir(paths: Vec<String>, save_dir: String) -> anyhow::Result<String> {
         let now = SystemTime::now().duration_since(UNIX_EPOCH)?.as_millis();
 
         let save_path = format!("{}/{}.zip", save_dir, now);

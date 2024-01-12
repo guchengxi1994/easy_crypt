@@ -36,6 +36,11 @@ typedef struct wire_list_encrypt_item {
   int32_t len;
 } wire_list_encrypt_item;
 
+typedef struct wire_StringList {
+  struct wire_uint_8_list **ptr;
+  int32_t len;
+} wire_StringList;
+
 typedef struct DartCObject *WireSyncReturn;
 
 void store_dart_post_cobject(DartPostCObjectFnType ptr);
@@ -61,6 +66,10 @@ void wire_encrypt(int64_t port_,
                   struct wire_list_encrypt_item *files,
                   struct wire_uint_8_list *key);
 
+void wire_compress(int64_t port_, struct wire_StringList *paths, struct wire_uint_8_list *save_dir);
+
+struct wire_StringList *new_StringList_0(int32_t len);
+
 struct wire_list_encrypt_item *new_list_encrypt_item_0(int32_t len);
 
 struct wire_uint_8_list *new_uint_8_list_0(int32_t len);
@@ -74,6 +83,8 @@ static int64_t dummy_method_to_enforce_bundling(void) {
     dummy_var ^= ((int64_t) (void*) wire_default_key);
     dummy_var ^= ((int64_t) (void*) wire_random_key);
     dummy_var ^= ((int64_t) (void*) wire_encrypt);
+    dummy_var ^= ((int64_t) (void*) wire_compress);
+    dummy_var ^= ((int64_t) (void*) new_StringList_0);
     dummy_var ^= ((int64_t) (void*) new_list_encrypt_item_0);
     dummy_var ^= ((int64_t) (void*) new_uint_8_list_0);
     dummy_var ^= ((int64_t) (void*) free_WireSyncReturn);

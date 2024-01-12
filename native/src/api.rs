@@ -47,3 +47,11 @@ pub fn encrypt(
         }
     }
 }
+
+pub fn compress(paths: Vec<String>, save_dir: String) -> String {
+    let r = crate::process::encrypt::Enctypt::compress_dir(paths, save_dir);
+    match r {
+        Ok(_r) => _r,
+        Err(_) => "".to_owned(),
+    }
+}

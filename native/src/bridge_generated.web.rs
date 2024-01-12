@@ -26,6 +26,11 @@ pub fn wire_encrypt(port_: MessagePort, save_dir: String, files: JsValue, key: S
     wire_encrypt_impl(port_, save_dir, files, key)
 }
 
+#[wasm_bindgen]
+pub fn wire_compress(port_: MessagePort, paths: JsValue, save_dir: String) {
+    wire_compress_impl(port_, paths, save_dir)
+}
+
 // Section: allocate functions
 
 // Section: related functions
@@ -35,6 +40,15 @@ pub fn wire_encrypt(port_: MessagePort, save_dir: String, files: JsValue, key: S
 impl Wire2Api<String> for String {
     fn wire2api(self) -> String {
         self
+    }
+}
+impl Wire2Api<Vec<String>> for JsValue {
+    fn wire2api(self) -> Vec<String> {
+        self.dyn_into::<JsArray>()
+            .unwrap()
+            .iter()
+            .map(Wire2Api::wire2api)
+            .collect()
     }
 }
 impl Wire2Api<EncryptItem> for JsValue {
