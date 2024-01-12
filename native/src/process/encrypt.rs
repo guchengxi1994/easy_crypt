@@ -99,6 +99,8 @@ impl Enctypt {
             .compression_method(zip::CompressionMethod::Stored)
             .unix_permissions(0o755);
         let mut buffer = Vec::new();
+        let mut zip_message = crate::emit::zip_file_message::ZipFileMessage::default();
+        zip_message.total = paths.len();
         for p in paths {
             let meta = fs::metadata(p.clone());
             if let Ok(meta) = meta {
@@ -139,6 +141,9 @@ impl Enctypt {
                     }
                 }
             }
+            zip_message.current += 1;
+            zip_message.current_path = p.clone();
+            zip_message.send_message();
         }
 
         zip.finish()?;
