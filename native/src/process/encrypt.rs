@@ -12,26 +12,35 @@ use zip::write::FileOptions;
 
 use crate::emit::emitter::Emitter;
 
+#[derive(Debug, Clone)]
+pub struct EncryptItem {
+    pub file_path: String,
+    pub file_id: i64,
+}
+
+#[derive(Debug, Clone)]
 pub struct Enctypt {
     // maybe a list or folder
-    pub file_path: Vec<String>,
+    pub items: Vec<EncryptItem>,
     pub key: String,
     pub save_dir: String,
 }
 
 impl Enctypt {
     fn get_count(&self) -> anyhow::Result<usize> {
-        if self.file_path.is_empty() {
+        if self.items.is_empty() {
             return anyhow::Ok(0);
         }
 
-        if self.file_path.len() == 1 {
-            let meta = fs::metadata(self.file_path.first().unwrap())?;
+        if self.items.len() == 1 {
+            let meta = fs::metadata(self.items.first().unwrap().file_path.clone())?;
             if meta.is_file() {
                 return anyhow::Ok(1);
             } else if meta.is_dir() {
                 // is dir
-                return anyhow::Ok(Self::walk_dir(self.file_path.first().unwrap().to_string()));
+                return anyhow::Ok(Self::walk_dir(
+                    self.items.first().unwrap().file_path.to_string(),
+                ));
             } else {
                 return anyhow::Ok(0);
             }
@@ -39,12 +48,12 @@ impl Enctypt {
 
         let mut count = 0;
 
-        for i in &self.file_path {
-            let meta = fs::metadata(i)?;
+        for i in &self.items {
+            let meta = fs::metadata(i.file_path.clone())?;
             if meta.is_file() {
                 count += 1;
             } else if meta.is_dir() {
-                count += Self::walk_dir(i.to_string());
+                count += Self::walk_dir(i.file_path.to_string());
             }
         }
 
@@ -52,23 +61,31 @@ impl Enctypt {
     }
 
     pub fn encrypt(&self) -> anyhow::Result<String> {
-        if self.file_path.is_empty() {
+        if self.items.is_empty() {
             anyhow::bail!("file path is empty")
         }
 
-        if self.file_path.len() == 1 {
-            let meta = fs::metadata(self.file_path.first().unwrap())?;
+        if self.items.len() == 1 {
+            let meta = fs::metadata(self.items.first().unwrap().file_path.clone())?;
             if meta.is_file() {
                 // encrypt
-                let res = self.encrypt_file(self.file_path.first().unwrap().to_string())?;
+                let res = self.encrypt_file(
+                    self.items.first().unwrap().file_path.to_string(),
+                    Some(self.items.first().unwrap().file_id),
+                )?;
                 return anyhow::Ok(res);
             }
         }
 
-        let s = Self::compress_dir(self.file_path.clone(), self.save_dir.clone())?;
+        let s = Self::compress_dir(
+            self.items.iter().map(|x| x.file_path.clone()).collect(),
+            self.save_dir.clone(),
+        )?;
         println!("{:?}", s);
         // encrypt
-        let res = self.encrypt_file(s)?;
+        /// TODO; FIXME
+        /// multi files have no id because compress into a zip file
+        let res = self.encrypt_file(s, None)?;
 
         anyhow::Ok(res)
     }
@@ -156,7 +173,7 @@ impl Enctypt {
         return count;
     }
 
-    fn encrypt_file(&self, p: String) -> anyhow::Result<String> {
+    fn encrypt_file(&self, p: String, id: Option<i64>) -> anyhow::Result<String> {
         let binding = p.clone();
         let path = Path::new(&binding);
         let file_stem = path.file_stem().unwrap().to_str().unwrap();
@@ -173,6 +190,7 @@ impl Enctypt {
         let mut message = crate::emit::encrypt_message::EncryptMessage::default();
         message.total_size = meta.len();
         message.file_path = p;
+        message.unique_id = id;
 
         while let Ok(n) = std::io::Read::read(&mut file, &mut buffer) {
             if n == 0 {

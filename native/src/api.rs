@@ -28,9 +28,13 @@ pub fn random_key() -> String {
     }
 }
 
-pub fn encrypt(save_dir: String, files: Vec<String>, key: String) -> String {
+pub fn encrypt(
+    save_dir: String,
+    files: Vec<crate::process::encrypt::EncryptItem>,
+    key: String,
+) -> String {
     let en = crate::process::encrypt::Enctypt {
-        file_path: files,
+        items: files,
         key,
         save_dir,
     };

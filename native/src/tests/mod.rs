@@ -144,7 +144,11 @@ mod tests {
     #[test]
     fn test_zip() {
         let en = crate::process::encrypt::Enctypt {
-            file_path: [r"D:\github_repo\easy_crypt\lib".to_string()].to_vec(),
+            items: [crate::process::encrypt::EncryptItem {
+                file_id: 0,
+                file_path: r"D:\github_repo\easy_crypt\lib".to_string(),
+            }]
+            .to_vec(),
             key: crate::emit::random_key_message::RandomKeyMessage::default().key,
             save_dir: r"D:\github_repo\easy_crypt\native".to_owned(),
         };
@@ -161,9 +165,16 @@ mod tests {
     #[test]
     fn test_zip_multi_entry() {
         let en = crate::process::encrypt::Enctypt {
-            file_path: [
-                r"D:\github_repo\easy_crypt\lib".to_string(),
-                r"C:\Users\xiaoshuyui\Desktop\无标题-2023-02-27-0936.png".to_string(),
+            items: [
+                crate::process::encrypt::EncryptItem {
+                    file_id: 0,
+                    file_path: r"D:\github_repo\easy_crypt\lib".to_string(),
+                },
+                crate::process::encrypt::EncryptItem {
+                    file_id: 1,
+                    file_path: r"C:\Users\xiaoshuyui\Desktop\无标题-2023-02-27-0936.png"
+                        .to_string(),
+                },
             ]
             .to_vec(),
             key: crate::emit::random_key_message::RandomKeyMessage::default().key,
@@ -185,8 +196,11 @@ mod tests {
         match k {
             Ok(_k) => {
                 let en = crate::process::encrypt::Enctypt {
-                    file_path: [r"C:\Users\xiaoshuyui\Documents\data_base.isar".to_owned()]
-                        .to_vec(),
+                    items: [crate::process::encrypt::EncryptItem {
+                        file_id: 0,
+                        file_path: r"C:\Users\xiaoshuyui\Documents\data_base.isar".to_owned(),
+                    }]
+                    .to_vec(),
                     key: _k.key,
                     save_dir: r"D:\github_repo\easy_crypt\build\windows\x64\runner\Debug\cache"
                         .to_owned(),

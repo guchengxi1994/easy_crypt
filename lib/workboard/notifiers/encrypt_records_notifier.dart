@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io';
 
 import 'package:easy_crypt/bridge/native.dart';
 import 'package:easy_crypt/isar/database.dart';
@@ -53,11 +54,9 @@ class EncryptRecordsNotifier
     });
   }
 
-  changeProgress(String filepath, double progress,
-      {String? uuid, String? saved}) async {
-    final item = state.value!.list
-        .where((element) => element.filePath == filepath)
-        .firstOrNull;
+  changeProgress(int id, double progress, {String? saved}) async {
+    final item =
+        state.value!.list.where((element) => element.id == id).firstOrNull;
 
     if (item != null) {
       if (saved != null) {
@@ -67,7 +66,7 @@ class EncryptRecordsNotifier
         await database.isar!.writeTxn(() async {
           final log = await database.isar!.encryptLogs
               .filter()
-              .filePathEqualTo(filepath)
+              .idEqualTo(id)
               .findFirst();
           if (log != null) {
             log.savePath = saved;
@@ -81,6 +80,67 @@ class EncryptRecordsNotifier
       item.progress = progress;
     }
     state = AsyncValue.data(state.value!.copyWith(null, null));
+  }
+
+  removeEncryptedFile(EncryptRecord f) async {
+    if (f.savePath == null) {
+      return;
+    }
+    File file = File(f.savePath!);
+    if (file.existsSync()) {
+      file.deleteSync();
+    }
+
+    await database.isar!.writeTxn(() async {
+      final log =
+          await database.isar!.encryptLogs.filter().idEqualTo(f.id).findFirst();
+      if (log != null) {
+        log.savePath = null;
+        await database.isar!.encryptLogs.put(log);
+      }
+    });
+
+    if (state.value!.list.map((e) => e.id == f.id).isNotEmpty) {
+      // exists in list, should repaint
+      state = await AsyncValue.guard(() async {
+        List<EncryptLogs> logs = await database.isar!.encryptLogs
+            .where()
+            .offset((state.value!.pageId - 1) * 10)
+            .limit(10)
+            .findAll();
+        return EncryptRecordsState(
+            list: logs.map((e) => EncryptRecord.fromModel(e)).toList());
+      });
+    }
+  }
+
+  removeLog(EncryptRecord f, {bool removeEncryptedFile = false}) async {
+    if (removeEncryptedFile) {
+      if (f.savePath == null) {
+        return;
+      }
+      File file = File(f.savePath!);
+      if (file.existsSync()) {
+        file.deleteSync();
+      }
+    }
+
+    await database.isar!.writeTxn(() async {
+      await database.isar!.encryptLogs.delete(f.id);
+    });
+
+    if (state.value!.list.map((e) => e.id == f.id).isNotEmpty) {
+      // exists in list, should repaint
+      state = await AsyncValue.guard(() async {
+        List<EncryptLogs> logs = await database.isar!.encryptLogs
+            .where()
+            .offset((state.value!.pageId - 1) * 10)
+            .limit(10)
+            .findAll();
+        return EncryptRecordsState(
+            list: logs.map((e) => EncryptRecord.fromModel(e)).toList());
+      });
+    }
   }
 }
 

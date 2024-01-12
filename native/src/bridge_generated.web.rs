@@ -37,8 +37,24 @@ impl Wire2Api<String> for String {
         self
     }
 }
-impl Wire2Api<Vec<String>> for JsValue {
-    fn wire2api(self) -> Vec<String> {
+impl Wire2Api<EncryptItem> for JsValue {
+    fn wire2api(self) -> EncryptItem {
+        let self_ = self.dyn_into::<JsArray>().unwrap();
+        assert_eq!(
+            self_.length(),
+            2,
+            "Expected 2 elements, got {}",
+            self_.length()
+        );
+        EncryptItem {
+            file_path: self_.get(0).wire2api(),
+            file_id: self_.get(1).wire2api(),
+        }
+    }
+}
+
+impl Wire2Api<Vec<EncryptItem>> for JsValue {
+    fn wire2api(self) -> Vec<EncryptItem> {
         self.dyn_into::<JsArray>()
             .unwrap()
             .iter()
@@ -65,6 +81,11 @@ where
 impl Wire2Api<String> for JsValue {
     fn wire2api(self) -> String {
         self.as_string().expect("non-UTF-8 string, or not a string")
+    }
+}
+impl Wire2Api<i64> for JsValue {
+    fn wire2api(self) -> i64 {
+        ::std::convert::TryInto::try_into(self.dyn_into::<js_sys::BigInt>().unwrap()).unwrap()
     }
 }
 impl Wire2Api<u8> for JsValue {

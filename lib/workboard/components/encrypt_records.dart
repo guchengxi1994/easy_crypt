@@ -103,9 +103,12 @@ class _EncryptRecordsWidgetState extends ConsumerState<EncryptRecordsWidget> {
                             Formats.fileUri(Uri.file(f.savePath.toString())));
                         await clipboard!.write([item]);
                       },
-                      child: const Icon(
-                        Icons.copy_all,
-                        size: AppStyle.rowIconSize,
+                      child: const Tooltip(
+                        message: "Copy file path",
+                        child: Icon(
+                          Icons.copy_all,
+                          size: AppStyle.rowIconSize,
+                        ),
                       ),
                     ),
                   if (f.savePath != null)
@@ -154,7 +157,11 @@ class _EncryptRecordsWidgetState extends ConsumerState<EncryptRecordsWidget> {
                           ),
                           DropdownMenuItem(
                             value: 2,
-                            onTap: () async {},
+                            onTap: () async {
+                              ref
+                                  .read(encryptRecordsProvider.notifier)
+                                  .removeEncryptedFile(f);
+                            },
                             child: const Row(
                               children: [
                                 Icon(Icons.delete),
@@ -188,9 +195,12 @@ class _EncryptRecordsWidgetState extends ConsumerState<EncryptRecordsWidget> {
               onTap: () async {
                 await copyToClipboard(f.key ?? "");
               },
-              child: const Icon(
-                Icons.copy,
-                size: AppStyle.rowIconSize,
+              child: const Tooltip(
+                message: "Copy Key",
+                child: Icon(
+                  Icons.copy,
+                  size: AppStyle.rowIconSize,
+                ),
               ),
             )
         ],
@@ -202,12 +212,12 @@ class _EncryptRecordsWidgetState extends ConsumerState<EncryptRecordsWidget> {
           api
               .encrypt(
                   saveDir: DevUtils.cachePath,
-                  files: [f.filePath!],
+                  files: [EncryptItem(filePath: f.filePath!, fileId: f.id)],
                   key: f.key!)
               .then((value) {
             ref
                 .read(encryptRecordsProvider.notifier)
-                .changeProgress(f.filePath!, 1, saved: value);
+                .changeProgress(f.id, 1, saved: value);
           });
         },
         child: const Text(

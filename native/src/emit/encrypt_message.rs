@@ -7,7 +7,7 @@ pub struct EncryptMessage {
     pub file_path: String,
     pub total_size: u64,
     pub encrypt_size: u64,
-    pub uuid: Option<String>,
+    pub unique_id: Option<i64>,
     #[serde(rename = "type")]
     pub _type: i8,
 }
@@ -18,7 +18,7 @@ impl EncryptMessage {
             file_path: "".to_owned(),
             total_size: 0,
             encrypt_size: 0,
-            uuid: None,
+            unique_id: None,
             _type: crate::constants::TYPE_ENCRYPT,
         }
     }

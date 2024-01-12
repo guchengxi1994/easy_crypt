@@ -28,7 +28,7 @@ class _LayoutState extends ConsumerState<Layout> {
       final j = jsonDecode(event);
       if (j["type"] == 2) {
         ref.read(encryptRecordsProvider.notifier).changeProgress(
-            j["file_path"], j["encrypt_size"] / j["total_size"]);
+            j["unique_id"], j["encrypt_size"] / j["total_size"]);
       }
     });
   }

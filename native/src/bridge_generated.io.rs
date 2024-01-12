@@ -25,7 +25,7 @@ pub extern "C" fn wire_random_key(port_: i64) {
 pub extern "C" fn wire_encrypt(
     port_: i64,
     save_dir: *mut wire_uint_8_list,
-    files: *mut wire_StringList,
+    files: *mut wire_list_encrypt_item,
     key: *mut wire_uint_8_list,
 ) {
     wire_encrypt_impl(port_, save_dir, files, key)
@@ -34,9 +34,9 @@ pub extern "C" fn wire_encrypt(
 // Section: allocate functions
 
 #[no_mangle]
-pub extern "C" fn new_StringList_0(len: i32) -> *mut wire_StringList {
-    let wrap = wire_StringList {
-        ptr: support::new_leak_vec_ptr(<*mut wire_uint_8_list>::new_with_null_ptr(), len),
+pub extern "C" fn new_list_encrypt_item_0(len: i32) -> *mut wire_list_encrypt_item {
+    let wrap = wire_list_encrypt_item {
+        ptr: support::new_leak_vec_ptr(<wire_EncryptItem>::new_with_null_ptr(), len),
         len,
     };
     support::new_leak_box_ptr(wrap)
@@ -61,8 +61,17 @@ impl Wire2Api<String> for *mut wire_uint_8_list {
         String::from_utf8_lossy(&vec).into_owned()
     }
 }
-impl Wire2Api<Vec<String>> for *mut wire_StringList {
-    fn wire2api(self) -> Vec<String> {
+impl Wire2Api<EncryptItem> for wire_EncryptItem {
+    fn wire2api(self) -> EncryptItem {
+        EncryptItem {
+            file_path: self.file_path.wire2api(),
+            file_id: self.file_id.wire2api(),
+        }
+    }
+}
+
+impl Wire2Api<Vec<EncryptItem>> for *mut wire_list_encrypt_item {
+    fn wire2api(self) -> Vec<EncryptItem> {
         let vec = unsafe {
             let wrap = support::box_from_leak_ptr(self);
             support::vec_from_leak_ptr(wrap.ptr, wrap.len)
@@ -83,8 +92,15 @@ impl Wire2Api<Vec<u8>> for *mut wire_uint_8_list {
 
 #[repr(C)]
 #[derive(Clone)]
-pub struct wire_StringList {
-    ptr: *mut *mut wire_uint_8_list,
+pub struct wire_EncryptItem {
+    file_path: *mut wire_uint_8_list,
+    file_id: i64,
+}
+
+#[repr(C)]
+#[derive(Clone)]
+pub struct wire_list_encrypt_item {
+    ptr: *mut wire_EncryptItem,
     len: i32,
 }
 
@@ -104,6 +120,21 @@ pub trait NewWithNullPtr {
 impl<T> NewWithNullPtr for *mut T {
     fn new_with_null_ptr() -> Self {
         std::ptr::null_mut()
+    }
+}
+
+impl NewWithNullPtr for wire_EncryptItem {
+    fn new_with_null_ptr() -> Self {
+        Self {
+            file_path: core::ptr::null_mut(),
+            file_id: Default::default(),
+        }
+    }
+}
+
+impl Default for wire_EncryptItem {
+    fn default() -> Self {
+        Self::new_with_null_ptr()
     }
 }
 

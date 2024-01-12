@@ -6,7 +6,7 @@ import 'package:easy_crypt/common/logger.dart';
 
 class Message {
   final SendPort? sendPort;
-  final List<String> paths;
+  final List<EncryptItem> paths;
   final String key;
 
   Message({this.sendPort, required this.key, required this.paths});
@@ -15,14 +15,14 @@ class Message {
 class CryptProcess {
   CryptProcess._();
 
-  static void encrypt(List<String> paths, String key) async {
+  static void encrypt(List<EncryptItem> items, String key) async {
     ReceivePort receivePort = ReceivePort();
     receivePort.listen((message) {
       logger.info(message);
     });
     Isolate.spawn<Message>((message) {
       _execEncrypt(message);
-    }, Message(sendPort: receivePort.sendPort, key: key, paths: paths));
+    }, Message(sendPort: receivePort.sendPort, key: key, paths: items));
   }
 
   static void _execEncrypt(Message message) async {

@@ -7,7 +7,7 @@ pub struct DecryptMessage {
     pub file_path: String,
     pub total_size: usize,
     pub encrypt_size: usize,
-    pub uuid: Option<String>,
+    pub unique_id: Option<i64>,
     #[serde(rename = "type")]
     pub _type: i8,
 }
@@ -18,7 +18,7 @@ impl DecryptMessage {
             file_path: "".to_owned(),
             total_size: 0,
             encrypt_size: 0,
-            uuid: Some("".to_owned()),
+            unique_id: None,
             _type: crate::constants::TYPE_DECRYPT,
         }
     }

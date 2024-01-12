@@ -29,11 +29,21 @@ abstract class Native {
 
   Future<String> encrypt(
       {required String saveDir,
-      required List<String> files,
+      required List<EncryptItem> files,
       required String key,
       dynamic hint});
 
   FlutterRustBridgeTaskConstMeta get kEncryptConstMeta;
+}
+
+class EncryptItem {
+  final String filePath;
+  final int fileId;
+
+  const EncryptItem({
+    required this.filePath,
+    required this.fileId,
+  });
 }
 
 class NativeImpl implements Native {
@@ -115,11 +125,11 @@ class NativeImpl implements Native {
 
   Future<String> encrypt(
       {required String saveDir,
-      required List<String> files,
+      required List<EncryptItem> files,
       required String key,
       dynamic hint}) {
     var arg0 = _platform.api2wire_String(saveDir);
-    var arg1 = _platform.api2wire_StringList(files);
+    var arg1 = _platform.api2wire_list_encrypt_item(files);
     var arg2 = _platform.api2wire_String(key);
     return _platform.executeNormal(FlutterRustBridgeTask(
       callFfi: (port_) => _platform.inner.wire_encrypt(port_, arg0, arg1, arg2),
@@ -183,10 +193,16 @@ class NativePlatform extends FlutterRustBridgeBase<NativeWire> {
   }
 
   @protected
-  ffi.Pointer<wire_StringList> api2wire_StringList(List<String> raw) {
-    final ans = inner.new_StringList_0(raw.length);
-    for (var i = 0; i < raw.length; i++) {
-      ans.ref.ptr[i] = api2wire_String(raw[i]);
+  int api2wire_i64(int raw) {
+    return raw;
+  }
+
+  @protected
+  ffi.Pointer<wire_list_encrypt_item> api2wire_list_encrypt_item(
+      List<EncryptItem> raw) {
+    final ans = inner.new_list_encrypt_item_0(raw.length);
+    for (var i = 0; i < raw.length; ++i) {
+      _api_fill_to_wire_encrypt_item(raw[i], ans.ref.ptr[i]);
     }
     return ans;
   }
@@ -200,6 +216,12 @@ class NativePlatform extends FlutterRustBridgeBase<NativeWire> {
 // Section: finalizer
 
 // Section: api_fill_to_wire
+
+  void _api_fill_to_wire_encrypt_item(
+      EncryptItem apiObj, wire_EncryptItem wireObj) {
+    wireObj.file_path = api2wire_String(apiObj.filePath);
+    wireObj.file_id = api2wire_i64(apiObj.fileId);
+  }
 }
 
 // ignore_for_file: camel_case_types, non_constant_identifier_names, avoid_positional_boolean_parameters, annotate_overrides, constant_identifier_names
@@ -357,7 +379,7 @@ class NativeWire implements FlutterRustBridgeWireBase {
   void wire_encrypt(
     int port_,
     ffi.Pointer<wire_uint_8_list> save_dir,
-    ffi.Pointer<wire_StringList> files,
+    ffi.Pointer<wire_list_encrypt_item> files,
     ffi.Pointer<wire_uint_8_list> key,
   ) {
     return _wire_encrypt(
@@ -373,25 +395,29 @@ class NativeWire implements FlutterRustBridgeWireBase {
           ffi.Void Function(
               ffi.Int64,
               ffi.Pointer<wire_uint_8_list>,
-              ffi.Pointer<wire_StringList>,
+              ffi.Pointer<wire_list_encrypt_item>,
               ffi.Pointer<wire_uint_8_list>)>>('wire_encrypt');
   late final _wire_encrypt = _wire_encryptPtr.asFunction<
-      void Function(int, ffi.Pointer<wire_uint_8_list>,
-          ffi.Pointer<wire_StringList>, ffi.Pointer<wire_uint_8_list>)>();
+      void Function(
+          int,
+          ffi.Pointer<wire_uint_8_list>,
+          ffi.Pointer<wire_list_encrypt_item>,
+          ffi.Pointer<wire_uint_8_list>)>();
 
-  ffi.Pointer<wire_StringList> new_StringList_0(
+  ffi.Pointer<wire_list_encrypt_item> new_list_encrypt_item_0(
     int len,
   ) {
-    return _new_StringList_0(
+    return _new_list_encrypt_item_0(
       len,
     );
   }
 
-  late final _new_StringList_0Ptr = _lookup<
-          ffi.NativeFunction<ffi.Pointer<wire_StringList> Function(ffi.Int32)>>(
-      'new_StringList_0');
-  late final _new_StringList_0 = _new_StringList_0Ptr
-      .asFunction<ffi.Pointer<wire_StringList> Function(int)>();
+  late final _new_list_encrypt_item_0Ptr = _lookup<
+      ffi.NativeFunction<
+          ffi.Pointer<wire_list_encrypt_item> Function(
+              ffi.Int32)>>('new_list_encrypt_item_0');
+  late final _new_list_encrypt_item_0 = _new_list_encrypt_item_0Ptr
+      .asFunction<ffi.Pointer<wire_list_encrypt_item> Function(int)>();
 
   ffi.Pointer<wire_uint_8_list> new_uint_8_list_0(
     int len,
@@ -432,8 +458,15 @@ final class wire_uint_8_list extends ffi.Struct {
   external int len;
 }
 
-final class wire_StringList extends ffi.Struct {
-  external ffi.Pointer<ffi.Pointer<wire_uint_8_list>> ptr;
+final class wire_EncryptItem extends ffi.Struct {
+  external ffi.Pointer<wire_uint_8_list> file_path;
+
+  @ffi.Int64()
+  external int file_id;
+}
+
+final class wire_list_encrypt_item extends ffi.Struct {
+  external ffi.Pointer<wire_EncryptItem> ptr;
 
   @ffi.Int32()
   external int len;

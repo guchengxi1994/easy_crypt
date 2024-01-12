@@ -20,6 +20,8 @@ use std::sync::Arc;
 
 // Section: imports
 
+use crate::process::encrypt::EncryptItem;
+
 // Section: wire functions
 
 fn wire_test_encrypt_impl(port_: MessagePort) {
@@ -67,7 +69,7 @@ fn wire_random_key_impl(port_: MessagePort) {
 fn wire_encrypt_impl(
     port_: MessagePort,
     save_dir: impl Wire2Api<String> + UnwindSafe,
-    files: impl Wire2Api<Vec<String>> + UnwindSafe,
+    files: impl Wire2Api<Vec<EncryptItem>> + UnwindSafe,
     key: impl Wire2Api<String> + UnwindSafe,
 ) {
     FLUTTER_RUST_BRIDGE_HANDLER.wrap::<_, _, _, String, _>(
@@ -104,6 +106,12 @@ where
 {
     fn wire2api(self) -> Option<T> {
         (!self.is_null()).then(|| self.wire2api())
+    }
+}
+
+impl Wire2Api<i64> for i64 {
+    fn wire2api(self) -> i64 {
+        self
     }
 }
 
