@@ -220,4 +220,30 @@ mod tests {
             }
         }
     }
+
+    #[allow(dead_code)]
+    fn encrypt(data: &Vec<u8>, key: &Vec<u8>) -> Vec<u8> {
+        data.iter().zip(key.iter()).map(|(&x1, &x2)| x1 ^ x2).collect()
+    }
+    
+    #[allow(dead_code)]
+    fn decrypt(data: &Vec<u8>, key: &Vec<u8>) -> Vec<u8> {
+        data.iter().zip(key.iter()).map(|(&x1, &x2)| x1 ^ x2).collect()
+    }
+    
+    #[test]
+    fn cumtom() {
+        let data: Vec<u8> = "abc123ghj6".to_string().into_bytes();
+        // let key: Vec<u8> = vec![0x1, 0x2, 0x3, 0x4, 0x5, 0x6, 0x7, 0x8, 0x9, 0x10]; // 这是一个示例密钥
+
+        let key: Vec<u8> = "rfgbh12345".to_string().into_bytes(); // 这是一个示例密钥
+    
+        println!("明文: {:?}", data);
+    
+        let encrypted_data = encrypt(&data, &key);
+        println!("密文: {:?}", encrypted_data);
+    
+        let decrypted_data = decrypt(&encrypted_data, &key);
+        println!("解密后的明文: {:?}", decrypted_data);
+    }
 }
