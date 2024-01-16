@@ -285,4 +285,31 @@ mod tests {
             .collect();
         println!("解密后的明文: {:?}", String::from_utf8(decrypted_data));
     }
+
+    #[test]
+    fn test_chain() {
+        let c = crate::process::operator::xor_operator::XOROperator {
+            key: "rfgbh12345".to_string().into_bytes(),
+        };
+
+        let c2 = crate::process::operator::not_operator::NotOperator {};
+
+        let c3 = crate::process::operator::aes_operator::AesOperator::default();
+
+        let mut chain =
+            crate::process::chain::Chain::default("abc123ghj6".to_string().into_bytes());
+
+        chain.add_encrypt_operator(Box::new(c));
+        chain.add_encrypt_operator(Box::new(c2));
+        chain.add_encrypt_operator(Box::new(c3));
+        
+
+        let r = chain.encrypt();
+
+        println!("{:?}", r);
+
+        let result = chain.decrypt();
+
+        println!("{:?}", String::from_utf8(result));
+    }
 }
