@@ -12,11 +12,11 @@ pub struct Chain {
 }
 
 impl Chain {
-    pub fn default(input: Vec<u8>) -> Self {
+    pub fn default() -> Self {
         Self {
             encryptor: Vec::new(),
             decryptor: Vec::new(),
-            input,
+            input: "I love China".as_bytes().to_vec(),
         }
     }
 

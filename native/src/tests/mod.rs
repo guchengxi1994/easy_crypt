@@ -296,13 +296,11 @@ mod tests {
 
         let c3 = crate::process::operator::aes_operator::AesOperator::default();
 
-        let mut chain =
-            crate::process::chain::Chain::default("abc123ghj6".to_string().into_bytes());
+        let mut chain = crate::process::chain::Chain::default();
 
         chain.add_encrypt_operator(Box::new(c));
         chain.add_encrypt_operator(Box::new(c2));
         chain.add_encrypt_operator(Box::new(c3));
-        
 
         let r = chain.encrypt();
 
