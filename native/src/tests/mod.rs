@@ -250,6 +250,39 @@ mod tests {
         println!("密文: {:?}", encrypted_data);
 
         let decrypted_data = decrypt(&encrypted_data, &key);
-        println!("解密后的明文: {:?}", decrypted_data);
+        println!("解密后的明文: {:?}", String::from_utf8(decrypted_data));
+    }
+
+    #[test]
+    fn cumtom2() {
+        let data: Vec<u8> = "abc123ghj6".to_string().into_bytes();
+        // let key: Vec<u8> = vec![0x1, 0x2, 0x3, 0x4, 0x5, 0x6, 0x7, 0x8, 0x9, 0x10]; // 这是一个示例密钥
+
+        println!("明文: {:?}", data);
+
+        let encrypted_data: Vec<u8> = data.iter().map(|x| !x).collect();
+        println!("密文: {:?}", encrypted_data);
+
+        let decrypted_data: Vec<u8> = encrypted_data.iter().map(|x| !x).collect();
+        println!("解密后的明文: {:?}", String::from_utf8(decrypted_data));
+    }
+
+    // not eq
+    #[test]
+    fn cumtom3() {
+        let data: Vec<u8> = "abc123ghj6".to_string().into_bytes();
+        let key: Vec<u8> = vec![0x1, 0x2, 0x3, 0x4, 0x5, 0x6, 0x7, 0x8, 0x9, 0x10]; // 这是一个示例密钥
+
+        println!("明文: {:?}", data);
+
+        let encrypted_data: Vec<u8> = data.iter().zip(key.iter()).map(|(x, k)| x | k).collect();
+        println!("密文: {:?}", String::from_utf8(encrypted_data.clone()));
+
+        let decrypted_data: Vec<u8> = encrypted_data
+            .iter()
+            .zip(key.iter())
+            .map(|(x, k)| x & !k)
+            .collect();
+        println!("解密后的明文: {:?}", String::from_utf8(decrypted_data));
     }
 }
