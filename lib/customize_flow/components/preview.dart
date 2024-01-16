@@ -1,6 +1,7 @@
 import 'package:easy_crypt/bridge/native.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_flow_chart/flutter_flow_chart.dart';
+// ignore: depend_on_referenced_packages
 import 'package:collection/collection.dart';
 
 class Preview extends StatefulWidget {
@@ -23,6 +24,8 @@ class PreviewState extends State<Preview> {
         .mapIndexed((i, e) => Container(
               width: 200,
               height: 30,
+              margin:
+                  const EdgeInsets.only(left: 10, right: 10, top: 5, bottom: 5),
               decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(10),
                   color: Colors.white,
@@ -55,7 +58,7 @@ class PreviewState extends State<Preview> {
   Widget build(BuildContext context) {
     return Container(
       width: 300,
-      padding: const EdgeInsets.all(20),
+      padding: const EdgeInsets.only(top: 10, bottom: 10),
       height: MediaQuery.of(context).size.height * 0.8,
       decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(20),

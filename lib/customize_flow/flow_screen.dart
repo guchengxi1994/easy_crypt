@@ -76,6 +76,7 @@ class _FlowScreenState extends State<FlowScreen> {
     Offset position,
     FlowElement element,
   ) {
+    print(element.text);
     StarMenuOverlay.displayStarMenu(
       context,
       StarMenu(
@@ -116,11 +117,9 @@ class _FlowScreenState extends State<FlowScreen> {
               final prev = element.findPrevious(dashboard.elements);
               assert(prev != null, "prev cannot be null");
 
-              /// FIXME sometimes find no elements
               final next = dashboard.elements
-                  .where((e) => e.id == element.next.first.destElementId)
+                  .where((e) => e.id == element.next.firstOrNull?.destElementId)
                   .firstOrNull;
-              assert(next != null, "next cannot be null");
 
               dashboard.removeElement(element);
 

@@ -1,8 +1,18 @@
+import 'dart:ui';
+
 import 'package:easy_crypt/layout/desktop_layout.dart';
 import 'package:easy_crypt/style/app_style.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:window_manager/window_manager.dart';
+
+class AppScrollBehavior extends MaterialScrollBehavior {
+  @override
+  Set<PointerDeviceKind> get dragDevices => {
+        PointerDeviceKind.touch,
+        PointerDeviceKind.mouse,
+      };
+}
 
 void runAPP() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -17,6 +27,7 @@ void runAPP() async {
   windowManager.setBackgroundColor(Colors.transparent);
   runApp(ProviderScope(
     child: MaterialApp(
+      scrollBehavior: AppScrollBehavior(),
       theme: ThemeData(
         fontFamily: "NotoSns",
         colorScheme: ColorScheme.fromSeed(seedColor: AppStyle.appColor),
