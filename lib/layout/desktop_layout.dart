@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:easy_crypt/bridge/native.dart';
 import 'package:easy_crypt/common/logger.dart';
+import 'package:easy_crypt/customize_flow/flow_screen.dart';
 import 'package:easy_crypt/style/app_style.dart';
 import 'package:easy_crypt/workboard/notifiers/encrypt_records_notifier.dart';
 import 'package:easy_crypt/workboard/workboard.dart';
@@ -51,17 +52,8 @@ class _LayoutState extends ConsumerState<Layout> {
           ),
         ),
       ),
-      // body: Center(
-      //   child: TextButton(
-      //       onPressed: () async {
-      //         final XFile? file = await openFile();
-      //         if (file != null) {
-      //           CryptProcess.encrypt([file.path], await api.randomKey());
-      //         }
-      //       },
-      //       child: const Text("test encrypt")),
-      // ),
-      body: const Workboard(),
+      // body: const Workboard(),
+      body: const FlowScreen(),
     );
   }
 }

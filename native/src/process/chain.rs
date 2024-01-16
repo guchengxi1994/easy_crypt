@@ -95,3 +95,32 @@ impl Chain {
         return result == self.input;
     }
 }
+
+pub fn get_results(operators: Vec<String>) -> Vec<String> {
+    let mut a = "I love China".as_bytes().to_vec();
+    let mut results: Vec<String> = Vec::new();
+    for i in operators {
+        match i.to_lowercase().as_str() {
+            "xor" => {
+                let en = XOROperator {
+                    key: "qwerty".as_bytes().to_vec(),
+                };
+                a = en.operate(&a);
+                results.push(String::from_utf8_lossy(&a).to_string());
+            }
+            "aes" => {
+                let en = AesOperator::default();
+                a = en.operate(&a);
+                results.push(String::from_utf8_lossy(&a).to_string());
+            }
+            "not" => {
+                let en = NotOperator {};
+                a = en.operate(&a);
+                results.push(String::from_utf8_lossy(&a).to_string());
+            }
+            _ => {}
+        }
+    }
+
+    results
+}

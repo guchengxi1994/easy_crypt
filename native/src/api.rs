@@ -55,3 +55,7 @@ pub fn compress(paths: Vec<String>, save_dir: String) -> String {
         Err(_) => "".to_owned(),
     }
 }
+
+pub fn flow_preview(operators: Vec<String>) -> Vec<String> {
+    crate::process::chain::get_results(operators)
+}

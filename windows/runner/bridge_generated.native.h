@@ -68,6 +68,8 @@ void wire_encrypt(int64_t port_,
 
 void wire_compress(int64_t port_, struct wire_StringList *paths, struct wire_uint_8_list *save_dir);
 
+void wire_flow_preview(int64_t port_, struct wire_StringList *operators);
+
 struct wire_StringList *new_StringList_0(int32_t len);
 
 struct wire_list_encrypt_item *new_list_encrypt_item_0(int32_t len);
@@ -84,6 +86,7 @@ static int64_t dummy_method_to_enforce_bundling(void) {
     dummy_var ^= ((int64_t) (void*) wire_random_key);
     dummy_var ^= ((int64_t) (void*) wire_encrypt);
     dummy_var ^= ((int64_t) (void*) wire_compress);
+    dummy_var ^= ((int64_t) (void*) wire_flow_preview);
     dummy_var ^= ((int64_t) (void*) new_StringList_0);
     dummy_var ^= ((int64_t) (void*) new_list_encrypt_item_0);
     dummy_var ^= ((int64_t) (void*) new_uint_8_list_0);

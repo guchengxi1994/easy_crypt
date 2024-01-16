@@ -15,6 +15,7 @@ dependencies:
   dropdown_button2: ^2.3.9
   ffi: ^2.0.1
   file_selector: ^1.0.2
+  flutter_flow_chart: ^2.1.1
   flutter_riverpod: ^2.4.9
   flutter_rust_bridge: 1.82.6
   flutter:
@@ -27,6 +28,8 @@ dependencies:
   super_clipboard: ^0.8.2+1
   url_launcher: ^6.2.3
   window_manager: ^0.3.7
+  flutter_colorpicker: ^1.0.3
+  star_menu: ^3.1.4
   
   
 

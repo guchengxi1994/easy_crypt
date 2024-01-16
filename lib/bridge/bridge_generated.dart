@@ -39,6 +39,11 @@ abstract class Native {
       {required List<String> paths, required String saveDir, dynamic hint});
 
   FlutterRustBridgeTaskConstMeta get kCompressConstMeta;
+
+  Future<List<String>> flowPreview(
+      {required List<String> operators, dynamic hint});
+
+  FlutterRustBridgeTaskConstMeta get kFlowPreviewConstMeta;
 }
 
 class EncryptItem {
@@ -172,6 +177,25 @@ class NativeImpl implements Native {
         argNames: ["paths", "saveDir"],
       );
 
+  Future<List<String>> flowPreview(
+      {required List<String> operators, dynamic hint}) {
+    var arg0 = _platform.api2wire_StringList(operators);
+    return _platform.executeNormal(FlutterRustBridgeTask(
+      callFfi: (port_) => _platform.inner.wire_flow_preview(port_, arg0),
+      parseSuccessData: _wire2api_StringList,
+      parseErrorData: null,
+      constMeta: kFlowPreviewConstMeta,
+      argValues: [operators],
+      hint: hint,
+    ));
+  }
+
+  FlutterRustBridgeTaskConstMeta get kFlowPreviewConstMeta =>
+      const FlutterRustBridgeTaskConstMeta(
+        debugName: "flow_preview",
+        argNames: ["operators"],
+      );
+
   void dispose() {
     _platform.dispose();
   }
@@ -183,6 +207,10 @@ class NativeImpl implements Native {
 
   String _wire2api_String(dynamic raw) {
     return raw as String;
+  }
+
+  List<String> _wire2api_StringList(dynamic raw) {
+    return (raw as List<dynamic>).cast<String>();
   }
 
   int _wire2api_u8(dynamic raw) {
@@ -457,6 +485,23 @@ class NativeWire implements FlutterRustBridgeWireBase {
   late final _wire_compress = _wire_compressPtr.asFunction<
       void Function(
           int, ffi.Pointer<wire_StringList>, ffi.Pointer<wire_uint_8_list>)>();
+
+  void wire_flow_preview(
+    int port_,
+    ffi.Pointer<wire_StringList> operators,
+  ) {
+    return _wire_flow_preview(
+      port_,
+      operators,
+    );
+  }
+
+  late final _wire_flow_previewPtr = _lookup<
+      ffi.NativeFunction<
+          ffi.Void Function(
+              ffi.Int64, ffi.Pointer<wire_StringList>)>>('wire_flow_preview');
+  late final _wire_flow_preview = _wire_flow_previewPtr
+      .asFunction<void Function(int, ffi.Pointer<wire_StringList>)>();
 
   ffi.Pointer<wire_StringList> new_StringList_0(
     int len,

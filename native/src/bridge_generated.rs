@@ -104,6 +104,19 @@ fn wire_compress_impl(
         },
     )
 }
+fn wire_flow_preview_impl(port_: MessagePort, operators: impl Wire2Api<Vec<String>> + UnwindSafe) {
+    FLUTTER_RUST_BRIDGE_HANDLER.wrap::<_, _, _, Vec<String>, _>(
+        WrapInfo {
+            debug_name: "flow_preview",
+            port: Some(port_),
+            mode: FfiCallMode::Normal,
+        },
+        move || {
+            let api_operators = operators.wire2api();
+            move |task_callback| Result::<_, ()>::Ok(flow_preview(api_operators))
+        },
+    )
+}
 // Section: wrapper structs
 
 // Section: static checks

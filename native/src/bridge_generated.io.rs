@@ -40,6 +40,11 @@ pub extern "C" fn wire_compress(
     wire_compress_impl(port_, paths, save_dir)
 }
 
+#[no_mangle]
+pub extern "C" fn wire_flow_preview(port_: i64, operators: *mut wire_StringList) {
+    wire_flow_preview_impl(port_, operators)
+}
+
 // Section: allocate functions
 
 #[no_mangle]

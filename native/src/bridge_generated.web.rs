@@ -31,6 +31,11 @@ pub fn wire_compress(port_: MessagePort, paths: JsValue, save_dir: String) {
     wire_compress_impl(port_, paths, save_dir)
 }
 
+#[wasm_bindgen]
+pub fn wire_flow_preview(port_: MessagePort, operators: JsValue) {
+    wire_flow_preview_impl(port_, operators)
+}
+
 // Section: allocate functions
 
 // Section: related functions
