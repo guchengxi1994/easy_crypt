@@ -386,10 +386,10 @@ packages:
     dependency: "direct main"
     description:
       name: flutter_flow_chart
-      sha256: "37e1e1fcf91c3cd8c028509d21fad7e80148af07618edaef6b566075b28c386b"
+      sha256: ceb51f84ae65f29c7b07a88bc659b7d5ac25a96655f0c5d3505cedc65689be8c
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "2.1.1"
+    version: "2.1.2"
   flutter_lints:
     dependency: "direct dev"
     description:

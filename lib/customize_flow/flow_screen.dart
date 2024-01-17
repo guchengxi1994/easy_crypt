@@ -76,7 +76,6 @@ class _FlowScreenState extends State<FlowScreen> {
     Offset position,
     FlowElement element,
   ) {
-    print(element.text);
     StarMenuOverlay.displayStarMenu(
       context,
       StarMenu(
@@ -121,7 +120,7 @@ class _FlowScreenState extends State<FlowScreen> {
                   .where((e) => e.id == element.next.firstOrNull?.destElementId)
                   .firstOrNull;
 
-              dashboard.removeElement(element);
+              dashboard.removeElement(element, notify: next == null);
 
               if (next != null && prev != null) {
                 dashboard.addNextById(prev, next.id, const ArrowParams());
