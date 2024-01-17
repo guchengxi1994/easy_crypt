@@ -10,6 +10,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:window_manager/window_manager.dart';
 
+import 'notifiers/expand_collapse_notifier.dart';
+import 'notifiers/navigator_notifier.dart';
+
 class Layout extends ConsumerStatefulWidget {
   const Layout({super.key});
 
@@ -17,8 +20,28 @@ class Layout extends ConsumerStatefulWidget {
   ConsumerState<Layout> createState() => _LayoutState();
 }
 
-class _LayoutState extends ConsumerState<Layout> {
+const double minWidth = 70;
+const double maxWidth = 200;
+
+class _LayoutState extends ConsumerState<Layout> with TickerProviderStateMixin {
   final stream = api.nativeMessageStream();
+
+  late final notifier =
+      ExpandCollapseNotifier(minWidth: minWidth, maxWidth: maxWidth);
+
+  late AnimationController _controller;
+  // ignore: unused_field
+  late Animation<double> _animation;
+
+  bool isExpanded = false;
+
+  _toggleSidemenu() {
+    if (!_controller.isAnimating && !_controller.isCompleted) {
+      _controller.forward();
+    } else {
+      _controller.reverse();
+    }
+  }
 
   @override
   void initState() {
@@ -32,6 +55,14 @@ class _LayoutState extends ConsumerState<Layout> {
             j["unique_id"], j["encrypt_size"] / j["total_size"]);
       } else if (j["type"] == 3) {}
     });
+
+    notifier.addListener(() => mounted ? setState(() {}) : null);
+    _controller = AnimationController(
+      duration: const Duration(milliseconds: 200),
+      vsync: this,
+    );
+    _animation =
+        _controller.drive(Tween<double>(begin: minWidth, end: maxWidth));
   }
 
   @override
@@ -53,7 +84,75 @@ class _LayoutState extends ConsumerState<Layout> {
         ),
       ),
       // body: const Workboard(),
-      body: const FlowScreen(),
+      body: Stack(
+        children: [
+          Row(
+            children: [
+              Container(
+                color: AppStyle.appColor,
+                child: NavigationRail(
+                  onDestinationSelected: (value) {
+                    ref.read(pageNavigator.notifier).changeState(value);
+                  },
+                  backgroundColor: Colors.transparent,
+                  destinations: [
+                    NavigationRailDestination(
+                        icon: const Icon(
+                          Icons.security,
+                        ),
+                        label: const Text("Encrypt"),
+                        selectedIcon: Icon(
+                          Icons.security,
+                          color: AppStyle.appColor.withGreen(100),
+                        )),
+                    NavigationRailDestination(
+                        icon: const Icon(
+                          Icons.abc,
+                        ),
+                        label: const Text("Custom Algorithm"),
+                        selectedIcon: Icon(
+                          Icons.abc,
+                          color: AppStyle.appColor.withGreen(100),
+                        )),
+                  ],
+                  selectedIndex: ref.watch(pageNavigator),
+                  extended: notifier.isExpanded,
+                  minWidth: minWidth,
+                  minExtendedWidth: maxWidth,
+                ),
+              ),
+              Expanded(
+                  child: PageView(
+                physics: const NeverScrollableScrollPhysics(),
+                controller: PageNavigatorNotifier.controller,
+                children: const [Workboard(), FlowScreen()],
+              ))
+            ],
+          ),
+          Positioned(
+              left: notifier.currentWidth - 10,
+              child: MouseRegion(
+                cursor: SystemMouseCursors.resizeLeft,
+                child: GestureDetector(
+                  onPanUpdate: (details) {
+                    final b = notifier.changeSidemenuWidth(details);
+                    if (isExpanded != b) {
+                      setState(() {
+                        isExpanded = b;
+                      });
+                      _toggleSidemenu();
+                    }
+                  },
+                  child: Container(
+                    color: Colors.transparent,
+                    width: 20,
+                    height: MediaQuery.of(context).size.height,
+                    // child: const SizedBox.expand(),
+                  ),
+                ),
+              ))
+        ],
+      ),
     );
   }
 }

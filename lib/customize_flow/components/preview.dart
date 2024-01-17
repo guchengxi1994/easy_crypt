@@ -5,7 +5,8 @@ import 'package:flutter_flow_chart/flutter_flow_chart.dart';
 import 'package:collection/collection.dart';
 
 class Preview extends StatefulWidget {
-  const Preview({super.key});
+  const Preview({super.key, required this.onSave});
+  final VoidCallback onSave;
 
   @override
   State<Preview> createState() => PreviewState();
@@ -71,14 +72,32 @@ class PreviewState extends State<Preview> {
               spreadRadius: 5,
             ),
           ]),
-      child: ListView.separated(
-        itemBuilder: (c, i) => children[i],
-        itemCount: children.length,
-        separatorBuilder: (BuildContext context, int index) {
-          return const SizedBox(
-            height: 10,
-          );
-        },
+      child: Column(
+        children: [
+          Expanded(
+              child: ListView.separated(
+            itemBuilder: (c, i) => children[i],
+            itemCount: children.length,
+            separatorBuilder: (BuildContext context, int index) {
+              return const SizedBox(
+                height: 10,
+              );
+            },
+          )),
+          Row(
+            children: [
+              const Spacer(),
+              TextButton(
+                  onPressed: () {
+                    widget.onSave();
+                  },
+                  child: const Text("Save")),
+              const SizedBox(
+                width: 10,
+              )
+            ],
+          )
+        ],
       ),
     );
   }

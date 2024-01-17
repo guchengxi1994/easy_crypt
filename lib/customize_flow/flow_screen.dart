@@ -32,7 +32,7 @@ class _FlowScreenState extends State<FlowScreen> {
 
     return Scaffold(
       body: Padding(
-        padding: const EdgeInsets.all(30.0),
+        padding: const EdgeInsets.all(5.0),
 
         // child: Container(color: Colors.amber),
 
@@ -60,12 +60,15 @@ class _FlowScreenState extends State<FlowScreen> {
                 right: 20,
                 child: Preview(
                   key: globalKey,
+                  onSave: () {
+                    print(dashboard.toJson());
+                  },
                 ))
           ],
         ),
       ),
       floatingActionButton: FloatingActionButton(
-          onPressed: () => dashboard.recenter(),
+          onPressed: () => dashboard.format(),
           child: const Icon(Icons.center_focus_strong)),
     );
   }
@@ -183,7 +186,7 @@ class _FlowScreenState extends State<FlowScreen> {
               onPressed: () {
                 final not = FlowElement(
                     position: position - const Offset(40, 40),
-                    size: const Size(80, 80),
+                    size: const Size(100, 50),
                     text: 'NOT',
                     kind: ElementKind.rectangle,
                     handlers: []);
@@ -202,7 +205,7 @@ class _FlowScreenState extends State<FlowScreen> {
               onPressed: () {
                 final aes = FlowElement(
                     position: position - const Offset(40, 40),
-                    size: const Size(80, 80),
+                    size: const Size(100, 50),
                     text: 'AES',
                     kind: ElementKind.rectangle,
                     handlers: []);
