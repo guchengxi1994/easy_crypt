@@ -310,4 +310,26 @@ mod tests {
 
         println!("{:?}", String::from_utf8(result));
     }
+
+    #[tokio::test]
+    async fn opendal_minio_home_test() -> anyhow::Result<()> {
+        let mut builder = opendal::services::S3::default();
+        builder.endpoint("http://127.0.0.1:9000");
+        builder.bucket("xiaoshuyui");
+        builder.access_key_id("nAPrblNJQUzF76NWTNMt");
+        builder.secret_access_key("luSfM0DDSgPEQz63Pu6U5mWFTMAU7Hy5c1xIMWlM");
+        builder.region("cn-shanghai");
+        let op = opendal::Operator::new(builder)?
+            // Init with logging layer enabled.
+            .layer(opendal::layers::LoggingLayer::default())
+            .finish();
+
+        // Fetch this file's metadata
+        let meta = op.stat("199_S.jpg").await?;
+        let length = meta.content_length();
+
+        println!("length  {:?}", length);
+
+        anyhow::Ok(())
+    }
 }

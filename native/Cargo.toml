@@ -10,9 +10,11 @@ crate-type = ["lib", "staticlib", "cdylib"]
 aes-gcm-siv = "0.11.1"
 anyhow = "1"
 flutter_rust_bridge = "= 1.82.6"
+opendal = { version = "0.44.1", features = ["services-oss","services-s3","services-webdav"]} 
 rand = "0.8.5"
 serde = { version = "1.0.106", features = ["derive"] }
 serde_json = "1.0.108"
+tokio = { version = "1.35.1", features = ["full"] }
 walkdir = "2.4.0"
 zip = "0.6.6"
 
