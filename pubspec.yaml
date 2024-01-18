@@ -23,6 +23,7 @@ dependencies:
   flutter_rust_bridge: 1.82.6
   flutter:
     sdk: flutter
+  group_button: ^5.3.4
   isar: ^3.1.0+1  # run `flutter pub run build_runner build` to generate codes
   isar_flutter_libs: ^3.1.0+1
   logging: ^1.2.0

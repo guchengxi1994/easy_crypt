@@ -32,6 +32,7 @@ void runAPP() async {
         fontFamily: "NotoSns",
         colorScheme: ColorScheme.fromSeed(seedColor: AppStyle.appColor),
         useMaterial3: true,
+        tabBarTheme: const TabBarTheme(dividerColor: Colors.transparent),
       ),
       debugShowCheckedModeBanner: false,
       home: const Layout(),
