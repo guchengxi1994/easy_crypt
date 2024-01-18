@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:easy_crypt/account/account_screen.dart';
 import 'package:easy_crypt/bridge/native.dart';
 import 'package:easy_crypt/common/logger.dart';
 import 'package:easy_crypt/customize_flow/flow_screen.dart';
@@ -114,6 +115,15 @@ class _LayoutState extends ConsumerState<Layout> with TickerProviderStateMixin {
                           Icons.abc,
                           color: AppStyle.appColor.withGreen(100),
                         )),
+                    NavigationRailDestination(
+                        icon: const Icon(
+                          Icons.account_box,
+                        ),
+                        label: const Text("Account"),
+                        selectedIcon: Icon(
+                          Icons.account_box,
+                          color: AppStyle.appColor.withGreen(100),
+                        )),
                   ],
                   selectedIndex: ref.watch(pageNavigator),
                   extended: notifier.isExpanded,
@@ -125,7 +135,7 @@ class _LayoutState extends ConsumerState<Layout> with TickerProviderStateMixin {
                   child: PageView(
                 physics: const NeverScrollableScrollPhysics(),
                 controller: PageNavigatorNotifier.controller,
-                children: const [Workboard(), FlowScreen()],
+                children: const [Workboard(), FlowScreen(), AccountScreen()],
               ))
             ],
           ),

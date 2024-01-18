@@ -6,4 +6,6 @@ mod constants;
 mod emit;
 #[allow(dead_code)]
 mod process;
+#[allow(dead_code)]
 mod tests;
+pub mod utils;

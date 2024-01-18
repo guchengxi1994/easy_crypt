@@ -36,6 +36,37 @@ pub fn wire_flow_preview(port_: MessagePort, operators: JsValue) {
     wire_flow_preview_impl(port_, operators)
 }
 
+#[wasm_bindgen]
+pub fn wire_init_s3_client(
+    port_: MessagePort,
+    endpoint: String,
+    bucketname: String,
+    access_key: String,
+    session_key: String,
+    session_token: Option<String>,
+    region: String,
+) {
+    wire_init_s3_client_impl(
+        port_,
+        endpoint,
+        bucketname,
+        access_key,
+        session_key,
+        session_token,
+        region,
+    )
+}
+
+#[wasm_bindgen]
+pub fn wire_upload_to_s3(port_: MessagePort, p: String, obj: String) {
+    wire_upload_to_s3_impl(port_, p, obj)
+}
+
+#[wasm_bindgen]
+pub fn wire_download_from_s3(port_: MessagePort, p: String, obj: String) {
+    wire_download_from_s3_impl(port_, p, obj)
+}
+
 // Section: allocate functions
 
 // Section: related functions
@@ -79,6 +110,11 @@ impl Wire2Api<Vec<EncryptItem>> for JsValue {
             .iter()
             .map(Wire2Api::wire2api)
             .collect()
+    }
+}
+impl Wire2Api<Option<String>> for Option<String> {
+    fn wire2api(self) -> Option<String> {
+        self.map(Wire2Api::wire2api)
     }
 }
 

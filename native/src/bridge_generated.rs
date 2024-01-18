@@ -117,6 +117,77 @@ fn wire_flow_preview_impl(port_: MessagePort, operators: impl Wire2Api<Vec<Strin
         },
     )
 }
+fn wire_init_s3_client_impl(
+    port_: MessagePort,
+    endpoint: impl Wire2Api<String> + UnwindSafe,
+    bucketname: impl Wire2Api<String> + UnwindSafe,
+    access_key: impl Wire2Api<String> + UnwindSafe,
+    session_key: impl Wire2Api<String> + UnwindSafe,
+    session_token: impl Wire2Api<Option<String>> + UnwindSafe,
+    region: impl Wire2Api<String> + UnwindSafe,
+) {
+    FLUTTER_RUST_BRIDGE_HANDLER.wrap::<_, _, _, (), _>(
+        WrapInfo {
+            debug_name: "init_s3_client",
+            port: Some(port_),
+            mode: FfiCallMode::Normal,
+        },
+        move || {
+            let api_endpoint = endpoint.wire2api();
+            let api_bucketname = bucketname.wire2api();
+            let api_access_key = access_key.wire2api();
+            let api_session_key = session_key.wire2api();
+            let api_session_token = session_token.wire2api();
+            let api_region = region.wire2api();
+            move |task_callback| {
+                Result::<_, ()>::Ok(init_s3_client(
+                    api_endpoint,
+                    api_bucketname,
+                    api_access_key,
+                    api_session_key,
+                    api_session_token,
+                    api_region,
+                ))
+            }
+        },
+    )
+}
+fn wire_upload_to_s3_impl(
+    port_: MessagePort,
+    p: impl Wire2Api<String> + UnwindSafe,
+    obj: impl Wire2Api<String> + UnwindSafe,
+) {
+    FLUTTER_RUST_BRIDGE_HANDLER.wrap::<_, _, _, (), _>(
+        WrapInfo {
+            debug_name: "upload_to_s3",
+            port: Some(port_),
+            mode: FfiCallMode::Normal,
+        },
+        move || {
+            let api_p = p.wire2api();
+            let api_obj = obj.wire2api();
+            move |task_callback| Result::<_, ()>::Ok(upload_to_s3(api_p, api_obj))
+        },
+    )
+}
+fn wire_download_from_s3_impl(
+    port_: MessagePort,
+    p: impl Wire2Api<String> + UnwindSafe,
+    obj: impl Wire2Api<String> + UnwindSafe,
+) {
+    FLUTTER_RUST_BRIDGE_HANDLER.wrap::<_, _, _, (), _>(
+        WrapInfo {
+            debug_name: "download_from_s3",
+            port: Some(port_),
+            mode: FfiCallMode::Normal,
+        },
+        move || {
+            let api_p = p.wire2api();
+            let api_obj = obj.wire2api();
+            move |task_callback| Result::<_, ()>::Ok(download_from_s3(api_p, api_obj))
+        },
+    )
+}
 // Section: wrapper structs
 
 // Section: static checks

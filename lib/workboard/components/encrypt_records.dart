@@ -3,7 +3,6 @@ import 'dart:io';
 import 'package:data_table_2/data_table_2.dart';
 import 'package:date_format/date_format.dart';
 import 'package:desktop_drop/desktop_drop.dart';
-import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:easy_crypt/bridge/native.dart';
 import 'package:easy_crypt/common/clipboard_utils.dart';
 import 'package:easy_crypt/common/dev_utils.dart';
@@ -11,6 +10,7 @@ import 'package:easy_crypt/style/app_style.dart';
 import 'package:easy_crypt/workboard/components/multiple_files_dialog.dart';
 import 'package:easy_crypt/workboard/notifiers/encrypt_records_notifier.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_context_menu/flutter_context_menu.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 // ignore: depend_on_referenced_packages
 import 'package:collection/collection.dart';
@@ -193,73 +193,82 @@ class _EncryptRecordsWidgetState extends ConsumerState<EncryptRecordsWidget> {
                           ),
                         ),
                       if (f.savePath != null)
-                        DropdownButtonHideUnderline(
-                          child: DropdownButton2(
-                            customButton: Transform.rotate(
-                              angle: 3.14 / 2,
-                              child: const Icon(
-                                Icons.arrow_right,
-                                size: AppStyle.rowIconSize,
-                                color: Colors.black,
-                              ),
-                            ),
-                            onChanged: (value) {
-                              // print(value);
-                            },
-                            dropdownStyleData: DropdownStyleData(
-                              width: 250,
-                              padding: const EdgeInsets.symmetric(vertical: 6),
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(4),
-                                color: Colors.white,
-                              ),
-                              offset: const Offset(0, 8),
-                            ),
-                            menuItemStyleData: const MenuItemStyleData(
-                              padding: EdgeInsets.only(left: 16, right: 16),
-                            ),
-                            items: [
-                              DropdownMenuItem(
-                                value: 1,
-                                onTap: () async {
-                                  final d = File(f.savePath!).parent.path;
-
-                                  OpenFile.open(d);
-                                },
-                                child: const Row(
-                                  children: [
-                                    Icon(
-                                      Icons.open_in_browser,
-                                      size: AppStyle.rowIconSize,
+                        MouseRegion(
+                          cursor: SystemMouseCursors.click,
+                          child: SizedBox(
+                            child: ContextMenuRegion(
+                                contextMenu: ContextMenu(
+                                  entries: [
+                                    const MenuItem.submenu(
+                                      label: "Upload to",
+                                      icon: Icon(
+                                        Icons.upload,
+                                        size: AppStyle.rowIconSize,
+                                      ),
+                                      items: [
+                                        MenuItem(
+                                          icon: Icon(
+                                            Icons.storage,
+                                            size: AppStyle.rowIconSize,
+                                          ),
+                                          label: "S3",
+                                          value: "S3",
+                                        ),
+                                      ],
                                     ),
-                                    SizedBox(
-                                      width: 10,
+                                    const MenuItem.submenu(
+                                      label: "Share to",
+                                      icon: Icon(
+                                        Icons.share,
+                                        size: AppStyle.rowIconSize,
+                                      ),
+                                      items: [
+                                        MenuItem(
+                                          icon: Icon(
+                                            Icons.wechat,
+                                            size: AppStyle.rowIconSize,
+                                          ),
+                                          label: "Wechat",
+                                          value: "Wechat",
+                                        ),
+                                      ],
                                     ),
-                                    Text("Open folder")
+                                    MenuItem(
+                                      label: "Open folder",
+                                      value: "Open folder",
+                                      icon: const Icon(
+                                        Icons.open_in_new,
+                                        size: AppStyle.rowIconSize,
+                                      ),
+                                      onSelected: () {
+                                        final d = File(f.savePath!).parent.path;
+                                        OpenFile.open(d);
+                                      },
+                                    ),
+                                    MenuItem(
+                                      label: "Remove file",
+                                      value: "Remove file",
+                                      icon: const Icon(
+                                        Icons.delete,
+                                        size: AppStyle.rowIconSize,
+                                      ),
+                                      onSelected: () {
+                                        ref
+                                            .read(
+                                                encryptRecordsProvider.notifier)
+                                            .removeEncryptedFile(f);
+                                      },
+                                    )
                                   ],
                                 ),
-                              ),
-                              DropdownMenuItem(
-                                value: 2,
-                                onTap: () async {
-                                  ref
-                                      .read(encryptRecordsProvider.notifier)
-                                      .removeEncryptedFile(f);
-                                },
-                                child: const Row(
-                                  children: [
-                                    Icon(
-                                      Icons.delete,
-                                      size: AppStyle.rowIconSize,
-                                    ),
-                                    SizedBox(
-                                      width: 10,
-                                    ),
-                                    Text("Remove file")
-                                  ],
-                                ),
-                              ),
-                            ],
+                                child: Transform.rotate(
+                                  angle: 3.14 / 2,
+                                  child: const Icon(
+                                    Icons.arrow_right,
+                                    size: AppStyle.rowIconSize,
+                                    color: Colors.black,
+                                  ),
+                                )),
                           ),
                         )
                     ],

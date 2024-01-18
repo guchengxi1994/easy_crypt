@@ -7,6 +7,8 @@ typedef struct _Dart_Handle* Dart_Handle;
 
 #define AES_ENCRYPT_ONE_MB 1048592
 
+#define SIXTEEN_MB (16 * ONE_MB)
+
 #define TYPE_KEY 0
 
 #define TYPE_DECRYPT 1
@@ -14,6 +16,8 @@ typedef struct _Dart_Handle* Dart_Handle;
 #define TYPE_ENCRYPT 2
 
 #define TYPE_ZIP_FILE 3
+
+#define TYPE_TRANSFER 4
 
 typedef struct DartCObject DartCObject;
 
@@ -70,6 +74,18 @@ void wire_compress(int64_t port_, struct wire_StringList *paths, struct wire_uin
 
 void wire_flow_preview(int64_t port_, struct wire_StringList *operators);
 
+void wire_init_s3_client(int64_t port_,
+                         struct wire_uint_8_list *endpoint,
+                         struct wire_uint_8_list *bucketname,
+                         struct wire_uint_8_list *access_key,
+                         struct wire_uint_8_list *session_key,
+                         struct wire_uint_8_list *session_token,
+                         struct wire_uint_8_list *region);
+
+void wire_upload_to_s3(int64_t port_, struct wire_uint_8_list *p, struct wire_uint_8_list *obj);
+
+void wire_download_from_s3(int64_t port_, struct wire_uint_8_list *p, struct wire_uint_8_list *obj);
+
 struct wire_StringList *new_StringList_0(int32_t len);
 
 struct wire_list_encrypt_item *new_list_encrypt_item_0(int32_t len);
@@ -87,6 +103,9 @@ static int64_t dummy_method_to_enforce_bundling(void) {
     dummy_var ^= ((int64_t) (void*) wire_encrypt);
     dummy_var ^= ((int64_t) (void*) wire_compress);
     dummy_var ^= ((int64_t) (void*) wire_flow_preview);
+    dummy_var ^= ((int64_t) (void*) wire_init_s3_client);
+    dummy_var ^= ((int64_t) (void*) wire_upload_to_s3);
+    dummy_var ^= ((int64_t) (void*) wire_download_from_s3);
     dummy_var ^= ((int64_t) (void*) new_StringList_0);
     dummy_var ^= ((int64_t) (void*) new_list_encrypt_item_0);
     dummy_var ^= ((int64_t) (void*) new_uint_8_list_0);

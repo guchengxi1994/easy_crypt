@@ -44,6 +44,27 @@ abstract class Native {
       {required List<String> operators, dynamic hint});
 
   FlutterRustBridgeTaskConstMeta get kFlowPreviewConstMeta;
+
+  Future<void> initS3Client(
+      {required String endpoint,
+      required String bucketname,
+      required String accessKey,
+      required String sessionKey,
+      String? sessionToken,
+      required String region,
+      dynamic hint});
+
+  FlutterRustBridgeTaskConstMeta get kInitS3ClientConstMeta;
+
+  Future<void> uploadToS3(
+      {required String p, required String obj, dynamic hint});
+
+  FlutterRustBridgeTaskConstMeta get kUploadToS3ConstMeta;
+
+  Future<void> downloadFromS3(
+      {required String p, required String obj, dynamic hint});
+
+  FlutterRustBridgeTaskConstMeta get kDownloadFromS3ConstMeta;
 }
 
 class EncryptItem {
@@ -196,6 +217,92 @@ class NativeImpl implements Native {
         argNames: ["operators"],
       );
 
+  Future<void> initS3Client(
+      {required String endpoint,
+      required String bucketname,
+      required String accessKey,
+      required String sessionKey,
+      String? sessionToken,
+      required String region,
+      dynamic hint}) {
+    var arg0 = _platform.api2wire_String(endpoint);
+    var arg1 = _platform.api2wire_String(bucketname);
+    var arg2 = _platform.api2wire_String(accessKey);
+    var arg3 = _platform.api2wire_String(sessionKey);
+    var arg4 = _platform.api2wire_opt_String(sessionToken);
+    var arg5 = _platform.api2wire_String(region);
+    return _platform.executeNormal(FlutterRustBridgeTask(
+      callFfi: (port_) => _platform.inner
+          .wire_init_s3_client(port_, arg0, arg1, arg2, arg3, arg4, arg5),
+      parseSuccessData: _wire2api_unit,
+      parseErrorData: null,
+      constMeta: kInitS3ClientConstMeta,
+      argValues: [
+        endpoint,
+        bucketname,
+        accessKey,
+        sessionKey,
+        sessionToken,
+        region
+      ],
+      hint: hint,
+    ));
+  }
+
+  FlutterRustBridgeTaskConstMeta get kInitS3ClientConstMeta =>
+      const FlutterRustBridgeTaskConstMeta(
+        debugName: "init_s3_client",
+        argNames: [
+          "endpoint",
+          "bucketname",
+          "accessKey",
+          "sessionKey",
+          "sessionToken",
+          "region"
+        ],
+      );
+
+  Future<void> uploadToS3(
+      {required String p, required String obj, dynamic hint}) {
+    var arg0 = _platform.api2wire_String(p);
+    var arg1 = _platform.api2wire_String(obj);
+    return _platform.executeNormal(FlutterRustBridgeTask(
+      callFfi: (port_) => _platform.inner.wire_upload_to_s3(port_, arg0, arg1),
+      parseSuccessData: _wire2api_unit,
+      parseErrorData: null,
+      constMeta: kUploadToS3ConstMeta,
+      argValues: [p, obj],
+      hint: hint,
+    ));
+  }
+
+  FlutterRustBridgeTaskConstMeta get kUploadToS3ConstMeta =>
+      const FlutterRustBridgeTaskConstMeta(
+        debugName: "upload_to_s3",
+        argNames: ["p", "obj"],
+      );
+
+  Future<void> downloadFromS3(
+      {required String p, required String obj, dynamic hint}) {
+    var arg0 = _platform.api2wire_String(p);
+    var arg1 = _platform.api2wire_String(obj);
+    return _platform.executeNormal(FlutterRustBridgeTask(
+      callFfi: (port_) =>
+          _platform.inner.wire_download_from_s3(port_, arg0, arg1),
+      parseSuccessData: _wire2api_unit,
+      parseErrorData: null,
+      constMeta: kDownloadFromS3ConstMeta,
+      argValues: [p, obj],
+      hint: hint,
+    ));
+  }
+
+  FlutterRustBridgeTaskConstMeta get kDownloadFromS3ConstMeta =>
+      const FlutterRustBridgeTaskConstMeta(
+        debugName: "download_from_s3",
+        argNames: ["p", "obj"],
+      );
+
   void dispose() {
     _platform.dispose();
   }
@@ -267,6 +374,11 @@ class NativePlatform extends FlutterRustBridgeBase<NativeWire> {
       _api_fill_to_wire_encrypt_item(raw[i], ans.ref.ptr[i]);
     }
     return ans;
+  }
+
+  @protected
+  ffi.Pointer<wire_uint_8_list> api2wire_opt_String(String? raw) {
+    return raw == null ? ffi.nullptr : api2wire_String(raw);
   }
 
   @protected
@@ -503,6 +615,86 @@ class NativeWire implements FlutterRustBridgeWireBase {
   late final _wire_flow_preview = _wire_flow_previewPtr
       .asFunction<void Function(int, ffi.Pointer<wire_StringList>)>();
 
+  void wire_init_s3_client(
+    int port_,
+    ffi.Pointer<wire_uint_8_list> endpoint,
+    ffi.Pointer<wire_uint_8_list> bucketname,
+    ffi.Pointer<wire_uint_8_list> access_key,
+    ffi.Pointer<wire_uint_8_list> session_key,
+    ffi.Pointer<wire_uint_8_list> session_token,
+    ffi.Pointer<wire_uint_8_list> region,
+  ) {
+    return _wire_init_s3_client(
+      port_,
+      endpoint,
+      bucketname,
+      access_key,
+      session_key,
+      session_token,
+      region,
+    );
+  }
+
+  late final _wire_init_s3_clientPtr = _lookup<
+      ffi.NativeFunction<
+          ffi.Void Function(
+              ffi.Int64,
+              ffi.Pointer<wire_uint_8_list>,
+              ffi.Pointer<wire_uint_8_list>,
+              ffi.Pointer<wire_uint_8_list>,
+              ffi.Pointer<wire_uint_8_list>,
+              ffi.Pointer<wire_uint_8_list>,
+              ffi.Pointer<wire_uint_8_list>)>>('wire_init_s3_client');
+  late final _wire_init_s3_client = _wire_init_s3_clientPtr.asFunction<
+      void Function(
+          int,
+          ffi.Pointer<wire_uint_8_list>,
+          ffi.Pointer<wire_uint_8_list>,
+          ffi.Pointer<wire_uint_8_list>,
+          ffi.Pointer<wire_uint_8_list>,
+          ffi.Pointer<wire_uint_8_list>,
+          ffi.Pointer<wire_uint_8_list>)>();
+
+  void wire_upload_to_s3(
+    int port_,
+    ffi.Pointer<wire_uint_8_list> p,
+    ffi.Pointer<wire_uint_8_list> obj,
+  ) {
+    return _wire_upload_to_s3(
+      port_,
+      p,
+      obj,
+    );
+  }
+
+  late final _wire_upload_to_s3Ptr = _lookup<
+      ffi.NativeFunction<
+          ffi.Void Function(ffi.Int64, ffi.Pointer<wire_uint_8_list>,
+              ffi.Pointer<wire_uint_8_list>)>>('wire_upload_to_s3');
+  late final _wire_upload_to_s3 = _wire_upload_to_s3Ptr.asFunction<
+      void Function(
+          int, ffi.Pointer<wire_uint_8_list>, ffi.Pointer<wire_uint_8_list>)>();
+
+  void wire_download_from_s3(
+    int port_,
+    ffi.Pointer<wire_uint_8_list> p,
+    ffi.Pointer<wire_uint_8_list> obj,
+  ) {
+    return _wire_download_from_s3(
+      port_,
+      p,
+      obj,
+    );
+  }
+
+  late final _wire_download_from_s3Ptr = _lookup<
+      ffi.NativeFunction<
+          ffi.Void Function(ffi.Int64, ffi.Pointer<wire_uint_8_list>,
+              ffi.Pointer<wire_uint_8_list>)>>('wire_download_from_s3');
+  late final _wire_download_from_s3 = _wire_download_from_s3Ptr.asFunction<
+      void Function(
+          int, ffi.Pointer<wire_uint_8_list>, ffi.Pointer<wire_uint_8_list>)>();
+
   ffi.Pointer<wire_StringList> new_StringList_0(
     int len,
   ) {
@@ -601,6 +793,8 @@ const int ONE_MB = 1048576;
 
 const int AES_ENCRYPT_ONE_MB = 1048592;
 
+const int SIXTEEN_MB = 16777216;
+
 const int TYPE_KEY = 0;
 
 const int TYPE_DECRYPT = 1;
@@ -608,3 +802,5 @@ const int TYPE_DECRYPT = 1;
 const int TYPE_ENCRYPT = 2;
 
 const int TYPE_ZIP_FILE = 3;
+
+const int TYPE_TRANSFER = 4;

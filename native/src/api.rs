@@ -1,4 +1,7 @@
-use crate::emit::MESSAGE_SINK;
+use crate::{
+    emit::MESSAGE_SINK,
+    process::transfer::{Transfer, S3CLIENT},
+};
 use flutter_rust_bridge::StreamSink;
 
 pub fn test_encrypt() {
@@ -58,4 +61,50 @@ pub fn compress(paths: Vec<String>, save_dir: String) -> String {
 
 pub fn flow_preview(operators: Vec<String>) -> Vec<String> {
     crate::process::chain::get_results(operators)
+}
+
+pub fn init_s3_client(
+    endpoint: String,
+    bucketname: String,
+    access_key: String,
+    session_key: String,
+    session_token: Option<String>,
+    region: String,
+) {
+    crate::process::transfer::S3Client::init(
+        endpoint,
+        bucketname,
+        access_key,
+        session_key,
+        session_token,
+        region,
+    );
+}
+
+pub fn upload_to_s3(p: String, obj: String) {
+    let rt = tokio::runtime::Runtime::new().unwrap();
+    rt.block_on(async {
+        let client = S3CLIENT.read().unwrap();
+
+        match &(*client) {
+            Some(_c) => {
+                _c.upload(p, obj).await;
+            }
+            None => {}
+        }
+    });
+}
+
+pub fn download_from_s3(p: String, obj: String) {
+    let rt = tokio::runtime::Runtime::new().unwrap();
+    rt.block_on(async {
+        let client = S3CLIENT.read().unwrap();
+
+        match &(*client) {
+            Some(_c) => {
+                _c.download(p, obj).await;
+            }
+            None => {}
+        }
+    });
 }

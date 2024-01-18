@@ -45,6 +45,45 @@ pub extern "C" fn wire_flow_preview(port_: i64, operators: *mut wire_StringList)
     wire_flow_preview_impl(port_, operators)
 }
 
+#[no_mangle]
+pub extern "C" fn wire_init_s3_client(
+    port_: i64,
+    endpoint: *mut wire_uint_8_list,
+    bucketname: *mut wire_uint_8_list,
+    access_key: *mut wire_uint_8_list,
+    session_key: *mut wire_uint_8_list,
+    session_token: *mut wire_uint_8_list,
+    region: *mut wire_uint_8_list,
+) {
+    wire_init_s3_client_impl(
+        port_,
+        endpoint,
+        bucketname,
+        access_key,
+        session_key,
+        session_token,
+        region,
+    )
+}
+
+#[no_mangle]
+pub extern "C" fn wire_upload_to_s3(
+    port_: i64,
+    p: *mut wire_uint_8_list,
+    obj: *mut wire_uint_8_list,
+) {
+    wire_upload_to_s3_impl(port_, p, obj)
+}
+
+#[no_mangle]
+pub extern "C" fn wire_download_from_s3(
+    port_: i64,
+    p: *mut wire_uint_8_list,
+    obj: *mut wire_uint_8_list,
+) {
+    wire_download_from_s3_impl(port_, p, obj)
+}
+
 // Section: allocate functions
 
 #[no_mangle]

@@ -43,15 +43,24 @@ pub fn encrypt_file_stream() -> anyhow::Result<()> {
 
 #[allow(unused_imports)]
 mod tests {
-    use std::io::Write;
+    use std::{
+        fs::File,
+        io::{Read, Write},
+        sync::Mutex,
+        time::{SystemTime, UNIX_EPOCH},
+    };
 
     use aes_gcm_siv::{
         aead::{Aead, KeyInit, OsRng},
         Aes256GcmSiv,
         Nonce, // Or `Aes128GcmSiv`
     };
+    use once_cell::sync::Lazy;
+    use opendal::raw::oio::ReadExt;
+    use tokio::io::AsyncWriteExt;
+    // use opendal::services::S3;
 
-    use crate::emit;
+    use crate::emit::{self, emitter::Emitter};
 
     #[test]
     fn key() {
@@ -311,24 +320,158 @@ mod tests {
         println!("{:?}", String::from_utf8(result));
     }
 
-    #[tokio::test]
-    async fn opendal_minio_home_test() -> anyhow::Result<()> {
+    static MINIO_OPERATOR_HOME: Lazy<Mutex<opendal::Operator>> = Lazy::new(|| {
         let mut builder = opendal::services::S3::default();
         builder.endpoint("http://127.0.0.1:9000");
         builder.bucket("xiaoshuyui");
         builder.access_key_id("nAPrblNJQUzF76NWTNMt");
         builder.secret_access_key("luSfM0DDSgPEQz63Pu6U5mWFTMAU7Hy5c1xIMWlM");
         builder.region("cn-shanghai");
-        let op = opendal::Operator::new(builder)?
+        let op = opendal::Operator::new(builder)
+            .unwrap()
             // Init with logging layer enabled.
             .layer(opendal::layers::LoggingLayer::default())
             .finish();
+
+        Mutex::new(op)
+    });
+
+    #[tokio::test]
+    async fn opendal_minio_home_test() -> anyhow::Result<()> {
+        let op;
+
+        {
+            op = (*MINIO_OPERATOR_HOME.lock().unwrap()).clone();
+        }
 
         // Fetch this file's metadata
         let meta = op.stat("199_S.jpg").await?;
         let length = meta.content_length();
 
         println!("length  {:?}", length);
+
+        anyhow::Ok(())
+    }
+
+    static MINIO_OPERATOR: Lazy<Mutex<opendal::Operator>> = Lazy::new(|| {
+        let mut builder = opendal::services::S3::default();
+        builder.endpoint("http://127.0.0.1:9000");
+        builder.bucket("xiaoshuyuilocaltest");
+        builder.access_key_id("P11IMlEYNgclY8R1");
+        builder.secret_access_key("xZaK6RsJTlWOPyjmNXgja8KcDx8R5loH");
+        builder.region("cn-shanghai");
+
+        let op = opendal::Operator::new(builder)
+            .unwrap()
+            // Init with logging layer enabled.
+            .layer(opendal::layers::LoggingLayer::default())
+            .finish();
+
+        Mutex::new(op)
+    });
+
+    #[tokio::test]
+    async fn opendal_minio_test() -> anyhow::Result<()> {
+        let op;
+
+        {
+            op = (*MINIO_OPERATOR.lock().unwrap()).clone();
+        }
+
+        // Fetch this file's metadata
+        let meta = op.stat("demo.pdf").await?;
+        let length = meta.content_length();
+
+        println!("length  {:?}", length);
+
+        anyhow::Ok(())
+    }
+
+    #[tokio::test]
+    async fn opendal_minio_upload_test() -> anyhow::Result<()> {
+        let op;
+
+        {
+            op = (*MINIO_OPERATOR.lock().unwrap()).clone();
+        }
+
+        let mut message = crate::emit::file_transfer_message::FileTransferMessage::new(
+            r"D:\minio\minio.exe".to_owned(),
+        )?;
+
+        let mut writer = op.writer("minio.bin").await?;
+
+        let mut file = File::open(r"D:\minio\minio.exe")?;
+        let mut buffer = vec![0; 16 * 1024 * 1024]; // 16MB
+        let mut transfered = 0;
+
+        loop {
+            let count = std::io::Read::read(&mut file, &mut buffer)?;
+            if count == 0 {
+                break;
+            }
+
+            writer.write(buffer[..count].to_vec()).await?;
+
+            let duration = SystemTime::now()
+                .duration_since(UNIX_EPOCH)
+                .unwrap()
+                .as_secs()
+                - message.get_start_time();
+            transfered += count;
+            if duration > 0 {
+                let speed = (transfered as f64) / (duration as f64);
+                message.set_speed(speed);
+            }
+
+            println!("duration : {} , json {:?}", duration, message);
+        }
+
+        writer.close().await?;
+
+        anyhow::Ok(())
+    }
+
+    #[tokio::test]
+    async fn opendal_minio_download_test() -> anyhow::Result<()> {
+        let op;
+
+        {
+            op = (*MINIO_OPERATOR.lock().unwrap()).clone();
+        }
+
+        let mut message = crate::emit::file_transfer_message::FileTransferMessage::new(
+            r"D:\github_repo\easy_crypt\native\minio.bin".to_owned(),
+        )?;
+
+        let mut reader = op.reader("minio.bin").await?;
+
+        // let mut file = File::open(r"D:\github_repo\easy_crypt\native\minio.bin")?;
+        let mut file_save = std::fs::File::create(r"D:\github_repo\easy_crypt\native\minio.bin")?;
+        let mut buffer = vec![0; 16 * 1024 * 1024]; // 16MB
+        let mut transfered = 0;
+
+        loop {
+            let count = reader.read(&mut buffer).await?;
+            if count == 0 {
+                break;
+            }
+
+            file_save.write_all(&buffer[..count])?;
+
+            let duration = SystemTime::now()
+                .duration_since(UNIX_EPOCH)
+                .unwrap()
+                .as_secs()
+                - message.get_start_time();
+            transfered += count;
+            if duration > 0 {
+                let speed = (transfered as f64) / (duration as f64);
+                message.set_speed(speed);
+            }
+
+            println!("duration : {} , json {:?}", duration, message);
+        }
 
         anyhow::Ok(())
     }
