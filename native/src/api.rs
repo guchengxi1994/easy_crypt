@@ -1,5 +1,5 @@
 use crate::{
-    emit::MESSAGE_SINK,
+    emit::{emitter::Emitter, MESSAGE_SINK},
     process::transfer::{Transfer, S3CLIENT},
 };
 use flutter_rust_bridge::StreamSink;
@@ -86,10 +86,11 @@ pub fn upload_to_s3(p: String, obj: String) {
     let rt = tokio::runtime::Runtime::new().unwrap();
     rt.block_on(async {
         let client = S3CLIENT.read().unwrap();
-
+        let mut message =
+            crate::emit::file_transfer_message::FileTransferMessage::new(p.clone()).unwrap();
         match &(*client) {
             Some(_c) => {
-                let _ = _c.upload(p, obj).await;
+                let _ = _c.upload(p, obj, &mut message).await;
             }
             None => {}
         }
@@ -121,29 +122,35 @@ pub fn upload_to_s3_with_config(
 
         let op = opendal::Operator::new(builder);
 
-        match op {
-            Ok(_op) => {
-                let _o = _op.layer(opendal::layers::LoggingLayer::default()).finish();
-                let client = crate::process::transfer::S3Client {
-                    endpoint,
-                    bucketname,
-                    access_key,
-                    session_key,
-                    session_token,
-                    region,
-                    op: _o,
-                };
-                let r = client.upload(p, obj).await;
+        if let Ok(mut message) =
+            crate::emit::file_transfer_message::FileTransferMessage::new(p.clone())
+        {
+            match op {
+                Ok(_op) => {
+                    let _o = _op.layer(opendal::layers::LoggingLayer::default()).finish();
+                    let client = crate::process::transfer::S3Client {
+                        endpoint,
+                        bucketname,
+                        access_key,
+                        session_key,
+                        session_token,
+                        region,
+                        op: _o,
+                    };
+                    let r = client.upload(p, obj, &mut message).await;
 
-                match r {
-                    Ok(_) => {}
-                    Err(_e) => {
-                        println!("upload error {:?}", _e);
+                    match r {
+                        Ok(_) => {}
+                        Err(_e) => {
+                            message.error_msg = Some("upload error".to_owned());
+                            message.send_message();
+                            println!("upload error {:?}", _e);
+                        }
                     }
                 }
-            }
-            Err(_) => {
-                println!("generate operator error");
+                Err(_) => {
+                    println!("generate operator error");
+                }
             }
         }
     });

@@ -14,12 +14,14 @@ class UploadJob extends Job {
   String? filePath;
   String? transferSpeed;
   double? progress;
+  String? errorMsg;
 
   static UploadJob fromJson(Map<String, dynamic> map) {
     return UploadJob()
       ..filePath = map["file_path"]
       ..progress = map["progress"]
-      ..transferSpeed = map["transfer_speed"];
+      ..transferSpeed = map["transfer_speed"]
+      ..errorMsg = map["error_msg"];
   }
 
   @override

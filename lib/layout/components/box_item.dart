@@ -30,7 +30,9 @@ class BoxItem<T extends Job> extends StatelessWidget {
                       child: SizedBox(
                     height: 5,
                     child: LinearProgressIndicator(
-                      color: Colors.blueAccent,
+                      color: (data as UploadJob).errorMsg != null
+                          ? Colors.redAccent
+                          : Colors.blueAccent,
                       value: (data as UploadJob).progress,
                     ),
                   )),
@@ -38,7 +40,9 @@ class BoxItem<T extends Job> extends StatelessWidget {
                     width: 10,
                   ),
                   Text(
-                    (data as UploadJob).transferSpeed ?? "",
+                    (data as UploadJob).errorMsg != null
+                        ? (data as UploadJob).errorMsg!
+                        : (data as UploadJob).transferSpeed ?? "",
                     style: const TextStyle(color: Colors.grey, fontSize: 12),
                   )
                 ],

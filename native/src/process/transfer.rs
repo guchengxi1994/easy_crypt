@@ -13,7 +13,12 @@ use crate::{constants::SIXTEEN_MB, emit::emitter::Emitter};
 
 #[async_trait]
 pub trait Transfer {
-    async fn upload(&self, p: String, object_path: String) -> anyhow::Result<()>;
+    async fn upload(
+        &self,
+        p: String,
+        object_path: String,
+        message: &mut crate::emit::file_transfer_message::FileTransferMessage,
+    ) -> anyhow::Result<()>;
 
     async fn download(&self, p: String, object_path: String) -> anyhow::Result<()>;
 }
@@ -73,8 +78,13 @@ impl S3Client {
 
 #[async_trait]
 impl Transfer for S3Client {
-    async fn upload(&self, p: String, object_path: String) -> anyhow::Result<()> {
-        let mut message = crate::emit::file_transfer_message::FileTransferMessage::new(p.clone())?;
+    async fn upload(
+        &self,
+        p: String,
+        object_path: String,
+        message: &mut crate::emit::file_transfer_message::FileTransferMessage,
+    ) -> anyhow::Result<()> {
+        // let mut message = crate::emit::file_transfer_message::FileTransferMessage::new(p.clone())?;
 
         let mut writer = self.op.writer(&object_path).await?;
         let mut file = File::open(p.clone())?;

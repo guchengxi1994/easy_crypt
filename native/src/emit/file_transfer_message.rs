@@ -12,6 +12,7 @@ pub struct FileTransferMessage {
     #[serde(rename = "type")]
     pub _type: i8,
     pub progress: f64,
+    pub error_msg: Option<String>,
 }
 
 impl FileTransferMessage {
@@ -22,6 +23,7 @@ impl FileTransferMessage {
             transfer_speed: "0.0 MB/s".to_owned(),
             _type: crate::constants::TYPE_TRANSFER,
             progress: 0.0,
+            error_msg: None,
         })
     }
 
