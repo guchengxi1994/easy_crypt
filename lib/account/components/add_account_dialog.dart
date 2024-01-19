@@ -50,12 +50,7 @@ class _AddAccountDialogState extends ConsumerState<AddAccountDialog>
                 child: TabBarView(
                     physics: const NeverScrollableScrollPhysics(),
                     controller: tabController,
-                    children: [
-                  _s3ConfigWidget(),
-                  const Center(
-                    child: Text("Webdav"),
-                  ),
-                ])),
+                    children: [_s3ConfigWidget(), _webdavWidget()])),
             Row(
               children: [
                 const Spacer(),
@@ -280,6 +275,99 @@ class _AddAccountDialogState extends ConsumerState<AddAccountDialog>
     );
   }
 
+  final _webdavformKey = GlobalKey<FormState>();
+
+  final webdavNameController = TextEditingController();
+  final webdavUrlFocusNode = FocusNode();
+  final webdavUrlController = TextEditingController();
+  final webdavUsernameFocusNode = FocusNode();
+  final webdavUsernameController = TextEditingController();
+  final webdavPwdFocusNode = FocusNode();
+  final webdavPwdController = TextEditingController();
+
+  // tested on 坚果云
+  Widget _webdavWidget() {
+    return Form(
+        key: _webdavformKey,
+        child: SingleChildScrollView(
+          child: Column(
+            children: [
+              const SizedBox(
+                height: 20,
+              ),
+              _wrapper(
+                  "name",
+                  TextFormField(
+                    validator: (value) {
+                      if (value == null || value == "") {
+                        return "";
+                      }
+                      return null;
+                    },
+                    controller: webdavNameController,
+                    style: TextStyle(color: textColor, fontSize: 12),
+                    decoration: decoration,
+                    autofocus: true,
+                    onFieldSubmitted: (value) {
+                      webdavUrlFocusNode.requestFocus();
+                    },
+                  )),
+              const SizedBox(
+                height: 10,
+              ),
+              _wrapper(
+                  "url",
+                  TextFormField(
+                    validator: (value) {
+                      if (value == null || value == "") {
+                        return "";
+                      }
+                      return null;
+                    },
+                    controller: webdavUrlController,
+                    style: TextStyle(color: textColor, fontSize: 12),
+                    decoration: decoration,
+                    focusNode: webdavUrlFocusNode,
+                    onFieldSubmitted: (value) {
+                      webdavUsernameFocusNode.requestFocus();
+                    },
+                  )),
+              const SizedBox(
+                height: 10,
+              ),
+              _wrapper(
+                  "username",
+                  TextFormField(
+                    validator: (value) {
+                      if (value == null || value == "") {
+                        return "";
+                      }
+                      return null;
+                    },
+                    controller: webdavUsernameController,
+                    style: TextStyle(color: textColor, fontSize: 12),
+                    decoration: decoration,
+                    focusNode: webdavUsernameFocusNode,
+                    onFieldSubmitted: (value) {
+                      webdavPwdFocusNode.requestFocus();
+                    },
+                  )),
+              const SizedBox(
+                height: 10,
+              ),
+              _wrapper(
+                  "password",
+                  TextFormField(
+                    focusNode: webdavPwdFocusNode,
+                    controller: webdavPwdController,
+                    style: TextStyle(color: textColor, fontSize: 12),
+                    decoration: decoration,
+                  )),
+            ],
+          ),
+        ));
+  }
+
   @override
   void dispose() {
     s3SessionTokenController.dispose();
@@ -295,6 +383,14 @@ class _AddAccountDialogState extends ConsumerState<AddAccountDialog>
     s3sessionKeyFocusNode.dispose();
     s3bucketController.dispose();
     s3bucketFocusNode.dispose();
+
+    webdavNameController.dispose();
+    webdavUrlFocusNode.dispose();
+    webdavUrlController.dispose();
+    webdavUsernameFocusNode.dispose();
+    webdavUsernameController.dispose();
+    webdavPwdFocusNode.dispose();
+    webdavPwdController.dispose();
     super.dispose();
   }
 }

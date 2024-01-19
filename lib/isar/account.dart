@@ -33,4 +33,9 @@ class Account {
   String? sessionKey;
   String? sessionToken;
   String? region;
+
+  /* webdav config */
+  String? url;
+  String? username;
+  String? password;
 }

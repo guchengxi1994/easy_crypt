@@ -47,7 +47,7 @@ mod tests {
         fs::File,
         io::{Read, Write},
         sync::Mutex,
-        time::{SystemTime, UNIX_EPOCH},
+        time::{Duration, SystemTime, UNIX_EPOCH},
     };
 
     use aes_gcm_siv::{
@@ -349,6 +349,24 @@ mod tests {
         let length = meta.content_length();
 
         println!("length  {:?}", length);
+
+        anyhow::Ok(())
+    }
+
+    #[tokio::test]
+    async fn opendal_minio_home_presign_test() -> anyhow::Result<()> {
+        let op;
+
+        {
+            op = (*MINIO_OPERATOR_HOME.lock().unwrap()).clone();
+        }
+
+        // Fetch this file's presign_url
+        let presign = op
+            .presign_read("199_S.jpg", Duration::from_secs(3600))
+            .await?;
+
+        println!("presign  {:?}", presign);
 
         anyhow::Ok(())
     }
