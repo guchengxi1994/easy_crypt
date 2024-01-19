@@ -61,6 +61,19 @@ abstract class Native {
 
   FlutterRustBridgeTaskConstMeta get kUploadToS3ConstMeta;
 
+  Future<void> uploadToS3WithConfig(
+      {required String endpoint,
+      required String bucketname,
+      required String accessKey,
+      required String sessionKey,
+      String? sessionToken,
+      required String region,
+      required String p,
+      required String obj,
+      dynamic hint});
+
+  FlutterRustBridgeTaskConstMeta get kUploadToS3WithConfigConstMeta;
+
   Future<void> downloadFromS3(
       {required String p, required String obj, dynamic hint});
 
@@ -280,6 +293,59 @@ class NativeImpl implements Native {
       const FlutterRustBridgeTaskConstMeta(
         debugName: "upload_to_s3",
         argNames: ["p", "obj"],
+      );
+
+  Future<void> uploadToS3WithConfig(
+      {required String endpoint,
+      required String bucketname,
+      required String accessKey,
+      required String sessionKey,
+      String? sessionToken,
+      required String region,
+      required String p,
+      required String obj,
+      dynamic hint}) {
+    var arg0 = _platform.api2wire_String(endpoint);
+    var arg1 = _platform.api2wire_String(bucketname);
+    var arg2 = _platform.api2wire_String(accessKey);
+    var arg3 = _platform.api2wire_String(sessionKey);
+    var arg4 = _platform.api2wire_opt_String(sessionToken);
+    var arg5 = _platform.api2wire_String(region);
+    var arg6 = _platform.api2wire_String(p);
+    var arg7 = _platform.api2wire_String(obj);
+    return _platform.executeNormal(FlutterRustBridgeTask(
+      callFfi: (port_) => _platform.inner.wire_upload_to_s3_with_config(
+          port_, arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7),
+      parseSuccessData: _wire2api_unit,
+      parseErrorData: null,
+      constMeta: kUploadToS3WithConfigConstMeta,
+      argValues: [
+        endpoint,
+        bucketname,
+        accessKey,
+        sessionKey,
+        sessionToken,
+        region,
+        p,
+        obj
+      ],
+      hint: hint,
+    ));
+  }
+
+  FlutterRustBridgeTaskConstMeta get kUploadToS3WithConfigConstMeta =>
+      const FlutterRustBridgeTaskConstMeta(
+        debugName: "upload_to_s3_with_config",
+        argNames: [
+          "endpoint",
+          "bucketname",
+          "accessKey",
+          "sessionKey",
+          "sessionToken",
+          "region",
+          "p",
+          "obj"
+        ],
       );
 
   Future<void> downloadFromS3(
@@ -674,6 +740,55 @@ class NativeWire implements FlutterRustBridgeWireBase {
   late final _wire_upload_to_s3 = _wire_upload_to_s3Ptr.asFunction<
       void Function(
           int, ffi.Pointer<wire_uint_8_list>, ffi.Pointer<wire_uint_8_list>)>();
+
+  void wire_upload_to_s3_with_config(
+    int port_,
+    ffi.Pointer<wire_uint_8_list> endpoint,
+    ffi.Pointer<wire_uint_8_list> bucketname,
+    ffi.Pointer<wire_uint_8_list> access_key,
+    ffi.Pointer<wire_uint_8_list> session_key,
+    ffi.Pointer<wire_uint_8_list> session_token,
+    ffi.Pointer<wire_uint_8_list> region,
+    ffi.Pointer<wire_uint_8_list> p,
+    ffi.Pointer<wire_uint_8_list> obj,
+  ) {
+    return _wire_upload_to_s3_with_config(
+      port_,
+      endpoint,
+      bucketname,
+      access_key,
+      session_key,
+      session_token,
+      region,
+      p,
+      obj,
+    );
+  }
+
+  late final _wire_upload_to_s3_with_configPtr = _lookup<
+      ffi.NativeFunction<
+          ffi.Void Function(
+              ffi.Int64,
+              ffi.Pointer<wire_uint_8_list>,
+              ffi.Pointer<wire_uint_8_list>,
+              ffi.Pointer<wire_uint_8_list>,
+              ffi.Pointer<wire_uint_8_list>,
+              ffi.Pointer<wire_uint_8_list>,
+              ffi.Pointer<wire_uint_8_list>,
+              ffi.Pointer<wire_uint_8_list>,
+              ffi.Pointer<wire_uint_8_list>)>>('wire_upload_to_s3_with_config');
+  late final _wire_upload_to_s3_with_config =
+      _wire_upload_to_s3_with_configPtr.asFunction<
+          void Function(
+              int,
+              ffi.Pointer<wire_uint_8_list>,
+              ffi.Pointer<wire_uint_8_list>,
+              ffi.Pointer<wire_uint_8_list>,
+              ffi.Pointer<wire_uint_8_list>,
+              ffi.Pointer<wire_uint_8_list>,
+              ffi.Pointer<wire_uint_8_list>,
+              ffi.Pointer<wire_uint_8_list>,
+              ffi.Pointer<wire_uint_8_list>)>();
 
   void wire_download_from_s3(
     int port_,

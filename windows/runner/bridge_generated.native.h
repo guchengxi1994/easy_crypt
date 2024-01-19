@@ -84,6 +84,16 @@ void wire_init_s3_client(int64_t port_,
 
 void wire_upload_to_s3(int64_t port_, struct wire_uint_8_list *p, struct wire_uint_8_list *obj);
 
+void wire_upload_to_s3_with_config(int64_t port_,
+                                   struct wire_uint_8_list *endpoint,
+                                   struct wire_uint_8_list *bucketname,
+                                   struct wire_uint_8_list *access_key,
+                                   struct wire_uint_8_list *session_key,
+                                   struct wire_uint_8_list *session_token,
+                                   struct wire_uint_8_list *region,
+                                   struct wire_uint_8_list *p,
+                                   struct wire_uint_8_list *obj);
+
 void wire_download_from_s3(int64_t port_, struct wire_uint_8_list *p, struct wire_uint_8_list *obj);
 
 struct wire_StringList *new_StringList_0(int32_t len);
@@ -105,6 +115,7 @@ static int64_t dummy_method_to_enforce_bundling(void) {
     dummy_var ^= ((int64_t) (void*) wire_flow_preview);
     dummy_var ^= ((int64_t) (void*) wire_init_s3_client);
     dummy_var ^= ((int64_t) (void*) wire_upload_to_s3);
+    dummy_var ^= ((int64_t) (void*) wire_upload_to_s3_with_config);
     dummy_var ^= ((int64_t) (void*) wire_download_from_s3);
     dummy_var ^= ((int64_t) (void*) new_StringList_0);
     dummy_var ^= ((int64_t) (void*) new_list_encrypt_item_0);

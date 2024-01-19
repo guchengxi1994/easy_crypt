@@ -6,6 +6,17 @@ part 'account.g.dart';
 
 enum AccountType { S3, Webdav }
 
+extension ToString on AccountType {
+  String toStr() {
+    switch (this) {
+      case AccountType.S3:
+        return "S3";
+      case AccountType.Webdav:
+        return "Webdav";
+    }
+  }
+}
+
 @collection
 class Account {
   @enumerated

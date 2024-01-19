@@ -63,6 +63,31 @@ pub fn wire_upload_to_s3(port_: MessagePort, p: String, obj: String) {
 }
 
 #[wasm_bindgen]
+pub fn wire_upload_to_s3_with_config(
+    port_: MessagePort,
+    endpoint: String,
+    bucketname: String,
+    access_key: String,
+    session_key: String,
+    session_token: Option<String>,
+    region: String,
+    p: String,
+    obj: String,
+) {
+    wire_upload_to_s3_with_config_impl(
+        port_,
+        endpoint,
+        bucketname,
+        access_key,
+        session_key,
+        session_token,
+        region,
+        p,
+        obj,
+    )
+}
+
+#[wasm_bindgen]
 pub fn wire_download_from_s3(port_: MessagePort, p: String, obj: String) {
     wire_download_from_s3_impl(port_, p, obj)
 }

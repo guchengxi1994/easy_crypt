@@ -12,8 +12,31 @@ class Message {
   Message({this.sendPort, required this.key, required this.paths});
 }
 
-class CryptProcess {
-  CryptProcess._();
+class UploadMessage {
+  final SendPort? sendPort;
+  final String endpoint;
+  final String bucketname;
+  final String accessKey;
+  final String sessionKey;
+  final String? sessionToken;
+  final String region;
+  final String p;
+  final String objectKey;
+
+  UploadMessage(
+      {this.sendPort,
+      required this.endpoint,
+      required this.accessKey,
+      required this.bucketname,
+      required this.objectKey,
+      required this.p,
+      required this.region,
+      required this.sessionKey,
+      this.sessionToken});
+}
+
+class IsolateProcess {
+  IsolateProcess._();
 
   static void encrypt(List<EncryptItem> items, String key) async {
     ReceivePort receivePort = ReceivePort();
@@ -31,5 +54,48 @@ class CryptProcess {
         saveDir: DevUtils.cachePath, files: message.paths, key: message.key);
     logger.info("new isolate finish");
     message.sendPort?.send(s);
+  }
+
+  static void upload(
+      final String endpoint,
+      final String bucketname,
+      final String accessKey,
+      final String sessionKey,
+      final String? sessionToken,
+      final String region,
+      final String p,
+      final String objectKey) async {
+    ReceivePort receivePort = ReceivePort();
+    receivePort.listen((message) {
+      logger.info(message);
+    });
+    Isolate.spawn<UploadMessage>((message) {
+      _upload(message);
+    },
+        UploadMessage(
+            sendPort: receivePort.sendPort,
+            endpoint: endpoint,
+            accessKey: accessKey,
+            bucketname: bucketname,
+            objectKey: objectKey,
+            p: p,
+            region: region,
+            sessionKey: sessionKey,
+            sessionToken: sessionToken));
+  }
+
+  static void _upload(UploadMessage message) async {
+    logger.info("new isolate start");
+    await api.uploadToS3WithConfig(
+        endpoint: message.endpoint,
+        bucketname: message.bucketname,
+        accessKey: message.accessKey,
+        sessionKey: message.sessionKey,
+        region: message.region,
+        p: message.p,
+        obj: message.objectKey,
+        sessionToken: message.sessionToken);
+    logger.info("new isolate finish");
+    message.sendPort?.send("ok");
   }
 }

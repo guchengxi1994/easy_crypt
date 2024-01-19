@@ -1,5 +1,5 @@
 use std::{
-    fs::File,
+    fs::{self, File},
     io::Write,
     sync::RwLock,
     time::{SystemTime, UNIX_EPOCH},
@@ -27,7 +27,7 @@ pub struct S3Client {
     pub session_key: String,
     pub session_token: Option<String>,
     pub region: String,
-    op: opendal::Operator,
+    pub op: opendal::Operator,
 }
 
 impl S3Client {
@@ -77,7 +77,8 @@ impl Transfer for S3Client {
         let mut message = crate::emit::file_transfer_message::FileTransferMessage::new(p.clone())?;
 
         let mut writer = self.op.writer(&object_path).await?;
-        let mut file = File::open(p)?;
+        let mut file = File::open(p.clone())?;
+        let meta = fs::metadata(p)?;
         let mut buffer = vec![0; SIXTEEN_MB.try_into().unwrap()]; // 16MB
         let mut transfered = 0;
 
@@ -99,6 +100,7 @@ impl Transfer for S3Client {
                 let speed = (transfered as f64) / (duration as f64);
                 message.set_speed(speed);
             }
+            message.progress = (transfered as f64) / (meta.len() as f64);
             message.send_message();
         }
 
@@ -113,6 +115,7 @@ impl Transfer for S3Client {
         let mut file_save = std::fs::File::create(p)?;
         let mut buffer = vec![0; SIXTEEN_MB.try_into().unwrap()]; // 16MB
         let mut transfered = 0;
+        let meta = self.op.stat(&object_path).await?;
 
         loop {
             let count = reader.read(&mut buffer).await?;
@@ -132,6 +135,7 @@ impl Transfer for S3Client {
                 let speed = (transfered as f64) / (duration as f64);
                 message.set_speed(speed);
             }
+            message.progress = (transfered as f64) / (meta.content_length() as f64);
             message.send_message();
         }
 

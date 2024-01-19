@@ -170,6 +170,47 @@ fn wire_upload_to_s3_impl(
         },
     )
 }
+fn wire_upload_to_s3_with_config_impl(
+    port_: MessagePort,
+    endpoint: impl Wire2Api<String> + UnwindSafe,
+    bucketname: impl Wire2Api<String> + UnwindSafe,
+    access_key: impl Wire2Api<String> + UnwindSafe,
+    session_key: impl Wire2Api<String> + UnwindSafe,
+    session_token: impl Wire2Api<Option<String>> + UnwindSafe,
+    region: impl Wire2Api<String> + UnwindSafe,
+    p: impl Wire2Api<String> + UnwindSafe,
+    obj: impl Wire2Api<String> + UnwindSafe,
+) {
+    FLUTTER_RUST_BRIDGE_HANDLER.wrap::<_, _, _, (), _>(
+        WrapInfo {
+            debug_name: "upload_to_s3_with_config",
+            port: Some(port_),
+            mode: FfiCallMode::Normal,
+        },
+        move || {
+            let api_endpoint = endpoint.wire2api();
+            let api_bucketname = bucketname.wire2api();
+            let api_access_key = access_key.wire2api();
+            let api_session_key = session_key.wire2api();
+            let api_session_token = session_token.wire2api();
+            let api_region = region.wire2api();
+            let api_p = p.wire2api();
+            let api_obj = obj.wire2api();
+            move |task_callback| {
+                Result::<_, ()>::Ok(upload_to_s3_with_config(
+                    api_endpoint,
+                    api_bucketname,
+                    api_access_key,
+                    api_session_key,
+                    api_session_token,
+                    api_region,
+                    api_p,
+                    api_obj,
+                ))
+            }
+        },
+    )
+}
 fn wire_download_from_s3_impl(
     port_: MessagePort,
     p: impl Wire2Api<String> + UnwindSafe,

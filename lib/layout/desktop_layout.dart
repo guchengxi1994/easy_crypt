@@ -1,9 +1,13 @@
 import 'dart:convert';
 
 import 'package:easy_crypt/account/account_screen.dart';
+import 'package:easy_crypt/account/notifiers/account_notifier.dart';
 import 'package:easy_crypt/bridge/native.dart';
 import 'package:easy_crypt/common/logger.dart';
 import 'package:easy_crypt/customize_flow/flow_screen.dart';
+import 'package:easy_crypt/layout/components/jobs_box.dart';
+import 'package:easy_crypt/layout/models/job_state.dart';
+import 'package:easy_crypt/layout/notifiers/job_notifier.dart';
 import 'package:easy_crypt/style/app_style.dart';
 import 'package:easy_crypt/workboard/notifiers/encrypt_records_notifier.dart';
 import 'package:easy_crypt/workboard/workboard.dart';
@@ -54,7 +58,11 @@ class _LayoutState extends ConsumerState<Layout> with TickerProviderStateMixin {
       if (j["type"] == 2) {
         ref.read(encryptRecordsProvider.notifier).changeProgress(
             j["unique_id"], j["encrypt_size"] / j["total_size"]);
-      } else if (j["type"] == 3) {}
+      } else if (j["type"] == 3) {
+      } else if (j['type'] == 4) {
+        UploadJob uploadJob = UploadJob.fromJson(j);
+        ref.read(jobProvider.notifier).update(uploadJob);
+      }
     });
 
     notifier.addListener(() => mounted ? setState(() {}) : null);
@@ -68,6 +76,7 @@ class _LayoutState extends ConsumerState<Layout> with TickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
+    final _ = ref.watch(accountProvider);
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: PreferredSize(
@@ -160,7 +169,12 @@ class _LayoutState extends ConsumerState<Layout> with TickerProviderStateMixin {
                     // child: const SizedBox.expand(),
                   ),
                 ),
-              ))
+              )),
+          const Positioned(
+            right: 20,
+            bottom: 20,
+            child: JobsBox(),
+          ),
         ],
       ),
     );

@@ -81,6 +81,7 @@ pub fn init_s3_client(
     );
 }
 
+/// TODO return sth.
 pub fn upload_to_s3(p: String, obj: String) {
     let rt = tokio::runtime::Runtime::new().unwrap();
     rt.block_on(async {
@@ -88,13 +89,67 @@ pub fn upload_to_s3(p: String, obj: String) {
 
         match &(*client) {
             Some(_c) => {
-                _c.upload(p, obj).await;
+                let _ = _c.upload(p, obj).await;
             }
             None => {}
         }
     });
 }
 
+/// TODO return sth.
+pub fn upload_to_s3_with_config(
+    endpoint: String,
+    bucketname: String,
+    access_key: String,
+    session_key: String,
+    session_token: Option<String>,
+    region: String,
+    p: String,
+    obj: String,
+) {
+    let rt = tokio::runtime::Runtime::new().unwrap();
+    rt.block_on(async {
+        let mut builder = opendal::services::S3::default();
+        builder.endpoint(&endpoint);
+        builder.bucket(&bucketname);
+        builder.access_key_id(&access_key);
+        builder.secret_access_key(&session_key);
+        if let Some(_s) = session_token.clone() {
+            builder.security_token(&_s);
+        }
+        builder.region(&region);
+
+        let op = opendal::Operator::new(builder);
+
+        match op {
+            Ok(_op) => {
+                let _o = _op.layer(opendal::layers::LoggingLayer::default()).finish();
+                let client = crate::process::transfer::S3Client {
+                    endpoint,
+                    bucketname,
+                    access_key,
+                    session_key,
+                    session_token,
+                    region,
+                    op: _o,
+                };
+                let r = client.upload(p, obj).await;
+
+                match r {
+                    Ok(_) => {}
+                    Err(_e) => {
+                        println!("upload error {:?}", _e);
+                    }
+                }
+            }
+            Err(_) => {
+                println!("generate operator error");
+            }
+        }
+    });
+}
+
+/// TODO return sth.
 pub fn download_from_s3(p: String, obj: String) {
     let rt = tokio::runtime::Runtime::new().unwrap();
     rt.block_on(async {
@@ -102,7 +157,7 @@ pub fn download_from_s3(p: String, obj: String) {
 
         match &(*client) {
             Some(_c) => {
-                _c.download(p, obj).await;
+                let _ = _c.download(p, obj).await;
             }
             None => {}
         }

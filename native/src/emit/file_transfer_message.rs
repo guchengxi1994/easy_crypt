@@ -11,6 +11,7 @@ pub struct FileTransferMessage {
     transfer_speed: String,
     #[serde(rename = "type")]
     pub _type: i8,
+    pub progress: f64,
 }
 
 impl FileTransferMessage {
@@ -18,8 +19,9 @@ impl FileTransferMessage {
         anyhow::Ok(FileTransferMessage {
             file_path: p,
             start_time: SystemTime::now().duration_since(UNIX_EPOCH)?.as_secs(),
-            transfer_speed: "0.0".to_owned(),
+            transfer_speed: "0.0 MB/s".to_owned(),
             _type: crate::constants::TYPE_TRANSFER,
+            progress: 0.0,
         })
     }
 

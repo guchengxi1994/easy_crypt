@@ -3,9 +3,12 @@ import 'dart:io';
 import 'package:data_table_2/data_table_2.dart';
 import 'package:date_format/date_format.dart';
 import 'package:desktop_drop/desktop_drop.dart';
+import 'package:easy_crypt/account/notifiers/account_notifier.dart';
 import 'package:easy_crypt/bridge/native.dart';
 import 'package:easy_crypt/common/clipboard_utils.dart';
 import 'package:easy_crypt/common/dev_utils.dart';
+import 'package:easy_crypt/common/replace_name.dart';
+import 'package:easy_crypt/process/process.dart';
 import 'package:easy_crypt/style/app_style.dart';
 import 'package:easy_crypt/workboard/components/multiple_files_dialog.dart';
 import 'package:easy_crypt/workboard/notifiers/encrypt_records_notifier.dart';
@@ -112,6 +115,8 @@ class _EncryptRecordsWidgetState extends ConsumerState<EncryptRecordsWidget> {
   }
 
   DataRow2 _buildRow(EncryptRecord f, int index) {
+    final s3Accounts = ref.read(accountProvider.notifier).getS3();
+
     return DataRow2(
         decoration: BoxDecoration(
           border: const Border(top: BorderSide(color: Colors.grey, width: 1)),
@@ -199,21 +204,47 @@ class _EncryptRecordsWidgetState extends ConsumerState<EncryptRecordsWidget> {
                             child: ContextMenuRegion(
                                 contextMenu: ContextMenu(
                                   entries: [
-                                    const MenuItem.submenu(
+                                    MenuItem.submenu(
                                       label: "Upload to",
-                                      icon: Icon(
+                                      icon: const Icon(
                                         Icons.upload,
                                         size: AppStyle.rowIconSize,
                                       ),
                                       items: [
-                                        MenuItem(
-                                          icon: Icon(
-                                            Icons.storage,
-                                            size: AppStyle.rowIconSize,
+                                        if (s3Accounts.isEmpty)
+                                          const MenuItem(
+                                            icon: Icon(
+                                              Icons.storage,
+                                              size: AppStyle.rowIconSize,
+                                            ),
+                                            label: "S3",
+                                            value: "S3",
                                           ),
-                                          label: "S3",
-                                          value: "S3",
-                                        ),
+                                        if (s3Accounts.isNotEmpty)
+                                          MenuItem.submenu(
+                                              icon: const Icon(
+                                                Icons.storage,
+                                                size: AppStyle.rowIconSize,
+                                              ),
+                                              label: "S3",
+                                              items: s3Accounts
+                                                  .map((e) => MenuItem(
+                                                        label: e.name ?? "",
+                                                        value: e.name ?? "",
+                                                        onSelected: () {
+                                                          IsolateProcess.upload(
+                                                              e.endpoint!,
+                                                              e.bucketname!,
+                                                              e.accesskey!,
+                                                              e.sessionKey!,
+                                                              e.sessionToken,
+                                                              e.region!,
+                                                              f.savePath!,
+                                                              replacePath(
+                                                                  f.savePath!));
+                                                        },
+                                                      ))
+                                                  .toList()),
                                       ],
                                     ),
                                     const MenuItem.submenu(
@@ -306,6 +337,7 @@ class _EncryptRecordsWidgetState extends ConsumerState<EncryptRecordsWidget> {
             children: [
               InkWell(
                 onTap: () {
+                  /// TODO use isolate
                   api
                       .encrypt(
                           saveDir: DevUtils.cachePath,

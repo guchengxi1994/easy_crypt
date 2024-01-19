@@ -76,6 +76,31 @@ pub extern "C" fn wire_upload_to_s3(
 }
 
 #[no_mangle]
+pub extern "C" fn wire_upload_to_s3_with_config(
+    port_: i64,
+    endpoint: *mut wire_uint_8_list,
+    bucketname: *mut wire_uint_8_list,
+    access_key: *mut wire_uint_8_list,
+    session_key: *mut wire_uint_8_list,
+    session_token: *mut wire_uint_8_list,
+    region: *mut wire_uint_8_list,
+    p: *mut wire_uint_8_list,
+    obj: *mut wire_uint_8_list,
+) {
+    wire_upload_to_s3_with_config_impl(
+        port_,
+        endpoint,
+        bucketname,
+        access_key,
+        session_key,
+        session_token,
+        region,
+        p,
+        obj,
+    )
+}
+
+#[no_mangle]
 pub extern "C" fn wire_download_from_s3(
     port_: i64,
     p: *mut wire_uint_8_list,
