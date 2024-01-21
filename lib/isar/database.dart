@@ -1,6 +1,7 @@
 import 'package:easy_crypt/isar/account.dart';
 import 'package:easy_crypt/isar/encrypt_algo.dart';
 import 'package:easy_crypt/isar/encrypt_logs.dart';
+import 'package:easy_crypt/isar/transfer_logs.dart';
 import 'package:isar/isar.dart';
 import 'package:path_provider/path_provider.dart';
 
@@ -17,7 +18,8 @@ class IsarDatabase {
   late List<CollectionSchema<Object>> schemas = [
     EncryptLogsSchema,
     EncryptAlgorithmSchema,
-    AccountSchema
+    AccountSchema,
+    TransferLogsSchema
   ];
 
   Future initialDatabase() async {

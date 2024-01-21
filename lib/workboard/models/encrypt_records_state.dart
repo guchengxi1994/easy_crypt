@@ -1,4 +1,5 @@
 import 'package:easy_crypt/isar/encrypt_logs.dart';
+import 'package:easy_crypt/isar/transfer_logs.dart';
 
 class EncryptRecordsState {
   List<EncryptRecord> list;
@@ -22,6 +23,7 @@ class EncryptRecord {
   String? key;
   EncryptStatus status;
   double progress;
+  List<TransferLogs> transferLogs;
 
   EncryptRecord(
       {required this.createAt,
@@ -30,9 +32,11 @@ class EncryptRecord {
       this.key,
       this.savePath,
       this.status = EncryptStatus.unstart,
-      this.progress = 0});
+      this.progress = 0,
+      this.transferLogs = const []});
 
-  static EncryptRecord fromModel(EncryptLogs logs) {
+  static EncryptRecord fromModel(EncryptLogs logs,
+      {List<TransferLogs>? transferLogs}) {
     return EncryptRecord(
         createAt: logs.createAt,
         id: logs.id,
@@ -41,6 +45,7 @@ class EncryptRecord {
         key: logs.key,
         progress: logs.savePath != null ? 0 : 1,
         status:
-            logs.savePath != null ? EncryptStatus.done : EncryptStatus.unstart);
+            logs.savePath != null ? EncryptStatus.done : EncryptStatus.unstart,
+        transferLogs: transferLogs ?? []);
   }
 }

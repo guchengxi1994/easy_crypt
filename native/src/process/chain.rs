@@ -5,6 +5,9 @@ use super::operator::{
     Operate,
 };
 
+/**
+    encrypt chain for customized encryption algorithm
+*/
 pub struct Chain {
     encryptor: Vec<Box<dyn Operate>>,
     decryptor: Vec<Box<dyn Operate>>,

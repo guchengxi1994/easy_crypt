@@ -3,6 +3,11 @@ import 'dart:isolate';
 import 'package:easy_crypt/bridge/native.dart';
 import 'package:easy_crypt/common/dev_utils.dart';
 import 'package:easy_crypt/common/logger.dart';
+import 'package:easy_crypt/isar/account.dart';
+import 'package:easy_crypt/isar/database.dart';
+import 'package:easy_crypt/isar/transfer_logs.dart';
+import 'package:easy_crypt/workboard/notifiers/encrypt_records_notifier.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class Message {
   final SendPort? sendPort;
@@ -56,32 +61,46 @@ class IsolateProcess {
     message.sendPort?.send(s);
   }
 
-  static void upload(
-      final String endpoint,
-      final String bucketname,
-      final String accessKey,
-      final String sessionKey,
-      final String? sessionToken,
-      final String region,
-      final String p,
-      final String objectKey) async {
+  static void upload(Account account, final String p, final String objectKey,
+      {WidgetRef? ref}) async {
     ReceivePort receivePort = ReceivePort();
     receivePort.listen((message) {
       logger.info(message);
+      if (message == "ok") {
+        final IsarDatabase database = IsarDatabase();
+        TransferLogs logs = TransferLogs()
+          ..done = true
+          ..fromType = StorageType.Local
+          ..toType = account.accountType == AccountType.S3
+              ? StorageType.S3
+              : StorageType.Webdav
+          ..from = p
+          ..to = objectKey
+          ..account.value = account;
+
+        database.isar!.writeTxnSync(() {
+          database.isar!.transferLogs.putSync(logs);
+          logs.account.saveSync();
+        });
+
+        if (ref != null) {
+          ref.read(encryptRecordsProvider.notifier).loadTransferLogs(p);
+        }
+      }
     });
     Isolate.spawn<UploadMessage>((message) {
       _upload(message);
     },
         UploadMessage(
             sendPort: receivePort.sendPort,
-            endpoint: endpoint,
-            accessKey: accessKey,
-            bucketname: bucketname,
+            endpoint: account.endpoint!,
+            accessKey: account.accesskey!,
+            bucketname: account.bucketname!,
             objectKey: objectKey,
             p: p,
-            region: region,
-            sessionKey: sessionKey,
-            sessionToken: sessionToken));
+            region: account.region!,
+            sessionKey: account.sessionKey!,
+            sessionToken: account.sessionToken));
   }
 
   static void _upload(UploadMessage message) async {

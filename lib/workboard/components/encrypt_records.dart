@@ -115,6 +115,7 @@ class _EncryptRecordsWidgetState extends ConsumerState<EncryptRecordsWidget> {
   }
 
   DataRow2 _buildRow(EncryptRecord f, int index) {
+    print("f.transferLogs.isEmpty    ${f.transferLogs.isEmpty}");
     final s3Accounts = ref.read(accountProvider.notifier).getS3();
 
     return DataRow2(
@@ -233,28 +234,24 @@ class _EncryptRecordsWidgetState extends ConsumerState<EncryptRecordsWidget> {
                                                         value: e.name ?? "",
                                                         onSelected: () {
                                                           IsolateProcess.upload(
-                                                              e.endpoint!,
-                                                              e.bucketname!,
-                                                              e.accesskey!,
-                                                              e.sessionKey!,
-                                                              e.sessionToken,
-                                                              e.region!,
+                                                              e,
                                                               f.savePath!,
                                                               replacePath(
-                                                                  f.savePath!));
+                                                                  f.savePath!),
+                                                              ref: ref);
                                                         },
                                                       ))
                                                   .toList()),
                                       ],
                                     ),
-                                    const MenuItem.submenu(
+                                    MenuItem.submenu(
                                       label: "Share to",
-                                      icon: Icon(
+                                      icon: const Icon(
                                         Icons.share,
                                         size: AppStyle.rowIconSize,
                                       ),
                                       items: [
-                                        MenuItem(
+                                        const MenuItem(
                                           icon: Icon(
                                             Icons.wechat,
                                             size: AppStyle.rowIconSize,
@@ -262,6 +259,22 @@ class _EncryptRecordsWidgetState extends ConsumerState<EncryptRecordsWidget> {
                                           label: "Wechat",
                                           value: "Wechat",
                                         ),
+                                        if (f.transferLogs.isNotEmpty)
+                                          MenuItem.submenu(
+                                              icon: const Icon(
+                                                Icons.storage,
+                                                size: AppStyle.rowIconSize,
+                                              ),
+                                              label: "storages",
+                                              items: f.transferLogs
+                                                  .map((e) => MenuItem(
+                                                      label: e.account.value !=
+                                                              null
+                                                          ? e.account.value!
+                                                                  .name ??
+                                                              "1"
+                                                          : "2"))
+                                                  .toList()),
                                       ],
                                     ),
                                     MenuItem(

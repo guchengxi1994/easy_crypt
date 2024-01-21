@@ -13,6 +13,12 @@ use crate::{constants::SIXTEEN_MB, emit::emitter::Emitter};
 
 #[async_trait]
 pub trait Transfer {
+    /*
+        `upload`
+        p:                  file path
+        object_path:        s3/webdav/... storage path
+        message:            message send to dart
+    */
     async fn upload(
         &self,
         p: String,
@@ -20,9 +26,17 @@ pub trait Transfer {
         message: &mut crate::emit::file_transfer_message::FileTransferMessage,
     ) -> anyhow::Result<()>;
 
+    // TODO add `message`
     async fn download(&self, p: String, object_path: String) -> anyhow::Result<()>;
+
+    /*
+        pregisn url for S3
+        whatever for others
+    */
+    async fn share(&self, object_path: String) -> anyhow::Result<String>;
 }
 
+// a global `S3Client`
 pub static S3CLIENT: Lazy<RwLock<Option<S3Client>>> = Lazy::new(|| RwLock::new(None));
 
 pub struct S3Client {
@@ -150,5 +164,17 @@ impl Transfer for S3Client {
         }
 
         anyhow::Ok(())
+    }
+
+    async fn share(&self, object_path: String) -> anyhow::Result<String> {
+        if self.op.is_exist(&object_path).await? {
+            let presign = self
+                .op
+                .presign_read(&object_path, std::time::Duration::from_secs(3600))
+                .await?;
+            return anyhow::Ok(presign.uri().to_string());
+        }
+
+        anyhow::Ok("".to_owned())
     }
 }

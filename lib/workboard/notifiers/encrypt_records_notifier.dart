@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:easy_crypt/bridge/native.dart';
 import 'package:easy_crypt/isar/database.dart';
 import 'package:easy_crypt/isar/encrypt_logs.dart';
+import 'package:easy_crypt/isar/transfer_logs.dart';
 import 'package:file_selector/file_selector.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:isar/isar.dart';
@@ -57,6 +58,25 @@ class EncryptRecordsNotifier
       return EncryptRecordsState(
           list: logs.map((e) => EncryptRecord.fromModel(e)).toList());
     });
+  }
+
+  loadTransferLogs(String p) async {
+    final item =
+        state.value!.list.where((element) => element.savePath == p).firstOrNull;
+    if (item != null) {
+      state = const AsyncLoading();
+      state = await AsyncValue.guard(() async {
+        final logs = await database.isar!.transferLogs
+            .filter()
+            .fromEqualTo(item.savePath)
+            .sortByCreateAtDesc()
+            .findAll();
+
+        item.transferLogs = logs;
+
+        return state.value!.copyWith(null, null);
+      });
+    }
   }
 
   changeProgress(int id, double progress, {String? saved}) async {
