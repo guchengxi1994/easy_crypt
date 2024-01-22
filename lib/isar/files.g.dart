@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'transfer_logs.dart';
+part of 'files.dart';
 
 // **************************************************************************
 // IsarCollectionGenerator
@@ -9,82 +9,88 @@ part of 'transfer_logs.dart';
 // coverage:ignore-file
 // ignore_for_file: duplicate_ignore, non_constant_identifier_names, constant_identifier_names, invalid_use_of_protected_member, unnecessary_cast, prefer_const_constructors, lines_longer_than_80_chars, require_trailing_commas, inference_failure_on_function_invocation, unnecessary_parenthesis, unnecessary_raw_strings, unnecessary_null_checks, join_return_with_assignment, prefer_final_locals, avoid_js_rounded_ints, avoid_positional_boolean_parameters, always_specify_types
 
-extension GetTransferLogsCollection on Isar {
-  IsarCollection<TransferLogs> get transferLogs => this.collection();
+extension GetFilesCollection on Isar {
+  IsarCollection<Files> get files => this.collection();
 }
 
-const TransferLogsSchema = CollectionSchema(
-  name: r'TransferLogs',
-  id: 4131052000494426427,
+const FilesSchema = CollectionSchema(
+  name: r'Files',
+  id: -6626793096959534753,
   properties: {
     r'createAt': PropertySchema(
       id: 0,
       name: r'createAt',
       type: IsarType.long,
     ),
-    r'done': PropertySchema(
+    r'filePath': PropertySchema(
       id: 1,
-      name: r'done',
-      type: IsarType.bool,
+      name: r'filePath',
+      type: IsarType.string,
     ),
-    r'from': PropertySchema(
+    r'jobType': PropertySchema(
       id: 2,
-      name: r'from',
-      type: IsarType.string,
+      name: r'jobType',
+      type: IsarType.byte,
+      enumMap: _FilesjobTypeEnumValueMap,
     ),
-    r'fromType': PropertySchema(
+    r'key': PropertySchema(
       id: 3,
-      name: r'fromType',
-      type: IsarType.byte,
-      enumMap: _TransferLogsfromTypeEnumValueMap,
-    ),
-    r'to': PropertySchema(
-      id: 4,
-      name: r'to',
+      name: r'key',
       type: IsarType.string,
     ),
-    r'toType': PropertySchema(
-      id: 5,
-      name: r'toType',
-      type: IsarType.byte,
-      enumMap: _TransferLogstoTypeEnumValueMap,
+    r'savePath': PropertySchema(
+      id: 4,
+      name: r'savePath',
+      type: IsarType.string,
     )
   },
-  estimateSize: _transferLogsEstimateSize,
-  serialize: _transferLogsSerialize,
-  deserialize: _transferLogsDeserialize,
-  deserializeProp: _transferLogsDeserializeProp,
+  estimateSize: _filesEstimateSize,
+  serialize: _filesSerialize,
+  deserialize: _filesDeserialize,
+  deserializeProp: _filesDeserializeProp,
   idName: r'id',
   indexes: {},
   links: {
+    r'transferRecords': LinkSchema(
+      id: -7719623784852598776,
+      name: r'transferRecords',
+      target: r'TransferRecords',
+      single: false,
+    ),
     r'account': LinkSchema(
-      id: -2949433770348038579,
+      id: -4835698885973187819,
       name: r'account',
-      target: r'Account',
+      target: r'EncryptAlgorithm',
       single: true,
     )
   },
   embeddedSchemas: {},
-  getId: _transferLogsGetId,
-  getLinks: _transferLogsGetLinks,
-  attach: _transferLogsAttach,
+  getId: _filesGetId,
+  getLinks: _filesGetLinks,
+  attach: _filesAttach,
   version: '3.1.0+1',
 );
 
-int _transferLogsEstimateSize(
-  TransferLogs object,
+int _filesEstimateSize(
+  Files object,
   List<int> offsets,
   Map<Type, List<int>> allOffsets,
 ) {
   var bytesCount = offsets.last;
   {
-    final value = object.from;
+    final value = object.filePath;
     if (value != null) {
       bytesCount += 3 + value.length * 3;
     }
   }
   {
-    final value = object.to;
+    final value = object.key;
+    if (value != null) {
+      bytesCount += 3 + value.length * 3;
+    }
+  }
+  {
+    final value = object.savePath;
     if (value != null) {
       bytesCount += 3 + value.length * 3;
     }
@@ -92,42 +98,38 @@ int _transferLogsEstimateSize(
   return bytesCount;
 }
 
-void _transferLogsSerialize(
-  TransferLogs object,
+void _filesSerialize(
+  Files object,
   IsarWriter writer,
   List<int> offsets,
   Map<Type, List<int>> allOffsets,
 ) {
   writer.writeLong(offsets[0], object.createAt);
-  writer.writeBool(offsets[1], object.done);
-  writer.writeString(offsets[2], object.from);
-  writer.writeByte(offsets[3], object.fromType.index);
-  writer.writeString(offsets[4], object.to);
-  writer.writeByte(offsets[5], object.toType.index);
+  writer.writeString(offsets[1], object.filePath);
+  writer.writeByte(offsets[2], object.jobType.index);
+  writer.writeString(offsets[3], object.key);
+  writer.writeString(offsets[4], object.savePath);
 }
 
-TransferLogs _transferLogsDeserialize(
+Files _filesDeserialize(
   Id id,
   IsarReader reader,
   List<int> offsets,
   Map<Type, List<int>> allOffsets,
 ) {
-  final object = TransferLogs();
+  final object = Files();
   object.createAt = reader.readLong(offsets[0]);
-  object.done = reader.readBool(offsets[1]);
-  object.from = reader.readStringOrNull(offsets[2]);
-  object.fromType =
-      _TransferLogsfromTypeValueEnumMap[reader.readByteOrNull(offsets[3])] ??
-          StorageType.S3;
+  object.filePath = reader.readStringOrNull(offsets[1]);
   object.id = id;
-  object.to = reader.readStringOrNull(offsets[4]);
-  object.toType =
-      _TransferLogstoTypeValueEnumMap[reader.readByteOrNull(offsets[5])] ??
-          StorageType.S3;
+  object.jobType =
+      _FilesjobTypeValueEnumMap[reader.readByteOrNull(offsets[2])] ??
+          JobType.encryption;
+  object.key = reader.readStringOrNull(offsets[3]);
+  object.savePath = reader.readStringOrNull(offsets[4]);
   return object;
 }
 
-P _transferLogsDeserializeProp<P>(
+P _filesDeserializeProp<P>(
   IsarReader reader,
   int propertyId,
   int offset,
@@ -137,70 +139,54 @@ P _transferLogsDeserializeProp<P>(
     case 0:
       return (reader.readLong(offset)) as P;
     case 1:
-      return (reader.readBool(offset)) as P;
-    case 2:
       return (reader.readStringOrNull(offset)) as P;
+    case 2:
+      return (_FilesjobTypeValueEnumMap[reader.readByteOrNull(offset)] ??
+          JobType.encryption) as P;
     case 3:
-      return (_TransferLogsfromTypeValueEnumMap[
-              reader.readByteOrNull(offset)] ??
-          StorageType.S3) as P;
+      return (reader.readStringOrNull(offset)) as P;
     case 4:
       return (reader.readStringOrNull(offset)) as P;
-    case 5:
-      return (_TransferLogstoTypeValueEnumMap[reader.readByteOrNull(offset)] ??
-          StorageType.S3) as P;
     default:
       throw IsarError('Unknown property with id $propertyId');
   }
 }
 
-const _TransferLogsfromTypeEnumValueMap = {
-  'S3': 0,
-  'Webdav': 1,
-  'Local': 2,
+const _FilesjobTypeEnumValueMap = {
+  'encryption': 0,
+  'decryption': 1,
 };
-const _TransferLogsfromTypeValueEnumMap = {
-  0: StorageType.S3,
-  1: StorageType.Webdav,
-  2: StorageType.Local,
-};
-const _TransferLogstoTypeEnumValueMap = {
-  'S3': 0,
-  'Webdav': 1,
-  'Local': 2,
-};
-const _TransferLogstoTypeValueEnumMap = {
-  0: StorageType.S3,
-  1: StorageType.Webdav,
-  2: StorageType.Local,
+const _FilesjobTypeValueEnumMap = {
+  0: JobType.encryption,
+  1: JobType.decryption,
 };
 
-Id _transferLogsGetId(TransferLogs object) {
+Id _filesGetId(Files object) {
   return object.id;
 }
 
-List<IsarLinkBase<dynamic>> _transferLogsGetLinks(TransferLogs object) {
-  return [object.account];
+List<IsarLinkBase<dynamic>> _filesGetLinks(Files object) {
+  return [object.transferRecords, object.account];
 }
 
-void _transferLogsAttach(
-    IsarCollection<dynamic> col, Id id, TransferLogs object) {
+void _filesAttach(IsarCollection<dynamic> col, Id id, Files object) {
   object.id = id;
-  object.account.attach(col, col.isar.collection<Account>(), r'account', id);
+  object.transferRecords.attach(
+      col, col.isar.collection<TransferRecords>(), r'transferRecords', id);
+  object.account
+      .attach(col, col.isar.collection<EncryptAlgorithm>(), r'account', id);
 }
 
-extension TransferLogsQueryWhereSort
-    on QueryBuilder<TransferLogs, TransferLogs, QWhere> {
-  QueryBuilder<TransferLogs, TransferLogs, QAfterWhere> anyId() {
+extension FilesQueryWhereSort on QueryBuilder<Files, Files, QWhere> {
+  QueryBuilder<Files, Files, QAfterWhere> anyId() {
     return QueryBuilder.apply(this, (query) {
       return query.addWhereClause(const IdWhereClause.any());
     });
   }
 }
 
-extension TransferLogsQueryWhere
-    on QueryBuilder<TransferLogs, TransferLogs, QWhereClause> {
-  QueryBuilder<TransferLogs, TransferLogs, QAfterWhereClause> idEqualTo(Id id) {
+extension FilesQueryWhere on QueryBuilder<Files, Files, QWhereClause> {
+  QueryBuilder<Files, Files, QAfterWhereClause> idEqualTo(Id id) {
     return QueryBuilder.apply(this, (query) {
       return query.addWhereClause(IdWhereClause.between(
         lower: id,
@@ -209,8 +195,7 @@ extension TransferLogsQueryWhere
     });
   }
 
-  QueryBuilder<TransferLogs, TransferLogs, QAfterWhereClause> idNotEqualTo(
-      Id id) {
+  QueryBuilder<Files, Files, QAfterWhereClause> idNotEqualTo(Id id) {
     return QueryBuilder.apply(this, (query) {
       if (query.whereSort == Sort.asc) {
         return query
@@ -232,8 +217,7 @@ extension TransferLogsQueryWhere
     });
   }
 
-  QueryBuilder<TransferLogs, TransferLogs, QAfterWhereClause> idGreaterThan(
-      Id id,
+  QueryBuilder<Files, Files, QAfterWhereClause> idGreaterThan(Id id,
       {bool include = false}) {
     return QueryBuilder.apply(this, (query) {
       return query.addWhereClause(
@@ -242,7 +226,7 @@ extension TransferLogsQueryWhere
     });
   }
 
-  QueryBuilder<TransferLogs, TransferLogs, QAfterWhereClause> idLessThan(Id id,
+  QueryBuilder<Files, Files, QAfterWhereClause> idLessThan(Id id,
       {bool include = false}) {
     return QueryBuilder.apply(this, (query) {
       return query.addWhereClause(
@@ -251,7 +235,7 @@ extension TransferLogsQueryWhere
     });
   }
 
-  QueryBuilder<TransferLogs, TransferLogs, QAfterWhereClause> idBetween(
+  QueryBuilder<Files, Files, QAfterWhereClause> idBetween(
     Id lowerId,
     Id upperId, {
     bool includeLower = true,
@@ -268,10 +252,8 @@ extension TransferLogsQueryWhere
   }
 }
 
-extension TransferLogsQueryFilter
-    on QueryBuilder<TransferLogs, TransferLogs, QFilterCondition> {
-  QueryBuilder<TransferLogs, TransferLogs, QAfterFilterCondition>
-      createAtEqualTo(int value) {
+extension FilesQueryFilter on QueryBuilder<Files, Files, QFilterCondition> {
+  QueryBuilder<Files, Files, QAfterFilterCondition> createAtEqualTo(int value) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.equalTo(
         property: r'createAt',
@@ -280,8 +262,7 @@ extension TransferLogsQueryFilter
     });
   }
 
-  QueryBuilder<TransferLogs, TransferLogs, QAfterFilterCondition>
-      createAtGreaterThan(
+  QueryBuilder<Files, Files, QAfterFilterCondition> createAtGreaterThan(
     int value, {
     bool include = false,
   }) {
@@ -294,8 +275,7 @@ extension TransferLogsQueryFilter
     });
   }
 
-  QueryBuilder<TransferLogs, TransferLogs, QAfterFilterCondition>
-      createAtLessThan(
+  QueryBuilder<Files, Files, QAfterFilterCondition> createAtLessThan(
     int value, {
     bool include = false,
   }) {
@@ -308,8 +288,7 @@ extension TransferLogsQueryFilter
     });
   }
 
-  QueryBuilder<TransferLogs, TransferLogs, QAfterFilterCondition>
-      createAtBetween(
+  QueryBuilder<Files, Files, QAfterFilterCondition> createAtBetween(
     int lower,
     int upper, {
     bool includeLower = true,
@@ -326,48 +305,36 @@ extension TransferLogsQueryFilter
     });
   }
 
-  QueryBuilder<TransferLogs, TransferLogs, QAfterFilterCondition> doneEqualTo(
-      bool value) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'done',
-        value: value,
-      ));
-    });
-  }
-
-  QueryBuilder<TransferLogs, TransferLogs, QAfterFilterCondition> fromIsNull() {
+  QueryBuilder<Files, Files, QAfterFilterCondition> filePathIsNull() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(const FilterCondition.isNull(
-        property: r'from',
+        property: r'filePath',
       ));
     });
   }
 
-  QueryBuilder<TransferLogs, TransferLogs, QAfterFilterCondition>
-      fromIsNotNull() {
+  QueryBuilder<Files, Files, QAfterFilterCondition> filePathIsNotNull() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(const FilterCondition.isNotNull(
-        property: r'from',
+        property: r'filePath',
       ));
     });
   }
 
-  QueryBuilder<TransferLogs, TransferLogs, QAfterFilterCondition> fromEqualTo(
+  QueryBuilder<Files, Files, QAfterFilterCondition> filePathEqualTo(
     String? value, {
     bool caseSensitive = true,
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'from',
+        property: r'filePath',
         value: value,
         caseSensitive: caseSensitive,
       ));
     });
   }
 
-  QueryBuilder<TransferLogs, TransferLogs, QAfterFilterCondition>
-      fromGreaterThan(
+  QueryBuilder<Files, Files, QAfterFilterCondition> filePathGreaterThan(
     String? value, {
     bool include = false,
     bool caseSensitive = true,
@@ -375,14 +342,14 @@ extension TransferLogsQueryFilter
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.greaterThan(
         include: include,
-        property: r'from',
+        property: r'filePath',
         value: value,
         caseSensitive: caseSensitive,
       ));
     });
   }
 
-  QueryBuilder<TransferLogs, TransferLogs, QAfterFilterCondition> fromLessThan(
+  QueryBuilder<Files, Files, QAfterFilterCondition> filePathLessThan(
     String? value, {
     bool include = false,
     bool caseSensitive = true,
@@ -390,14 +357,14 @@ extension TransferLogsQueryFilter
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.lessThan(
         include: include,
-        property: r'from',
+        property: r'filePath',
         value: value,
         caseSensitive: caseSensitive,
       ));
     });
   }
 
-  QueryBuilder<TransferLogs, TransferLogs, QAfterFilterCondition> fromBetween(
+  QueryBuilder<Files, Files, QAfterFilterCondition> filePathBetween(
     String? lower,
     String? upper, {
     bool includeLower = true,
@@ -406,7 +373,7 @@ extension TransferLogsQueryFilter
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.between(
-        property: r'from',
+        property: r'filePath',
         lower: lower,
         includeLower: includeLower,
         upper: upper,
@@ -416,135 +383,75 @@ extension TransferLogsQueryFilter
     });
   }
 
-  QueryBuilder<TransferLogs, TransferLogs, QAfterFilterCondition>
-      fromStartsWith(
+  QueryBuilder<Files, Files, QAfterFilterCondition> filePathStartsWith(
     String value, {
     bool caseSensitive = true,
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.startsWith(
-        property: r'from',
+        property: r'filePath',
         value: value,
         caseSensitive: caseSensitive,
       ));
     });
   }
 
-  QueryBuilder<TransferLogs, TransferLogs, QAfterFilterCondition> fromEndsWith(
+  QueryBuilder<Files, Files, QAfterFilterCondition> filePathEndsWith(
     String value, {
     bool caseSensitive = true,
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.endsWith(
-        property: r'from',
+        property: r'filePath',
         value: value,
         caseSensitive: caseSensitive,
       ));
     });
   }
 
-  QueryBuilder<TransferLogs, TransferLogs, QAfterFilterCondition> fromContains(
+  QueryBuilder<Files, Files, QAfterFilterCondition> filePathContains(
       String value,
       {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.contains(
-        property: r'from',
+        property: r'filePath',
         value: value,
         caseSensitive: caseSensitive,
       ));
     });
   }
 
-  QueryBuilder<TransferLogs, TransferLogs, QAfterFilterCondition> fromMatches(
+  QueryBuilder<Files, Files, QAfterFilterCondition> filePathMatches(
       String pattern,
       {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.matches(
-        property: r'from',
+        property: r'filePath',
         wildcard: pattern,
         caseSensitive: caseSensitive,
       ));
     });
   }
 
-  QueryBuilder<TransferLogs, TransferLogs, QAfterFilterCondition>
-      fromIsEmpty() {
+  QueryBuilder<Files, Files, QAfterFilterCondition> filePathIsEmpty() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'from',
+        property: r'filePath',
         value: '',
       ));
     });
   }
 
-  QueryBuilder<TransferLogs, TransferLogs, QAfterFilterCondition>
-      fromIsNotEmpty() {
+  QueryBuilder<Files, Files, QAfterFilterCondition> filePathIsNotEmpty() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.greaterThan(
-        property: r'from',
+        property: r'filePath',
         value: '',
       ));
     });
   }
 
-  QueryBuilder<TransferLogs, TransferLogs, QAfterFilterCondition>
-      fromTypeEqualTo(StorageType value) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'fromType',
-        value: value,
-      ));
-    });
-  }
-
-  QueryBuilder<TransferLogs, TransferLogs, QAfterFilterCondition>
-      fromTypeGreaterThan(
-    StorageType value, {
-    bool include = false,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.greaterThan(
-        include: include,
-        property: r'fromType',
-        value: value,
-      ));
-    });
-  }
-
-  QueryBuilder<TransferLogs, TransferLogs, QAfterFilterCondition>
-      fromTypeLessThan(
-    StorageType value, {
-    bool include = false,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.lessThan(
-        include: include,
-        property: r'fromType',
-        value: value,
-      ));
-    });
-  }
-
-  QueryBuilder<TransferLogs, TransferLogs, QAfterFilterCondition>
-      fromTypeBetween(
-    StorageType lower,
-    StorageType upper, {
-    bool includeLower = true,
-    bool includeUpper = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.between(
-        property: r'fromType',
-        lower: lower,
-        includeLower: includeLower,
-        upper: upper,
-        includeUpper: includeUpper,
-      ));
-    });
-  }
-
-  QueryBuilder<TransferLogs, TransferLogs, QAfterFilterCondition> idEqualTo(
-      Id value) {
+  QueryBuilder<Files, Files, QAfterFilterCondition> idEqualTo(Id value) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.equalTo(
         property: r'id',
@@ -553,7 +460,7 @@ extension TransferLogsQueryFilter
     });
   }
 
-  QueryBuilder<TransferLogs, TransferLogs, QAfterFilterCondition> idGreaterThan(
+  QueryBuilder<Files, Files, QAfterFilterCondition> idGreaterThan(
     Id value, {
     bool include = false,
   }) {
@@ -566,7 +473,7 @@ extension TransferLogsQueryFilter
     });
   }
 
-  QueryBuilder<TransferLogs, TransferLogs, QAfterFilterCondition> idLessThan(
+  QueryBuilder<Files, Files, QAfterFilterCondition> idLessThan(
     Id value, {
     bool include = false,
   }) {
@@ -579,7 +486,7 @@ extension TransferLogsQueryFilter
     });
   }
 
-  QueryBuilder<TransferLogs, TransferLogs, QAfterFilterCondition> idBetween(
+  QueryBuilder<Files, Files, QAfterFilterCondition> idBetween(
     Id lower,
     Id upper, {
     bool includeLower = true,
@@ -596,37 +503,89 @@ extension TransferLogsQueryFilter
     });
   }
 
-  QueryBuilder<TransferLogs, TransferLogs, QAfterFilterCondition> toIsNull() {
+  QueryBuilder<Files, Files, QAfterFilterCondition> jobTypeEqualTo(
+      JobType value) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'jobType',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<Files, Files, QAfterFilterCondition> jobTypeGreaterThan(
+    JobType value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'jobType',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<Files, Files, QAfterFilterCondition> jobTypeLessThan(
+    JobType value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'jobType',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<Files, Files, QAfterFilterCondition> jobTypeBetween(
+    JobType lower,
+    JobType upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'jobType',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+      ));
+    });
+  }
+
+  QueryBuilder<Files, Files, QAfterFilterCondition> keyIsNull() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(const FilterCondition.isNull(
-        property: r'to',
+        property: r'key',
       ));
     });
   }
 
-  QueryBuilder<TransferLogs, TransferLogs, QAfterFilterCondition>
-      toIsNotNull() {
+  QueryBuilder<Files, Files, QAfterFilterCondition> keyIsNotNull() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(const FilterCondition.isNotNull(
-        property: r'to',
+        property: r'key',
       ));
     });
   }
 
-  QueryBuilder<TransferLogs, TransferLogs, QAfterFilterCondition> toEqualTo(
+  QueryBuilder<Files, Files, QAfterFilterCondition> keyEqualTo(
     String? value, {
     bool caseSensitive = true,
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'to',
+        property: r'key',
         value: value,
         caseSensitive: caseSensitive,
       ));
     });
   }
 
-  QueryBuilder<TransferLogs, TransferLogs, QAfterFilterCondition> toGreaterThan(
+  QueryBuilder<Files, Files, QAfterFilterCondition> keyGreaterThan(
     String? value, {
     bool include = false,
     bool caseSensitive = true,
@@ -634,14 +593,14 @@ extension TransferLogsQueryFilter
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.greaterThan(
         include: include,
-        property: r'to',
+        property: r'key',
         value: value,
         caseSensitive: caseSensitive,
       ));
     });
   }
 
-  QueryBuilder<TransferLogs, TransferLogs, QAfterFilterCondition> toLessThan(
+  QueryBuilder<Files, Files, QAfterFilterCondition> keyLessThan(
     String? value, {
     bool include = false,
     bool caseSensitive = true,
@@ -649,14 +608,14 @@ extension TransferLogsQueryFilter
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.lessThan(
         include: include,
-        property: r'to',
+        property: r'key',
         value: value,
         caseSensitive: caseSensitive,
       ));
     });
   }
 
-  QueryBuilder<TransferLogs, TransferLogs, QAfterFilterCondition> toBetween(
+  QueryBuilder<Files, Files, QAfterFilterCondition> keyBetween(
     String? lower,
     String? upper, {
     bool includeLower = true,
@@ -665,7 +624,7 @@ extension TransferLogsQueryFilter
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.between(
-        property: r'to',
+        property: r'key',
         lower: lower,
         includeLower: includeLower,
         upper: upper,
@@ -675,395 +634,502 @@ extension TransferLogsQueryFilter
     });
   }
 
-  QueryBuilder<TransferLogs, TransferLogs, QAfterFilterCondition> toStartsWith(
+  QueryBuilder<Files, Files, QAfterFilterCondition> keyStartsWith(
     String value, {
     bool caseSensitive = true,
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.startsWith(
-        property: r'to',
+        property: r'key',
         value: value,
         caseSensitive: caseSensitive,
       ));
     });
   }
 
-  QueryBuilder<TransferLogs, TransferLogs, QAfterFilterCondition> toEndsWith(
+  QueryBuilder<Files, Files, QAfterFilterCondition> keyEndsWith(
     String value, {
     bool caseSensitive = true,
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.endsWith(
-        property: r'to',
+        property: r'key',
         value: value,
         caseSensitive: caseSensitive,
       ));
     });
   }
 
-  QueryBuilder<TransferLogs, TransferLogs, QAfterFilterCondition> toContains(
-      String value,
+  QueryBuilder<Files, Files, QAfterFilterCondition> keyContains(String value,
       {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.contains(
-        property: r'to',
+        property: r'key',
         value: value,
         caseSensitive: caseSensitive,
       ));
     });
   }
 
-  QueryBuilder<TransferLogs, TransferLogs, QAfterFilterCondition> toMatches(
-      String pattern,
+  QueryBuilder<Files, Files, QAfterFilterCondition> keyMatches(String pattern,
       {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.matches(
-        property: r'to',
+        property: r'key',
         wildcard: pattern,
         caseSensitive: caseSensitive,
       ));
     });
   }
 
-  QueryBuilder<TransferLogs, TransferLogs, QAfterFilterCondition> toIsEmpty() {
+  QueryBuilder<Files, Files, QAfterFilterCondition> keyIsEmpty() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'to',
+        property: r'key',
         value: '',
       ));
     });
   }
 
-  QueryBuilder<TransferLogs, TransferLogs, QAfterFilterCondition>
-      toIsNotEmpty() {
+  QueryBuilder<Files, Files, QAfterFilterCondition> keyIsNotEmpty() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.greaterThan(
-        property: r'to',
+        property: r'key',
         value: '',
       ));
     });
   }
 
-  QueryBuilder<TransferLogs, TransferLogs, QAfterFilterCondition> toTypeEqualTo(
-      StorageType value) {
+  QueryBuilder<Files, Files, QAfterFilterCondition> savePathIsNull() {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'toType',
-        value: value,
+      return query.addFilterCondition(const FilterCondition.isNull(
+        property: r'savePath',
       ));
     });
   }
 
-  QueryBuilder<TransferLogs, TransferLogs, QAfterFilterCondition>
-      toTypeGreaterThan(
-    StorageType value, {
+  QueryBuilder<Files, Files, QAfterFilterCondition> savePathIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNotNull(
+        property: r'savePath',
+      ));
+    });
+  }
+
+  QueryBuilder<Files, Files, QAfterFilterCondition> savePathEqualTo(
+    String? value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'savePath',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<Files, Files, QAfterFilterCondition> savePathGreaterThan(
+    String? value, {
     bool include = false,
+    bool caseSensitive = true,
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.greaterThan(
         include: include,
-        property: r'toType',
+        property: r'savePath',
         value: value,
+        caseSensitive: caseSensitive,
       ));
     });
   }
 
-  QueryBuilder<TransferLogs, TransferLogs, QAfterFilterCondition>
-      toTypeLessThan(
-    StorageType value, {
+  QueryBuilder<Files, Files, QAfterFilterCondition> savePathLessThan(
+    String? value, {
     bool include = false,
+    bool caseSensitive = true,
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.lessThan(
         include: include,
-        property: r'toType',
+        property: r'savePath',
         value: value,
+        caseSensitive: caseSensitive,
       ));
     });
   }
 
-  QueryBuilder<TransferLogs, TransferLogs, QAfterFilterCondition> toTypeBetween(
-    StorageType lower,
-    StorageType upper, {
+  QueryBuilder<Files, Files, QAfterFilterCondition> savePathBetween(
+    String? lower,
+    String? upper, {
     bool includeLower = true,
     bool includeUpper = true,
+    bool caseSensitive = true,
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.between(
-        property: r'toType',
+        property: r'savePath',
         lower: lower,
         includeLower: includeLower,
         upper: upper,
         includeUpper: includeUpper,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<Files, Files, QAfterFilterCondition> savePathStartsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.startsWith(
+        property: r'savePath',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<Files, Files, QAfterFilterCondition> savePathEndsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.endsWith(
+        property: r'savePath',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<Files, Files, QAfterFilterCondition> savePathContains(
+      String value,
+      {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.contains(
+        property: r'savePath',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<Files, Files, QAfterFilterCondition> savePathMatches(
+      String pattern,
+      {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.matches(
+        property: r'savePath',
+        wildcard: pattern,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<Files, Files, QAfterFilterCondition> savePathIsEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'savePath',
+        value: '',
+      ));
+    });
+  }
+
+  QueryBuilder<Files, Files, QAfterFilterCondition> savePathIsNotEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        property: r'savePath',
+        value: '',
       ));
     });
   }
 }
 
-extension TransferLogsQueryObject
-    on QueryBuilder<TransferLogs, TransferLogs, QFilterCondition> {}
+extension FilesQueryObject on QueryBuilder<Files, Files, QFilterCondition> {}
 
-extension TransferLogsQueryLinks
-    on QueryBuilder<TransferLogs, TransferLogs, QFilterCondition> {
-  QueryBuilder<TransferLogs, TransferLogs, QAfterFilterCondition> account(
-      FilterQuery<Account> q) {
+extension FilesQueryLinks on QueryBuilder<Files, Files, QFilterCondition> {
+  QueryBuilder<Files, Files, QAfterFilterCondition> transferRecords(
+      FilterQuery<TransferRecords> q) {
+    return QueryBuilder.apply(this, (query) {
+      return query.link(q, r'transferRecords');
+    });
+  }
+
+  QueryBuilder<Files, Files, QAfterFilterCondition>
+      transferRecordsLengthEqualTo(int length) {
+    return QueryBuilder.apply(this, (query) {
+      return query.linkLength(r'transferRecords', length, true, length, true);
+    });
+  }
+
+  QueryBuilder<Files, Files, QAfterFilterCondition> transferRecordsIsEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.linkLength(r'transferRecords', 0, true, 0, true);
+    });
+  }
+
+  QueryBuilder<Files, Files, QAfterFilterCondition>
+      transferRecordsIsNotEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.linkLength(r'transferRecords', 0, false, 999999, true);
+    });
+  }
+
+  QueryBuilder<Files, Files, QAfterFilterCondition>
+      transferRecordsLengthLessThan(
+    int length, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.linkLength(r'transferRecords', 0, true, length, include);
+    });
+  }
+
+  QueryBuilder<Files, Files, QAfterFilterCondition>
+      transferRecordsLengthGreaterThan(
+    int length, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.linkLength(
+          r'transferRecords', length, include, 999999, true);
+    });
+  }
+
+  QueryBuilder<Files, Files, QAfterFilterCondition>
+      transferRecordsLengthBetween(
+    int lower,
+    int upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.linkLength(
+          r'transferRecords', lower, includeLower, upper, includeUpper);
+    });
+  }
+
+  QueryBuilder<Files, Files, QAfterFilterCondition> account(
+      FilterQuery<EncryptAlgorithm> q) {
     return QueryBuilder.apply(this, (query) {
       return query.link(q, r'account');
     });
   }
 
-  QueryBuilder<TransferLogs, TransferLogs, QAfterFilterCondition>
-      accountIsNull() {
+  QueryBuilder<Files, Files, QAfterFilterCondition> accountIsNull() {
     return QueryBuilder.apply(this, (query) {
       return query.linkLength(r'account', 0, true, 0, true);
     });
   }
 }
 
-extension TransferLogsQuerySortBy
-    on QueryBuilder<TransferLogs, TransferLogs, QSortBy> {
-  QueryBuilder<TransferLogs, TransferLogs, QAfterSortBy> sortByCreateAt() {
+extension FilesQuerySortBy on QueryBuilder<Files, Files, QSortBy> {
+  QueryBuilder<Files, Files, QAfterSortBy> sortByCreateAt() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'createAt', Sort.asc);
     });
   }
 
-  QueryBuilder<TransferLogs, TransferLogs, QAfterSortBy> sortByCreateAtDesc() {
+  QueryBuilder<Files, Files, QAfterSortBy> sortByCreateAtDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'createAt', Sort.desc);
     });
   }
 
-  QueryBuilder<TransferLogs, TransferLogs, QAfterSortBy> sortByDone() {
+  QueryBuilder<Files, Files, QAfterSortBy> sortByFilePath() {
     return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'done', Sort.asc);
+      return query.addSortBy(r'filePath', Sort.asc);
     });
   }
 
-  QueryBuilder<TransferLogs, TransferLogs, QAfterSortBy> sortByDoneDesc() {
+  QueryBuilder<Files, Files, QAfterSortBy> sortByFilePathDesc() {
     return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'done', Sort.desc);
+      return query.addSortBy(r'filePath', Sort.desc);
     });
   }
 
-  QueryBuilder<TransferLogs, TransferLogs, QAfterSortBy> sortByFrom() {
+  QueryBuilder<Files, Files, QAfterSortBy> sortByJobType() {
     return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'from', Sort.asc);
+      return query.addSortBy(r'jobType', Sort.asc);
     });
   }
 
-  QueryBuilder<TransferLogs, TransferLogs, QAfterSortBy> sortByFromDesc() {
+  QueryBuilder<Files, Files, QAfterSortBy> sortByJobTypeDesc() {
     return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'from', Sort.desc);
+      return query.addSortBy(r'jobType', Sort.desc);
     });
   }
 
-  QueryBuilder<TransferLogs, TransferLogs, QAfterSortBy> sortByFromType() {
+  QueryBuilder<Files, Files, QAfterSortBy> sortByKey() {
     return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'fromType', Sort.asc);
+      return query.addSortBy(r'key', Sort.asc);
     });
   }
 
-  QueryBuilder<TransferLogs, TransferLogs, QAfterSortBy> sortByFromTypeDesc() {
+  QueryBuilder<Files, Files, QAfterSortBy> sortByKeyDesc() {
     return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'fromType', Sort.desc);
+      return query.addSortBy(r'key', Sort.desc);
     });
   }
 
-  QueryBuilder<TransferLogs, TransferLogs, QAfterSortBy> sortByTo() {
+  QueryBuilder<Files, Files, QAfterSortBy> sortBySavePath() {
     return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'to', Sort.asc);
+      return query.addSortBy(r'savePath', Sort.asc);
     });
   }
 
-  QueryBuilder<TransferLogs, TransferLogs, QAfterSortBy> sortByToDesc() {
+  QueryBuilder<Files, Files, QAfterSortBy> sortBySavePathDesc() {
     return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'to', Sort.desc);
-    });
-  }
-
-  QueryBuilder<TransferLogs, TransferLogs, QAfterSortBy> sortByToType() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'toType', Sort.asc);
-    });
-  }
-
-  QueryBuilder<TransferLogs, TransferLogs, QAfterSortBy> sortByToTypeDesc() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'toType', Sort.desc);
+      return query.addSortBy(r'savePath', Sort.desc);
     });
   }
 }
 
-extension TransferLogsQuerySortThenBy
-    on QueryBuilder<TransferLogs, TransferLogs, QSortThenBy> {
-  QueryBuilder<TransferLogs, TransferLogs, QAfterSortBy> thenByCreateAt() {
+extension FilesQuerySortThenBy on QueryBuilder<Files, Files, QSortThenBy> {
+  QueryBuilder<Files, Files, QAfterSortBy> thenByCreateAt() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'createAt', Sort.asc);
     });
   }
 
-  QueryBuilder<TransferLogs, TransferLogs, QAfterSortBy> thenByCreateAtDesc() {
+  QueryBuilder<Files, Files, QAfterSortBy> thenByCreateAtDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'createAt', Sort.desc);
     });
   }
 
-  QueryBuilder<TransferLogs, TransferLogs, QAfterSortBy> thenByDone() {
+  QueryBuilder<Files, Files, QAfterSortBy> thenByFilePath() {
     return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'done', Sort.asc);
+      return query.addSortBy(r'filePath', Sort.asc);
     });
   }
 
-  QueryBuilder<TransferLogs, TransferLogs, QAfterSortBy> thenByDoneDesc() {
+  QueryBuilder<Files, Files, QAfterSortBy> thenByFilePathDesc() {
     return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'done', Sort.desc);
+      return query.addSortBy(r'filePath', Sort.desc);
     });
   }
 
-  QueryBuilder<TransferLogs, TransferLogs, QAfterSortBy> thenByFrom() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'from', Sort.asc);
-    });
-  }
-
-  QueryBuilder<TransferLogs, TransferLogs, QAfterSortBy> thenByFromDesc() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'from', Sort.desc);
-    });
-  }
-
-  QueryBuilder<TransferLogs, TransferLogs, QAfterSortBy> thenByFromType() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'fromType', Sort.asc);
-    });
-  }
-
-  QueryBuilder<TransferLogs, TransferLogs, QAfterSortBy> thenByFromTypeDesc() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'fromType', Sort.desc);
-    });
-  }
-
-  QueryBuilder<TransferLogs, TransferLogs, QAfterSortBy> thenById() {
+  QueryBuilder<Files, Files, QAfterSortBy> thenById() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'id', Sort.asc);
     });
   }
 
-  QueryBuilder<TransferLogs, TransferLogs, QAfterSortBy> thenByIdDesc() {
+  QueryBuilder<Files, Files, QAfterSortBy> thenByIdDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'id', Sort.desc);
     });
   }
 
-  QueryBuilder<TransferLogs, TransferLogs, QAfterSortBy> thenByTo() {
+  QueryBuilder<Files, Files, QAfterSortBy> thenByJobType() {
     return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'to', Sort.asc);
+      return query.addSortBy(r'jobType', Sort.asc);
     });
   }
 
-  QueryBuilder<TransferLogs, TransferLogs, QAfterSortBy> thenByToDesc() {
+  QueryBuilder<Files, Files, QAfterSortBy> thenByJobTypeDesc() {
     return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'to', Sort.desc);
+      return query.addSortBy(r'jobType', Sort.desc);
     });
   }
 
-  QueryBuilder<TransferLogs, TransferLogs, QAfterSortBy> thenByToType() {
+  QueryBuilder<Files, Files, QAfterSortBy> thenByKey() {
     return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'toType', Sort.asc);
+      return query.addSortBy(r'key', Sort.asc);
     });
   }
 
-  QueryBuilder<TransferLogs, TransferLogs, QAfterSortBy> thenByToTypeDesc() {
+  QueryBuilder<Files, Files, QAfterSortBy> thenByKeyDesc() {
     return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'toType', Sort.desc);
+      return query.addSortBy(r'key', Sort.desc);
+    });
+  }
+
+  QueryBuilder<Files, Files, QAfterSortBy> thenBySavePath() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'savePath', Sort.asc);
+    });
+  }
+
+  QueryBuilder<Files, Files, QAfterSortBy> thenBySavePathDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'savePath', Sort.desc);
     });
   }
 }
 
-extension TransferLogsQueryWhereDistinct
-    on QueryBuilder<TransferLogs, TransferLogs, QDistinct> {
-  QueryBuilder<TransferLogs, TransferLogs, QDistinct> distinctByCreateAt() {
+extension FilesQueryWhereDistinct on QueryBuilder<Files, Files, QDistinct> {
+  QueryBuilder<Files, Files, QDistinct> distinctByCreateAt() {
     return QueryBuilder.apply(this, (query) {
       return query.addDistinctBy(r'createAt');
     });
   }
 
-  QueryBuilder<TransferLogs, TransferLogs, QDistinct> distinctByDone() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addDistinctBy(r'done');
-    });
-  }
-
-  QueryBuilder<TransferLogs, TransferLogs, QDistinct> distinctByFrom(
+  QueryBuilder<Files, Files, QDistinct> distinctByFilePath(
       {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
-      return query.addDistinctBy(r'from', caseSensitive: caseSensitive);
+      return query.addDistinctBy(r'filePath', caseSensitive: caseSensitive);
     });
   }
 
-  QueryBuilder<TransferLogs, TransferLogs, QDistinct> distinctByFromType() {
+  QueryBuilder<Files, Files, QDistinct> distinctByJobType() {
     return QueryBuilder.apply(this, (query) {
-      return query.addDistinctBy(r'fromType');
+      return query.addDistinctBy(r'jobType');
     });
   }
 
-  QueryBuilder<TransferLogs, TransferLogs, QDistinct> distinctByTo(
+  QueryBuilder<Files, Files, QDistinct> distinctByKey(
       {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
-      return query.addDistinctBy(r'to', caseSensitive: caseSensitive);
+      return query.addDistinctBy(r'key', caseSensitive: caseSensitive);
     });
   }
 
-  QueryBuilder<TransferLogs, TransferLogs, QDistinct> distinctByToType() {
+  QueryBuilder<Files, Files, QDistinct> distinctBySavePath(
+      {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
-      return query.addDistinctBy(r'toType');
+      return query.addDistinctBy(r'savePath', caseSensitive: caseSensitive);
     });
   }
 }
 
-extension TransferLogsQueryProperty
-    on QueryBuilder<TransferLogs, TransferLogs, QQueryProperty> {
-  QueryBuilder<TransferLogs, int, QQueryOperations> idProperty() {
+extension FilesQueryProperty on QueryBuilder<Files, Files, QQueryProperty> {
+  QueryBuilder<Files, int, QQueryOperations> idProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'id');
     });
   }
 
-  QueryBuilder<TransferLogs, int, QQueryOperations> createAtProperty() {
+  QueryBuilder<Files, int, QQueryOperations> createAtProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'createAt');
     });
   }
 
-  QueryBuilder<TransferLogs, bool, QQueryOperations> doneProperty() {
+  QueryBuilder<Files, String?, QQueryOperations> filePathProperty() {
     return QueryBuilder.apply(this, (query) {
-      return query.addPropertyName(r'done');
+      return query.addPropertyName(r'filePath');
     });
   }
 
-  QueryBuilder<TransferLogs, String?, QQueryOperations> fromProperty() {
+  QueryBuilder<Files, JobType, QQueryOperations> jobTypeProperty() {
     return QueryBuilder.apply(this, (query) {
-      return query.addPropertyName(r'from');
+      return query.addPropertyName(r'jobType');
     });
   }
 
-  QueryBuilder<TransferLogs, StorageType, QQueryOperations> fromTypeProperty() {
+  QueryBuilder<Files, String?, QQueryOperations> keyProperty() {
     return QueryBuilder.apply(this, (query) {
-      return query.addPropertyName(r'fromType');
+      return query.addPropertyName(r'key');
     });
   }
 
-  QueryBuilder<TransferLogs, String?, QQueryOperations> toProperty() {
+  QueryBuilder<Files, String?, QQueryOperations> savePathProperty() {
     return QueryBuilder.apply(this, (query) {
-      return query.addPropertyName(r'to');
-    });
-  }
-
-  QueryBuilder<TransferLogs, StorageType, QQueryOperations> toTypeProperty() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addPropertyName(r'toType');
+      return query.addPropertyName(r'savePath');
     });
   }
 }

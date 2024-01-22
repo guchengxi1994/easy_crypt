@@ -115,7 +115,7 @@ class _EncryptRecordsWidgetState extends ConsumerState<EncryptRecordsWidget> {
   }
 
   DataRow2 _buildRow(EncryptRecord f, int index) {
-    print("f.transferLogs.isEmpty    ${f.transferLogs.isEmpty}");
+    print("f.transferLogs.isEmpty    ${f.transferRecords.isEmpty}");
     final s3Accounts = ref.read(accountProvider.notifier).getS3();
 
     return DataRow2(
@@ -259,14 +259,14 @@ class _EncryptRecordsWidgetState extends ConsumerState<EncryptRecordsWidget> {
                                           label: "Wechat",
                                           value: "Wechat",
                                         ),
-                                        if (f.transferLogs.isNotEmpty)
+                                        if (f.transferRecords.isNotEmpty)
                                           MenuItem.submenu(
                                               icon: const Icon(
                                                 Icons.storage,
                                                 size: AppStyle.rowIconSize,
                                               ),
-                                              label: "storages",
-                                              items: f.transferLogs
+                                              label: "by url",
+                                              items: f.transferRecords
                                                   .map((e) => MenuItem(
                                                       label: e.account.value !=
                                                               null

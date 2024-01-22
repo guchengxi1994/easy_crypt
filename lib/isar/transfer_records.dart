@@ -2,12 +2,12 @@
 
 import 'package:easy_crypt/isar/account.dart';
 import 'package:isar/isar.dart';
-part 'transfer_logs.g.dart';
+part 'transfer_records.g.dart';
 
 enum StorageType { S3, Webdav, Local }
 
 @collection
-class TransferLogs {
+class TransferRecords {
   Id id = Isar.autoIncrement;
   @enumerated
   late StorageType fromType;

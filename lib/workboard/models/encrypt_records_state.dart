@@ -1,5 +1,5 @@
-import 'package:easy_crypt/isar/encrypt_logs.dart';
-import 'package:easy_crypt/isar/transfer_logs.dart';
+import 'package:easy_crypt/isar/files.dart';
+import 'package:easy_crypt/isar/transfer_records.dart';
 
 class EncryptRecordsState {
   List<EncryptRecord> list;
@@ -23,7 +23,7 @@ class EncryptRecord {
   String? key;
   EncryptStatus status;
   double progress;
-  List<TransferLogs> transferLogs;
+  List<TransferRecords> transferRecords;
 
   EncryptRecord(
       {required this.createAt,
@@ -33,19 +33,19 @@ class EncryptRecord {
       this.savePath,
       this.status = EncryptStatus.unstart,
       this.progress = 0,
-      this.transferLogs = const []});
+      this.transferRecords = const []});
 
-  static EncryptRecord fromModel(EncryptLogs logs,
-      {List<TransferLogs>? transferLogs}) {
+  static EncryptRecord fromModel(Files file,
+      {List<TransferRecords>? transferRecords}) {
     return EncryptRecord(
-        createAt: logs.createAt,
-        id: logs.id,
-        filePath: logs.filePath,
-        savePath: logs.savePath,
-        key: logs.key,
-        progress: logs.savePath != null ? 0 : 1,
+        createAt: file.createAt,
+        id: file.id,
+        filePath: file.filePath,
+        savePath: file.savePath,
+        key: file.key,
+        progress: file.savePath != null ? 0 : 1,
         status:
-            logs.savePath != null ? EncryptStatus.done : EncryptStatus.unstart,
-        transferLogs: transferLogs ?? []);
+            file.savePath != null ? EncryptStatus.done : EncryptStatus.unstart,
+        transferRecords: transferRecords ?? []);
   }
 }
