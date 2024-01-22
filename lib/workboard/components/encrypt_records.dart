@@ -8,6 +8,8 @@ import 'package:easy_crypt/bridge/native.dart';
 import 'package:easy_crypt/common/clipboard_utils.dart';
 import 'package:easy_crypt/common/dev_utils.dart';
 import 'package:easy_crypt/common/replace_name.dart';
+import 'package:easy_crypt/gen/strings.g.dart';
+import 'package:easy_crypt/layout/notifiers/setting_notifier.dart';
 import 'package:easy_crypt/process/process.dart';
 import 'package:easy_crypt/style/app_style.dart';
 import 'package:easy_crypt/workboard/components/multiple_files_dialog.dart';
@@ -35,6 +37,7 @@ class _EncryptRecordsWidgetState extends ConsumerState<EncryptRecordsWidget> {
 
   @override
   Widget build(BuildContext context) {
+    final _ = ref.watch(settingsNotifier);
     final encrypts = ref.watch(encryptRecordsProvider);
     return DropTarget(onDragDone: (details) {
       if (details.files.isNotEmpty) {
@@ -99,12 +102,12 @@ class _EncryptRecordsWidgetState extends ConsumerState<EncryptRecordsWidget> {
                                   .read(encryptRecordsProvider.notifier)
                                   .prevPage();
                             },
-                      child: const Text("上一页")),
+                      child: Text(t.encryption.table.prev)),
                   TextButton(
                       onPressed: () {
                         ref.read(encryptRecordsProvider.notifier).nextPage();
                       },
-                      child: const Text("下一页")),
+                      child: Text(t.encryption.table.next)),
                 ],
               ),
             ),
@@ -190,9 +193,9 @@ class _EncryptRecordsWidgetState extends ConsumerState<EncryptRecordsWidget> {
                                 Uri.file(f.savePath.toString())));
                             await clipboard!.write([item]);
                           },
-                          child: const Tooltip(
-                            message: "Copy file path",
-                            child: Icon(
+                          child: Tooltip(
+                            message: t.encryption.table.cpfilepath,
+                            child: const Icon(
                               Icons.copy_all,
                               size: AppStyle.rowIconSize,
                             ),
@@ -206,7 +209,7 @@ class _EncryptRecordsWidgetState extends ConsumerState<EncryptRecordsWidget> {
                                 contextMenu: ContextMenu(
                                   entries: [
                                     MenuItem.submenu(
-                                      label: "Upload to",
+                                      label: t.encryption.table.upto,
                                       icon: const Icon(
                                         Icons.upload,
                                         size: AppStyle.rowIconSize,
@@ -245,18 +248,18 @@ class _EncryptRecordsWidgetState extends ConsumerState<EncryptRecordsWidget> {
                                       ],
                                     ),
                                     MenuItem.submenu(
-                                      label: "Share to",
+                                      label: t.encryption.table.shareto,
                                       icon: const Icon(
                                         Icons.share,
                                         size: AppStyle.rowIconSize,
                                       ),
                                       items: [
-                                        const MenuItem(
-                                          icon: Icon(
+                                        MenuItem(
+                                          icon: const Icon(
                                             Icons.wechat,
                                             size: AppStyle.rowIconSize,
                                           ),
-                                          label: "Wechat",
+                                          label: t.encryption.table.wx,
                                           value: "Wechat",
                                         ),
                                         if (f.transferRecords.isNotEmpty)
@@ -278,7 +281,7 @@ class _EncryptRecordsWidgetState extends ConsumerState<EncryptRecordsWidget> {
                                       ],
                                     ),
                                     MenuItem(
-                                      label: "Open folder",
+                                      label: t.encryption.table.openfolder,
                                       value: "Open folder",
                                       icon: const Icon(
                                         Icons.open_in_new,
@@ -290,7 +293,7 @@ class _EncryptRecordsWidgetState extends ConsumerState<EncryptRecordsWidget> {
                                       },
                                     ),
                                     MenuItem(
-                                      label: "Remove file",
+                                      label: t.encryption.table.rmfile,
                                       value: "Remove file",
                                       icon: const Icon(
                                         Icons.delete,
@@ -333,9 +336,9 @@ class _EncryptRecordsWidgetState extends ConsumerState<EncryptRecordsWidget> {
                   onTap: () async {
                     await copyToClipboard(f.key ?? "");
                   },
-                  child: const Tooltip(
-                    message: "Copy Key",
-                    child: Icon(
+                  child: Tooltip(
+                    message: t.encryption.table.cpkey,
+                    child: const Icon(
                       Icons.copy,
                       size: AppStyle.rowIconSize,
                     ),
@@ -364,9 +367,9 @@ class _EncryptRecordsWidgetState extends ConsumerState<EncryptRecordsWidget> {
                         .changeProgress(f.id, 1, saved: value);
                   });
                 },
-                child: const Tooltip(
-                  message: "Start encrypt",
-                  child: Icon(
+                child: Tooltip(
+                  message: t.encryption.table.startencrypt,
+                  child: const Icon(
                     Icons.play_arrow,
                     size: AppStyle.rowIconSize,
                   ),
@@ -376,9 +379,9 @@ class _EncryptRecordsWidgetState extends ConsumerState<EncryptRecordsWidget> {
                 onTap: () {
                   ref.read(encryptRecordsProvider.notifier).removeLog(f);
                 },
-                child: const Tooltip(
-                  message: "Remove record",
-                  child: Icon(
+                child: Tooltip(
+                  message: t.encryption.table.rmrecord,
+                  child: const Icon(
                     Icons.delete,
                     size: AppStyle.rowIconSize,
                   ),
@@ -391,54 +394,54 @@ class _EncryptRecordsWidgetState extends ConsumerState<EncryptRecordsWidget> {
 
   List<DataColumn2> _getColumns() {
     return [
-      const DataColumn2(
+      DataColumn2(
         fixedWidth: 60,
         label: Text(
-          '编号',
-          style: TextStyle(fontWeight: FontWeight.bold),
+          t.encryption.column.no,
+          style: const TextStyle(fontWeight: FontWeight.bold),
         ),
         size: ColumnSize.L,
         numeric: false,
       ),
-      const DataColumn2(
+      DataColumn2(
         label: Text(
-          '文件路径',
-          style: TextStyle(fontWeight: FontWeight.bold),
+          t.encryption.column.filepath,
+          style: const TextStyle(fontWeight: FontWeight.bold),
         ),
         size: ColumnSize.L,
         numeric: false,
       ),
-      const DataColumn2(
+      DataColumn2(
         label: Text(
-          '加密路径',
-          style: TextStyle(fontWeight: FontWeight.bold),
+          t.encryption.column.encryptedPath,
+          style: const TextStyle(fontWeight: FontWeight.bold),
         ),
         size: ColumnSize.L,
         numeric: false,
       ),
-      const DataColumn2(
-        fixedWidth: 120,
+      DataColumn2(
+        fixedWidth: 130,
         label: Text(
-          '密钥',
-          style: TextStyle(fontWeight: FontWeight.bold),
+          t.encryption.column.key,
+          style: const TextStyle(fontWeight: FontWeight.bold),
         ),
         size: ColumnSize.L,
         numeric: false,
       ),
-      const DataColumn2(
+      DataColumn2(
         fixedWidth: 140,
         label: Text(
-          '创建时间',
-          style: TextStyle(fontWeight: FontWeight.bold),
+          t.encryption.column.createAt,
+          style: const TextStyle(fontWeight: FontWeight.bold),
         ),
         size: ColumnSize.L,
         numeric: false,
       ),
-      const DataColumn2(
-        fixedWidth: 80,
+      DataColumn2(
+        fixedWidth: 120,
         label: Text(
-          '操作',
-          style: TextStyle(fontWeight: FontWeight.bold),
+          t.encryption.column.operation,
+          style: const TextStyle(fontWeight: FontWeight.bold),
         ),
         size: ColumnSize.L,
         numeric: false,

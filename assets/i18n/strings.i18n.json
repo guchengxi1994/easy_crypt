@@ -1,0 +1,30 @@
+{
+    "layout":{
+        "encryption":"Encryption",
+        "custom":"Custom Algorithm",
+        "account":"Account"
+    },
+    "encryption":{
+        "column":{
+            "no":"No.",
+            "filepath":"File Path",
+            "encryptedPath":"Encrypted Path",
+            "key":"Password",
+            "createAt":"Create At",
+            "operation":"Operations"
+        },
+        "table":{
+            "prev":"Previous",
+            "next":"Next",
+            "cpfilepath":"Copy File Path",
+            "cpkey":"Copy Password",
+            "startencrypt":"Start Encrypt",
+            "rmrecord":"Remove Record",
+            "upto":"Upload To",
+            "shareto":"Share To",
+            "wx":"Wechat",
+            "openfolder":"Open Folder",
+            "rmfile":"Remove File"
+        }
+    }
+}

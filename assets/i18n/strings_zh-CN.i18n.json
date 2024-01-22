@@ -1,0 +1,30 @@
+{
+    "layout":{
+        "encryption":"文件加密",
+        "custom":"自定义加密算法",
+        "account":"账号"
+    },
+    "encryption":{
+        "column":{
+            "no":"编号",
+            "filepath":"文件路径",
+            "encryptedPath":"加密路径",
+            "key":"密钥",
+            "createAt":"创建时间",
+            "operation":"操作"
+        },
+        "table":{
+            "prev":"上一页",
+            "next":"下一页",
+            "cpfilepath":"复制文件路径",
+            "cpkey":"复制密钥",
+            "startencrypt":"开始加密",
+            "rmrecord":"删除记录",
+            "upto":"上传到...",
+            "shareto":"分享到...",
+            "wx":"微信",
+            "openfolder":"打开文件夹",
+            "rmfile":"删除文件"
+        }
+    }
+}

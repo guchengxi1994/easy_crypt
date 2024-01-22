@@ -1,3 +1,9 @@
+<center>
+    <img src="logo.png" alt="logo">
+</center>
+
+--------------------------------------------------------------------------------
+
 # EasyCrypt
 
 **We don't want your data. We want your data safe.**
