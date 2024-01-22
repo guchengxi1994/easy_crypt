@@ -5,7 +5,7 @@ import 'package:easy_crypt/common/dev_utils.dart';
 import 'package:easy_crypt/common/logger.dart';
 import 'package:easy_crypt/isar/account.dart';
 import 'package:easy_crypt/isar/database.dart';
-import 'package:easy_crypt/isar/transfer_logs.dart';
+import 'package:easy_crypt/isar/transfer_records.dart';
 import 'package:easy_crypt/workboard/notifiers/encrypt_records_notifier.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -68,7 +68,7 @@ class IsolateProcess {
       logger.info(message);
       if (message == "ok") {
         final IsarDatabase database = IsarDatabase();
-        TransferLogs logs = TransferLogs()
+        TransferRecords records = TransferRecords()
           ..done = true
           ..fromType = StorageType.Local
           ..toType = account.accountType == AccountType.S3
@@ -79,8 +79,8 @@ class IsolateProcess {
           ..account.value = account;
 
         database.isar!.writeTxnSync(() {
-          database.isar!.transferLogs.putSync(logs);
-          logs.account.saveSync();
+          database.isar!.transferRecords.putSync(records);
+          records.account.saveSync();
         });
 
         if (ref != null) {

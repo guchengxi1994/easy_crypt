@@ -3,8 +3,8 @@ import 'dart:io';
 
 import 'package:easy_crypt/bridge/native.dart';
 import 'package:easy_crypt/isar/database.dart';
-import 'package:easy_crypt/isar/encrypt_logs.dart';
-import 'package:easy_crypt/isar/transfer_logs.dart';
+import 'package:easy_crypt/isar/files.dart';
+import 'package:easy_crypt/isar/transfer_records.dart';
 import 'package:file_selector/file_selector.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:isar/isar.dart';
@@ -19,11 +19,8 @@ class EncryptRecordsNotifier
 
   @override
   FutureOr<EncryptRecordsState> build() async {
-    List<EncryptLogs> logs = await database.isar!.encryptLogs
-        .where()
-        .offset(0)
-        .limit(pageSize)
-        .findAll();
+    List<Files> logs =
+        await database.isar!.files.where().offset(0).limit(pageSize).findAll();
     return EncryptRecordsState(
         list: logs.map((e) => EncryptRecord.fromModel(e)).toList());
   }
@@ -33,30 +30,30 @@ class EncryptRecordsNotifier
 
     state = await AsyncValue.guard(() async {
       await database.isar!.writeTxn(() async {
-        List<EncryptLogs> logs = [];
+        List<Files> records = [];
         for (final i in files) {
-          EncryptLogs log = EncryptLogs();
+          Files record = Files();
           if (useDefaultKey) {
-            log.key = await api.defaultKey();
+            record.key = await api.defaultKey();
           } else {
-            log.key = await api.randomKey();
+            record.key = await api.randomKey();
           }
 
-          log.filePath = i.path;
-
-          logs.add(log);
+          record.filePath = i.path;
+          record.jobType = JobType.encryption;
+          records.add(record);
         }
 
-        await database.isar!.encryptLogs.putAll(logs);
+        await database.isar!.files.putAll(records);
       });
 
-      List<EncryptLogs> logs = await database.isar!.encryptLogs
+      List<Files> records = await database.isar!.files
           .where()
           .offset(0)
           .limit(pageSize)
           .findAll();
       return EncryptRecordsState(
-          list: logs.map((e) => EncryptRecord.fromModel(e)).toList());
+          list: records.map((e) => EncryptRecord.fromModel(e)).toList());
     });
   }
 
@@ -66,13 +63,13 @@ class EncryptRecordsNotifier
     if (item != null) {
       state = const AsyncLoading();
       state = await AsyncValue.guard(() async {
-        final logs = await database.isar!.transferLogs
+        final records = await database.isar!.transferRecords
             .filter()
             .fromEqualTo(item.savePath)
             .sortByCreateAtDesc()
             .findAll();
 
-        item.transferLogs = logs;
+        item.transferRecords = records;
 
         return state.value!.copyWith(null, null);
       });
@@ -89,13 +86,11 @@ class EncryptRecordsNotifier
         item.status = EncryptStatus.done;
 
         await database.isar!.writeTxn(() async {
-          final log = await database.isar!.encryptLogs
-              .filter()
-              .idEqualTo(id)
-              .findFirst();
-          if (log != null) {
-            log.savePath = saved;
-            await database.isar!.encryptLogs.put(log);
+          final record =
+              await database.isar!.files.filter().idEqualTo(id).findFirst();
+          if (record != null) {
+            record.savePath = saved;
+            await database.isar!.files.put(record);
           }
         });
       } else {
@@ -117,18 +112,18 @@ class EncryptRecordsNotifier
     }
 
     await database.isar!.writeTxn(() async {
-      final log =
-          await database.isar!.encryptLogs.filter().idEqualTo(f.id).findFirst();
-      if (log != null) {
-        log.savePath = null;
-        await database.isar!.encryptLogs.put(log);
+      final record =
+          await database.isar!.files.filter().idEqualTo(f.id).findFirst();
+      if (record != null) {
+        record.savePath = null;
+        await database.isar!.files.put(record);
       }
     });
 
     if (state.value!.list.map((e) => e.id == f.id).isNotEmpty) {
       // exists in list, should repaint
       state = await AsyncValue.guard(() async {
-        List<EncryptLogs> logs = await database.isar!.encryptLogs
+        List<Files> logs = await database.isar!.files
             .where()
             .offset((state.value!.pageId - 1) * pageSize)
             .limit(pageSize)
@@ -151,19 +146,19 @@ class EncryptRecordsNotifier
     }
 
     await database.isar!.writeTxn(() async {
-      await database.isar!.encryptLogs.delete(f.id);
+      await database.isar!.files.delete(f.id);
     });
 
     if (state.value!.list.map((e) => e.id == f.id).isNotEmpty) {
       // exists in list, should repaint
       state = await AsyncValue.guard(() async {
-        List<EncryptLogs> logs = await database.isar!.encryptLogs
+        List<Files> records = await database.isar!.files
             .where()
             .offset((state.value!.pageId - 1) * pageSize)
             .limit(pageSize)
             .findAll();
         return EncryptRecordsState(
-            list: logs.map((e) => EncryptRecord.fromModel(e)).toList());
+            list: records.map((e) => EncryptRecord.fromModel(e)).toList());
       });
     }
   }
@@ -175,13 +170,13 @@ class EncryptRecordsNotifier
     state = const AsyncValue.loading();
 
     state = await AsyncValue.guard(() async {
-      List<EncryptLogs> logs = await database.isar!.encryptLogs
+      List<Files> records = await database.isar!.files
           .where()
           .offset((state.value!.pageId - 2) * pageSize)
           .limit(pageSize)
           .findAll();
       return EncryptRecordsState(
-          list: logs.map((e) => EncryptRecord.fromModel(e)).toList(),
+          list: records.map((e) => EncryptRecord.fromModel(e)).toList(),
           pageId: state.value!.pageId - 1);
     });
   }
@@ -190,13 +185,13 @@ class EncryptRecordsNotifier
     state = const AsyncValue.loading();
 
     state = await AsyncValue.guard(() async {
-      List<EncryptLogs> logs = await database.isar!.encryptLogs
+      List<Files> records = await database.isar!.files
           .where()
           .offset((state.value!.pageId) * pageSize)
           .limit(pageSize)
           .findAll();
       return EncryptRecordsState(
-          list: logs.map((e) => EncryptRecord.fromModel(e)).toList(),
+          list: records.map((e) => EncryptRecord.fromModel(e)).toList(),
           pageId: state.value!.pageId + 1);
     });
   }

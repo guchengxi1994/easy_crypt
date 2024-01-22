@@ -3,6 +3,7 @@
 import 'dart:io';
 
 import 'package:easy_crypt/common/dev_utils.dart';
+import 'package:easy_crypt/common/local_storage.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:logging/logging.dart';
@@ -21,6 +22,7 @@ void main() async {
 
   final IsarDatabase database = IsarDatabase();
   await database.initialDatabase();
+  final _ = LocalStorage();
 
   if (!Directory(DevUtils.cachePath).existsSync()) {
     Directory(DevUtils.cachePath).createSync();
