@@ -22,7 +22,8 @@ void main() async {
 
   final IsarDatabase database = IsarDatabase();
   await database.initialDatabase();
-  final _ = LocalStorage();
+  final storage = LocalStorage();
+  await storage.initStorage();
 
   if (!Directory(DevUtils.cachePath).existsSync()) {
     Directory(DevUtils.cachePath).createSync();

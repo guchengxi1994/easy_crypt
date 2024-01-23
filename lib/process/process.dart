@@ -5,9 +5,11 @@ import 'package:easy_crypt/common/dev_utils.dart';
 import 'package:easy_crypt/common/logger.dart';
 import 'package:easy_crypt/isar/account.dart';
 import 'package:easy_crypt/isar/database.dart';
+import 'package:easy_crypt/isar/files.dart';
 import 'package:easy_crypt/isar/transfer_records.dart';
 import 'package:easy_crypt/workboard/notifiers/encrypt_records_notifier.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:isar/isar.dart';
 
 class Message {
   final SendPort? sendPort;
@@ -61,13 +63,17 @@ class IsolateProcess {
     message.sendPort?.send(s);
   }
 
-  static void upload(Account account, final String p, final String objectKey,
+  static void upload(
+      Account account, final String p, final String objectKey, int fileId,
       {WidgetRef? ref}) async {
     ReceivePort receivePort = ReceivePort();
     receivePort.listen((message) {
       logger.info(message);
       if (message == "ok") {
         final IsarDatabase database = IsarDatabase();
+        final file =
+            database.isar!.files.filter().idEqualTo(fileId).findFirstSync()!;
+
         TransferRecords records = TransferRecords()
           ..done = true
           ..fromType = StorageType.Local
@@ -77,10 +83,12 @@ class IsolateProcess {
           ..from = p
           ..to = objectKey
           ..account.value = account;
+        file.transferRecords.add(records);
 
         database.isar!.writeTxnSync(() {
           database.isar!.transferRecords.putSync(records);
           records.account.saveSync();
+          file.transferRecords.saveSync();
         });
 
         if (ref != null) {

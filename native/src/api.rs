@@ -1,6 +1,6 @@
 use crate::{
     emit::{emitter::Emitter, MESSAGE_SINK},
-    process::transfer::{Transfer, S3CLIENT},
+    process::transfer::{S3Client, Transfer, S3CLIENT},
 };
 use flutter_rust_bridge::StreamSink;
 
@@ -110,46 +110,28 @@ pub fn upload_to_s3_with_config(
 ) {
     let rt = tokio::runtime::Runtime::new().unwrap();
     rt.block_on(async {
-        let mut builder = opendal::services::S3::default();
-        builder.endpoint(&endpoint);
-        builder.bucket(&bucketname);
-        builder.access_key_id(&access_key);
-        builder.secret_access_key(&session_key);
-        if let Some(_s) = session_token.clone() {
-            builder.security_token(&_s);
-        }
-        builder.region(&region);
+        let client = S3Client::from(
+            endpoint,
+            bucketname,
+            access_key,
+            session_key,
+            session_token,
+            region,
+        );
+        if let Some(_cli) = client {
+            // let r = client.upload(p, obj, &mut message).await;
+            if let Ok(mut message) =
+                crate::emit::file_transfer_message::FileTransferMessage::new(p.clone())
+            {
+                let r = _cli.upload(p, obj, &mut message).await;
 
-        let op = opendal::Operator::new(builder);
-
-        if let Ok(mut message) =
-            crate::emit::file_transfer_message::FileTransferMessage::new(p.clone())
-        {
-            match op {
-                Ok(_op) => {
-                    let _o = _op.layer(opendal::layers::LoggingLayer::default()).finish();
-                    let client = crate::process::transfer::S3Client {
-                        endpoint,
-                        bucketname,
-                        access_key,
-                        session_key,
-                        session_token,
-                        region,
-                        op: _o,
-                    };
-                    let r = client.upload(p, obj, &mut message).await;
-
-                    match r {
-                        Ok(_) => {}
-                        Err(_e) => {
-                            message.error_msg = Some("upload error".to_owned());
-                            message.send_message();
-                            println!("upload error {:?}", _e);
-                        }
+                match r {
+                    Ok(_) => {}
+                    Err(_e) => {
+                        message.error_msg = Some("upload error".to_owned());
+                        message.send_message();
+                        println!("upload error {:?}", _e);
                     }
-                }
-                Err(_) => {
-                    println!("generate operator error");
                 }
             }
         }
@@ -169,4 +151,36 @@ pub fn download_from_s3(p: String, obj: String) {
             None => {}
         }
     });
+}
+
+pub fn generate_pregisn_url(
+    endpoint: String,
+    bucketname: String,
+    access_key: String,
+    session_key: String,
+    session_token: Option<String>,
+    region: String,
+    obj: String,
+) -> Option<String> {
+    let rt = tokio::runtime::Runtime::new().unwrap();
+    rt.block_on(async {
+        let client = S3Client::from(
+            endpoint,
+            bucketname,
+            access_key,
+            session_key,
+            session_token,
+            region,
+        );
+
+        if let Some(_cli) = client {
+            let url = _cli.share(obj).await;
+            match url {
+                Ok(_url) => Some(_url),
+                Err(_) => None,
+            };
+        }
+
+        None
+    })
 }

@@ -56,12 +56,6 @@ const FilesSchema = CollectionSchema(
       name: r'transferRecords',
       target: r'TransferRecords',
       single: false,
-    ),
-    r'account': LinkSchema(
-      id: -4835698885973187819,
-      name: r'account',
-      target: r'EncryptAlgorithm',
-      single: true,
     )
   },
   embeddedSchemas: {},
@@ -166,15 +160,13 @@ Id _filesGetId(Files object) {
 }
 
 List<IsarLinkBase<dynamic>> _filesGetLinks(Files object) {
-  return [object.transferRecords, object.account];
+  return [object.transferRecords];
 }
 
 void _filesAttach(IsarCollection<dynamic> col, Id id, Files object) {
   object.id = id;
   object.transferRecords.attach(
       col, col.isar.collection<TransferRecords>(), r'transferRecords', id);
-  object.account
-      .attach(col, col.isar.collection<EncryptAlgorithm>(), r'account', id);
 }
 
 extension FilesQueryWhereSort on QueryBuilder<Files, Files, QWhere> {
@@ -908,19 +900,6 @@ extension FilesQueryLinks on QueryBuilder<Files, Files, QFilterCondition> {
     return QueryBuilder.apply(this, (query) {
       return query.linkLength(
           r'transferRecords', lower, includeLower, upper, includeUpper);
-    });
-  }
-
-  QueryBuilder<Files, Files, QAfterFilterCondition> account(
-      FilterQuery<EncryptAlgorithm> q) {
-    return QueryBuilder.apply(this, (query) {
-      return query.link(q, r'account');
-    });
-  }
-
-  QueryBuilder<Files, Files, QAfterFilterCondition> accountIsNull() {
-    return QueryBuilder.apply(this, (query) {
-      return query.linkLength(r'account', 0, true, 0, true);
     });
   }
 }

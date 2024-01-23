@@ -76,7 +76,7 @@ class _LayoutState extends ConsumerState<Layout> with TickerProviderStateMixin {
     _animation =
         _controller.drive(Tween<double>(begin: minWidth, end: maxWidth));
 
-    future = Future(() => initI18n);
+    future = Future(() => initI18n());
   }
 
   // ignore: prefer_typing_uninitialized_variables

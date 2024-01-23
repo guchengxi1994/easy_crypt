@@ -5,13 +5,12 @@ class LocalStorage {
 
   factory LocalStorage() => _instance;
 
-  static SharedPreferences? _storage;
+  LocalStorage._init();
 
-  LocalStorage._init() {
-    _initStorage();
-  }
+  // ignore: avoid_init_to_null
+  late SharedPreferences? _storage = null;
 
-  _initStorage() async {
+  initStorage() async {
     _storage ??= await SharedPreferences.getInstance();
   }
 

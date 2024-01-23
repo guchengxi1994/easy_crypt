@@ -56,11 +56,13 @@ abstract class Native {
 
   FlutterRustBridgeTaskConstMeta get kInitS3ClientConstMeta;
 
+  /// TODO return sth.
   Future<void> uploadToS3(
       {required String p, required String obj, dynamic hint});
 
   FlutterRustBridgeTaskConstMeta get kUploadToS3ConstMeta;
 
+  /// TODO return sth.
   Future<void> uploadToS3WithConfig(
       {required String endpoint,
       required String bucketname,
@@ -74,10 +76,23 @@ abstract class Native {
 
   FlutterRustBridgeTaskConstMeta get kUploadToS3WithConfigConstMeta;
 
+  /// TODO return sth.
   Future<void> downloadFromS3(
       {required String p, required String obj, dynamic hint});
 
   FlutterRustBridgeTaskConstMeta get kDownloadFromS3ConstMeta;
+
+  Future<String?> generatePregisnUrl(
+      {required String endpoint,
+      required String bucketname,
+      required String accessKey,
+      required String sessionKey,
+      String? sessionToken,
+      required String region,
+      required String obj,
+      dynamic hint});
+
+  FlutterRustBridgeTaskConstMeta get kGeneratePregisnUrlConstMeta;
 }
 
 class EncryptItem {
@@ -369,6 +384,55 @@ class NativeImpl implements Native {
         argNames: ["p", "obj"],
       );
 
+  Future<String?> generatePregisnUrl(
+      {required String endpoint,
+      required String bucketname,
+      required String accessKey,
+      required String sessionKey,
+      String? sessionToken,
+      required String region,
+      required String obj,
+      dynamic hint}) {
+    var arg0 = _platform.api2wire_String(endpoint);
+    var arg1 = _platform.api2wire_String(bucketname);
+    var arg2 = _platform.api2wire_String(accessKey);
+    var arg3 = _platform.api2wire_String(sessionKey);
+    var arg4 = _platform.api2wire_opt_String(sessionToken);
+    var arg5 = _platform.api2wire_String(region);
+    var arg6 = _platform.api2wire_String(obj);
+    return _platform.executeNormal(FlutterRustBridgeTask(
+      callFfi: (port_) => _platform.inner.wire_generate_pregisn_url(
+          port_, arg0, arg1, arg2, arg3, arg4, arg5, arg6),
+      parseSuccessData: _wire2api_opt_String,
+      parseErrorData: null,
+      constMeta: kGeneratePregisnUrlConstMeta,
+      argValues: [
+        endpoint,
+        bucketname,
+        accessKey,
+        sessionKey,
+        sessionToken,
+        region,
+        obj
+      ],
+      hint: hint,
+    ));
+  }
+
+  FlutterRustBridgeTaskConstMeta get kGeneratePregisnUrlConstMeta =>
+      const FlutterRustBridgeTaskConstMeta(
+        debugName: "generate_pregisn_url",
+        argNames: [
+          "endpoint",
+          "bucketname",
+          "accessKey",
+          "sessionKey",
+          "sessionToken",
+          "region",
+          "obj"
+        ],
+      );
+
   void dispose() {
     _platform.dispose();
   }
@@ -384,6 +448,10 @@ class NativeImpl implements Native {
 
   List<String> _wire2api_StringList(dynamic raw) {
     return (raw as List<dynamic>).cast<String>();
+  }
+
+  String? _wire2api_opt_String(dynamic raw) {
+    return raw == null ? null : _wire2api_String(raw);
   }
 
   int _wire2api_u8(dynamic raw) {
@@ -809,6 +877,51 @@ class NativeWire implements FlutterRustBridgeWireBase {
   late final _wire_download_from_s3 = _wire_download_from_s3Ptr.asFunction<
       void Function(
           int, ffi.Pointer<wire_uint_8_list>, ffi.Pointer<wire_uint_8_list>)>();
+
+  void wire_generate_pregisn_url(
+    int port_,
+    ffi.Pointer<wire_uint_8_list> endpoint,
+    ffi.Pointer<wire_uint_8_list> bucketname,
+    ffi.Pointer<wire_uint_8_list> access_key,
+    ffi.Pointer<wire_uint_8_list> session_key,
+    ffi.Pointer<wire_uint_8_list> session_token,
+    ffi.Pointer<wire_uint_8_list> region,
+    ffi.Pointer<wire_uint_8_list> obj,
+  ) {
+    return _wire_generate_pregisn_url(
+      port_,
+      endpoint,
+      bucketname,
+      access_key,
+      session_key,
+      session_token,
+      region,
+      obj,
+    );
+  }
+
+  late final _wire_generate_pregisn_urlPtr = _lookup<
+      ffi.NativeFunction<
+          ffi.Void Function(
+              ffi.Int64,
+              ffi.Pointer<wire_uint_8_list>,
+              ffi.Pointer<wire_uint_8_list>,
+              ffi.Pointer<wire_uint_8_list>,
+              ffi.Pointer<wire_uint_8_list>,
+              ffi.Pointer<wire_uint_8_list>,
+              ffi.Pointer<wire_uint_8_list>,
+              ffi.Pointer<wire_uint_8_list>)>>('wire_generate_pregisn_url');
+  late final _wire_generate_pregisn_url =
+      _wire_generate_pregisn_urlPtr.asFunction<
+          void Function(
+              int,
+              ffi.Pointer<wire_uint_8_list>,
+              ffi.Pointer<wire_uint_8_list>,
+              ffi.Pointer<wire_uint_8_list>,
+              ffi.Pointer<wire_uint_8_list>,
+              ffi.Pointer<wire_uint_8_list>,
+              ffi.Pointer<wire_uint_8_list>,
+              ffi.Pointer<wire_uint_8_list>)>();
 
   ffi.Pointer<wire_StringList> new_StringList_0(
     int len,

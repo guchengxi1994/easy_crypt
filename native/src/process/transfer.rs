@@ -50,6 +50,45 @@ pub struct S3Client {
 }
 
 impl S3Client {
+    pub fn from(
+        endpoint: String,
+        bucketname: String,
+        access_key: String,
+        session_key: String,
+        session_token: Option<String>,
+        region: String,
+    ) -> Option<Self> {
+        let mut builder = opendal::services::S3::default();
+        builder.endpoint(&endpoint);
+        builder.bucket(&bucketname);
+        builder.access_key_id(&access_key);
+        builder.secret_access_key(&session_key);
+        if let Some(_s) = session_token.clone() {
+            builder.security_token(&_s);
+        }
+        builder.region(&region);
+        let op = opendal::Operator::new(builder);
+
+        match op {
+            Ok(_op) => {
+                let _o = _op.layer(opendal::layers::LoggingLayer::default()).finish();
+                let client = crate::process::transfer::S3Client {
+                    endpoint,
+                    bucketname,
+                    access_key,
+                    session_key,
+                    session_token,
+                    region,
+                    op: _o,
+                };
+                return Some(client);
+            }
+            Err(_) => None,
+        }
+    }
+}
+
+impl S3Client {
     pub fn init(
         endpoint: String,
         bucketname: String,

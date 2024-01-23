@@ -9,6 +9,7 @@ import 'package:easy_crypt/common/clipboard_utils.dart';
 import 'package:easy_crypt/common/dev_utils.dart';
 import 'package:easy_crypt/common/replace_name.dart';
 import 'package:easy_crypt/gen/strings.g.dart';
+import 'package:easy_crypt/isar/transfer_records.dart';
 import 'package:easy_crypt/layout/notifiers/setting_notifier.dart';
 import 'package:easy_crypt/process/process.dart';
 import 'package:easy_crypt/style/app_style.dart';
@@ -118,7 +119,6 @@ class _EncryptRecordsWidgetState extends ConsumerState<EncryptRecordsWidget> {
   }
 
   DataRow2 _buildRow(EncryptRecord f, int index) {
-    print("f.transferLogs.isEmpty    ${f.transferRecords.isEmpty}");
     final s3Accounts = ref.read(accountProvider.notifier).getS3();
 
     return DataRow2(
@@ -241,6 +241,7 @@ class _EncryptRecordsWidgetState extends ConsumerState<EncryptRecordsWidget> {
                                                               f.savePath!,
                                                               replacePath(
                                                                   f.savePath!),
+                                                              f.id,
                                                               ref: ref);
                                                         },
                                                       ))
@@ -271,6 +272,43 @@ class _EncryptRecordsWidgetState extends ConsumerState<EncryptRecordsWidget> {
                                               label: "by url",
                                               items: f.transferRecords
                                                   .map((e) => MenuItem(
+                                                      onSelected: () async {
+                                                        // print(e.to);
+                                                        if (e.toType ==
+                                                            StorageType.S3) {
+                                                          final url = await api
+                                                              .generatePregisnUrl(
+                                                                  endpoint: e
+                                                                      .account
+                                                                      .value!
+                                                                      .endpoint!,
+                                                                  bucketname: e
+                                                                      .account
+                                                                      .value!
+                                                                      .bucketname!,
+                                                                  accessKey: e
+                                                                      .account
+                                                                      .value!
+                                                                      .accesskey!,
+                                                                  sessionKey: e
+                                                                      .account
+                                                                      .value!
+                                                                      .sessionKey!,
+                                                                  region: e
+                                                                      .account
+                                                                      .value!
+                                                                      .region!,
+                                                                  sessionToken: e
+                                                                      .account
+                                                                      .value!
+                                                                      .sessionToken!,
+                                                                  obj: e.to!);
+                                                          if (url != null) {
+                                                            await copyToClipboard(
+                                                                url);
+                                                          }
+                                                        }
+                                                      },
                                                       label: e.account.value !=
                                                               null
                                                           ? e.account.value!

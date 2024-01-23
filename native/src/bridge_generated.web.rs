@@ -92,6 +92,29 @@ pub fn wire_download_from_s3(port_: MessagePort, p: String, obj: String) {
     wire_download_from_s3_impl(port_, p, obj)
 }
 
+#[wasm_bindgen]
+pub fn wire_generate_pregisn_url(
+    port_: MessagePort,
+    endpoint: String,
+    bucketname: String,
+    access_key: String,
+    session_key: String,
+    session_token: Option<String>,
+    region: String,
+    obj: String,
+) {
+    wire_generate_pregisn_url_impl(
+        port_,
+        endpoint,
+        bucketname,
+        access_key,
+        session_key,
+        session_token,
+        region,
+        obj,
+    )
+}
+
 // Section: allocate functions
 
 // Section: related functions

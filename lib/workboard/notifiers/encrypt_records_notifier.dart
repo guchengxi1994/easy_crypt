@@ -22,7 +22,11 @@ class EncryptRecordsNotifier
     List<Files> logs =
         await database.isar!.files.where().offset(0).limit(pageSize).findAll();
     return EncryptRecordsState(
-        list: logs.map((e) => EncryptRecord.fromModel(e)).toList());
+        list: logs.map((e) {
+      // print("e.transferRecords.toList()  ${e.transferRecords.toList().length}");
+      return EncryptRecord.fromModel(e,
+          transferRecords: e.transferRecords.toList());
+    }).toList());
   }
 
   newRecords(List<XFile> files, {bool useDefaultKey = true}) async {

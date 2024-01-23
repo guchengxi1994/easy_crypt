@@ -1,8 +1,6 @@
 import 'package:easy_crypt/isar/transfer_records.dart';
 import 'package:isar/isar.dart';
 
-import 'encrypt_algo.dart';
-
 part 'files.g.dart';
 
 /// job type, includes `encryption` and `decryption`
@@ -22,7 +20,4 @@ class Files {
   String? key;
 
   final transferRecords = IsarLinks<TransferRecords>();
-
-  /// WIP
-  final account = IsarLink<EncryptAlgorithm>();
 }

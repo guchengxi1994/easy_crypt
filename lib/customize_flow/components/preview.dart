@@ -52,7 +52,9 @@ class PreviewState extends State<Preview> {
             ))
         .toList();
 
-    setState(() {});
+    if (mounted) {
+      setState(() {});
+    }
   }
 
   @override
