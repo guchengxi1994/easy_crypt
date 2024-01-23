@@ -23,8 +23,9 @@ class AccountNotifier extends AutoDisposeAsyncNotifier<AccountState> {
     });
 
     state = await AsyncValue.guard(() async {
-      final l = state.value!.accounts..add(a);
-      return AccountState(accounts: l);
+      // final l = state.value!.accounts..add(a);
+      final accounts = await database.isar!.accounts.where().findAll();
+      return AccountState(accounts: accounts);
     });
   }
 

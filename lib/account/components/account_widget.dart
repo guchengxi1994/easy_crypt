@@ -1,3 +1,4 @@
+import 'package:easy_crypt/account/components/modify_account_dialog.dart';
 import 'package:easy_crypt/account/notifiers/account_notifier.dart';
 import 'package:easy_crypt/isar/account.dart';
 import 'package:easy_crypt/style/app_style.dart';
@@ -50,6 +51,26 @@ class AccountWidget extends ConsumerWidget {
                 overflow: TextOverflow.ellipsis,
               ),
               const Spacer(),
+              InkWell(
+                child: const Icon(
+                  Icons.change_circle,
+                  color: Colors.green,
+                ),
+                onTap: () {
+                  showGeneralDialog(
+                      barrierDismissible: true,
+                      barrierLabel: "modify",
+                      context: context,
+                      pageBuilder: (c, _, __) {
+                        return Center(
+                          child: ModifyAccountDialog(account: account),
+                        );
+                      });
+                },
+              ),
+              const SizedBox(
+                width: 10,
+              ),
               InkWell(
                 child: const Icon(
                   Icons.delete,

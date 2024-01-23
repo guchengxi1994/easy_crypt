@@ -4,23 +4,16 @@ import 'package:easy_crypt/style/app_style.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class AddAccountDialog extends ConsumerStatefulWidget {
-  const AddAccountDialog({super.key});
+class ModifyAccountDialog extends ConsumerStatefulWidget {
+  const ModifyAccountDialog({super.key, required this.account});
+  final Account account;
 
   @override
-  ConsumerState<AddAccountDialog> createState() => _AddAccountDialogState();
+  ConsumerState<ModifyAccountDialog> createState() =>
+      _ModifyAccountDialogState();
 }
 
-class _AddAccountDialogState extends ConsumerState<AddAccountDialog>
-    with TickerProviderStateMixin {
-  late final TabController tabController;
-
-  @override
-  void initState() {
-    super.initState();
-    tabController = TabController(length: 2, vsync: this);
-  }
-
+class _ModifyAccountDialogState extends ConsumerState<ModifyAccountDialog> {
   @override
   Widget build(BuildContext context) {
     return Material(
@@ -33,24 +26,11 @@ class _AddAccountDialogState extends ConsumerState<AddAccountDialog>
             borderRadius: BorderRadius.circular(4), color: Colors.white),
         child: Column(
           children: [
-            _wrapper(
-                "Type",
-                TabBar(
-                    isScrollable: true,
-                    controller: tabController,
-                    tabs: const [
-                      Tab(
-                        child: Text("S3"),
-                      ),
-                      Tab(
-                        child: Text("Webdav"),
-                      ),
-                    ])),
-            Expanded(
-                child: TabBarView(
-                    physics: const NeverScrollableScrollPhysics(),
-                    controller: tabController,
-                    children: [_s3ConfigWidget(), _webdavWidget()])),
+            _wrapper("Type", Text(widget.account.accountType.toStr())),
+            if (widget.account.accountType == AccountType.S3) _s3ConfigWidget(),
+            if (widget.account.accountType == AccountType.Webdav)
+              _webdavWidget(),
+            const Spacer(),
             Row(
               children: [
                 const Spacer(),
@@ -65,7 +45,8 @@ class _AddAccountDialogState extends ConsumerState<AddAccountDialog>
                           ..endpoint = s3endpointController.text
                           ..region = s3regionController.text
                           ..sessionKey = s3sessionKeyController.text
-                          ..sessionToken = s3SessionTokenController.text;
+                          ..sessionToken = s3SessionTokenController.text
+                          ..id = widget.account.id;
 
                         ref.read(accountProvider.notifier).addAccount(account);
                         Navigator.of(context).pop();
@@ -82,21 +63,27 @@ class _AddAccountDialogState extends ConsumerState<AddAccountDialog>
 
   final Color textColor = Colors.black;
 
-  final TextEditingController s3nameController = TextEditingController();
-  final TextEditingController s3endpointController = TextEditingController();
-  final s3endpointFocusNode = FocusNode();
-  final TextEditingController s3regionController = TextEditingController();
-  final s3regionFocusNode = FocusNode();
-  final TextEditingController s3accessKeyController = TextEditingController();
-  final s3accessKeyFocusNode = FocusNode();
-  final TextEditingController s3sessionKeyController = TextEditingController();
-  final s3sessionKeyFocusNode = FocusNode();
-  final TextEditingController s3SessionTokenController =
-      TextEditingController();
-  final s3sessionTokenFocusNode = FocusNode();
+  late final TextEditingController s3nameController = TextEditingController()
+    ..text = widget.account.name ?? "";
+  late final TextEditingController s3endpointController =
+      TextEditingController()..text = widget.account.endpoint ?? "";
+  late final s3endpointFocusNode = FocusNode();
+  late final TextEditingController s3regionController = TextEditingController()
+    ..text = widget.account.region ?? "";
+  late final s3regionFocusNode = FocusNode();
+  late final TextEditingController s3accessKeyController =
+      TextEditingController()..text = widget.account.accesskey ?? "";
+  late final s3accessKeyFocusNode = FocusNode();
+  late final TextEditingController s3sessionKeyController =
+      TextEditingController()..text = widget.account.sessionKey ?? "";
+  late final s3sessionKeyFocusNode = FocusNode();
+  late final TextEditingController s3SessionTokenController =
+      TextEditingController()..text = widget.account.sessionToken ?? "";
+  late final s3sessionTokenFocusNode = FocusNode();
 
-  final TextEditingController s3bucketController = TextEditingController();
-  final s3bucketFocusNode = FocusNode();
+  late final TextEditingController s3bucketController = TextEditingController()
+    ..text = widget.account.bucketname ?? "";
+  late final s3bucketFocusNode = FocusNode();
 
   final _formKey = GlobalKey<FormState>();
 
@@ -260,13 +247,17 @@ class _AddAccountDialogState extends ConsumerState<AddAccountDialog>
 
   final _webdavformKey = GlobalKey<FormState>();
 
-  final webdavNameController = TextEditingController();
+  late final webdavNameController = TextEditingController()
+    ..text = widget.account.name ?? "";
   final webdavUrlFocusNode = FocusNode();
-  final webdavUrlController = TextEditingController();
+  late final webdavUrlController = TextEditingController()
+    ..text = widget.account.url ?? "";
   final webdavUsernameFocusNode = FocusNode();
-  final webdavUsernameController = TextEditingController();
+  late final webdavUsernameController = TextEditingController()
+    ..text = widget.account.username ?? "";
   final webdavPwdFocusNode = FocusNode();
-  final webdavPwdController = TextEditingController();
+  late final webdavPwdController = TextEditingController()
+    ..text = widget.account.password ?? "";
 
   // tested on 坚果云
   Widget _webdavWidget() {
