@@ -180,7 +180,10 @@ class EncryptRecordsNotifier
           .limit(pageSize)
           .findAll();
       return EncryptRecordsState(
-          list: records.map((e) => EncryptRecord.fromModel(e)).toList(),
+          list: records
+              .map((e) => EncryptRecord.fromModel(e,
+                  transferRecords: e.transferRecords.toList()))
+              .toList(),
           pageId: state.value!.pageId - 1);
     });
   }
@@ -195,7 +198,10 @@ class EncryptRecordsNotifier
           .limit(pageSize)
           .findAll();
       return EncryptRecordsState(
-          list: records.map((e) => EncryptRecord.fromModel(e)).toList(),
+          list: records
+              .map((e) => EncryptRecord.fromModel(e,
+                  transferRecords: e.transferRecords.toList()))
+              .toList(),
           pageId: state.value!.pageId + 1);
     });
   }

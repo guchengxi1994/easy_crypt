@@ -27,6 +27,7 @@ Thanks to these wonderful packages.
 
 * [flutter](https://github.com/flutter/flutter)
 * [rust](https://github.com/rust-lang/rust)
+* [flutter_rust_bridge](https://github.com/fzyzcjy/flutter_rust_bridge)
 * [isar](https://github.com/isar/isar)
 * [riverpod](https://github.com/rrousselGit/riverpod)
 * [opendal](https://github.com/apache/opendal)
