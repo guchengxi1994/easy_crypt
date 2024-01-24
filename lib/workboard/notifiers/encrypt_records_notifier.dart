@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'dart:io';
 
-import 'package:easy_crypt/bridge/native.dart';
+import 'package:easy_crypt/src/rust/api/simple.dart' as api;
 import 'package:easy_crypt/isar/database.dart';
 import 'package:easy_crypt/isar/files.dart';
 import 'package:easy_crypt/isar/transfer_records.dart';

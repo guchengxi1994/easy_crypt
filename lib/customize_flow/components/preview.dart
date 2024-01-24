@@ -1,4 +1,4 @@
-import 'package:easy_crypt/bridge/native.dart';
+import 'package:easy_crypt/src/rust/api/simple.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_flow_chart/flutter_flow_chart.dart';
 // ignore: depend_on_referenced_packages
@@ -19,7 +19,7 @@ class PreviewState extends State<Preview> {
     children.clear();
     final List<String> operators = elements.map((e) => e.text).toList();
 
-    List<String> results = await api.flowPreview(operators: operators);
+    List<String> results = await flowPreview(operators: operators);
 
     children = elements
         .mapIndexed((i, e) => Container(

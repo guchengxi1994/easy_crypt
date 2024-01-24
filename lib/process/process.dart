@@ -1,12 +1,14 @@
 import 'dart:isolate';
 
-import 'package:easy_crypt/bridge/native.dart';
+import 'package:easy_crypt/src/rust/api/simple.dart' as api;
 import 'package:easy_crypt/common/dev_utils.dart';
 import 'package:easy_crypt/common/logger.dart';
 import 'package:easy_crypt/isar/account.dart';
 import 'package:easy_crypt/isar/database.dart';
 import 'package:easy_crypt/isar/files.dart';
 import 'package:easy_crypt/isar/transfer_records.dart';
+import 'package:easy_crypt/src/rust/frb_generated.dart';
+import 'package:easy_crypt/src/rust/process/encrypt.dart';
 import 'package:easy_crypt/workboard/notifiers/encrypt_records_notifier.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:isar/isar.dart';
@@ -57,10 +59,12 @@ class IsolateProcess {
 
   static void _execEncrypt(Message message) async {
     logger.info("new isolate start");
+    await RustLib.init();
     final s = await api.encrypt(
         saveDir: DevUtils.cachePath, files: message.paths, key: message.key);
     logger.info("new isolate finish");
     message.sendPort?.send(s);
+    RustLib.dispose();
   }
 
   static void upload(
@@ -113,6 +117,7 @@ class IsolateProcess {
 
   static void _upload(UploadMessage message) async {
     logger.info("new isolate start");
+    await RustLib.init();
     await api.uploadToS3WithConfig(
         endpoint: message.endpoint,
         bucketname: message.bucketname,
@@ -124,5 +129,7 @@ class IsolateProcess {
         sessionToken: message.sessionToken);
     logger.info("new isolate finish");
     message.sendPort?.send("ok");
+    RustLib.dispose();
+    logger.info("lib dispose");
   }
 }

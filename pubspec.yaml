@@ -20,7 +20,8 @@ dependencies:
       url: https://github.com/guchengxi1994/flutter_context_menu
   flutter_flow_chart: ^2.1.2
   flutter_riverpod: ^2.4.9
-  flutter_rust_bridge: 1.82.6
+  # flutter_rust_bridge: 1.82.6
+  flutter_rust_bridge: 2.0.0-dev.21
   flutter:
     sdk: flutter
   group_button: ^5.3.4
@@ -29,6 +30,8 @@ dependencies:
   logging: ^1.2.0
   open_file: ^3.3.2
   path_provider: ^2.1.2
+  rust_builder:
+    path: rust_builder
   shared_preferences: ^2.2.2
   slang: ^3.29.0  # dart run slang
   slang_flutter: ^3.29.0
@@ -49,11 +52,13 @@ dev_dependencies:
   flutter_lints: ^3.0.1
   build_runner: ^2.4.6
   build_runner_core: ^7.2.9
-  ffigen: ^9.0.0
+  ffigen: ^8.0.2
   freezed: ^2.3.2
   freezed_annotation: ^2.2.0
   isar_generator: ^3.1.0+1
   flutter_launcher_icons: ^0.13.1
+  integration_test:
+    sdk: flutter
 
 flutter:
   uses-material-design: true

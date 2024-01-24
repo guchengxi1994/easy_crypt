@@ -10,8 +10,10 @@ import 'package:logging/logging.dart';
 
 import 'app/run_desktop_app.dart';
 import 'isar/database.dart';
+import 'src/rust/frb_generated.dart';
 
 void main() async {
+  await RustLib.init();
   WidgetsFlutterBinding.ensureInitialized();
   Logger.root.level = Level.ALL; // defaults to Level.INFO
   Logger.root.onRecord.listen((record) {
