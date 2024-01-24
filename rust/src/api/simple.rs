@@ -1,7 +1,8 @@
 use crate::{
-    emit::{emitter::Emitter, MESSAGE_SINK}, frb_generated::StreamSink, process::transfer::{S3Client, Transfer, S3CLIENT}
+    emit::{emitter::Emitter, MESSAGE_SINK},
+    frb_generated::StreamSink,
+    process::transfer::{S3Client, Transfer, S3CLIENT},
 };
-
 
 #[flutter_rust_bridge::frb(sync)] // Synchronous mode for simplicity of the demo
 pub fn greet(name: String) -> String {
@@ -13,9 +14,6 @@ pub fn init_app() {
     // Default utilities - feel free to customize
     flutter_rust_bridge::setup_default_user_utils();
 }
-
-
-
 
 pub fn test_encrypt() {
     let r = crate::tests::encrypt_file_stream();
@@ -55,6 +53,23 @@ pub fn encrypt(
         save_dir,
     };
     let s = en.encrypt();
+    match s {
+        Ok(_s) => _s,
+        Err(e) => {
+            println!("[rust] error {:?}", e);
+            return "".to_owned();
+        }
+    }
+}
+
+pub fn decrypt(save_dir: String, path: String, key: String, file_type: Option<String>) -> String {
+    let de = crate::process::decrypt::Decrypt {
+        path,
+        key,
+        save_dir,
+        file_type,
+    };
+    let s = de.decrypt_file();
     match s {
         Ok(_s) => _s,
         Err(e) => {

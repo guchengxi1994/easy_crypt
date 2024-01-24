@@ -30,6 +30,15 @@ Future<String> encrypt(
     RustLib.instance.api
         .encrypt(saveDir: saveDir, files: files, key: key, hint: hint);
 
+Future<String> decrypt(
+        {required String saveDir,
+        required String path,
+        required String key,
+        String? fileType,
+        dynamic hint}) =>
+    RustLib.instance.api.decrypt(
+        saveDir: saveDir, path: path, key: key, fileType: fileType, hint: hint);
+
 Future<String> compress(
         {required List<String> paths, required String saveDir, dynamic hint}) =>
     RustLib.instance.api.compress(paths: paths, saveDir: saveDir, hint: hint);

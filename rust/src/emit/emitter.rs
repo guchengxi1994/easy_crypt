@@ -17,7 +17,7 @@ pub trait Emitter {
         match super::MESSAGE_SINK.try_read() {
             Ok(s) => match s.as_ref() {
                 Some(s0) => {
-                    s0.add(self.to_json());
+                    let _ = s0.add(self.to_json());
                 }
                 None => {
                     println!("[rust-error] Stream is None");

@@ -59,10 +59,12 @@ class IsolateProcess {
 
   static void _execEncrypt(Message message) async {
     logger.info("new isolate start");
+    await RustLib.init();
     final s = await api.encrypt(
         saveDir: DevUtils.cachePath, files: message.paths, key: message.key);
     logger.info("new isolate finish");
     message.sendPort?.send(s);
+    RustLib.dispose();
   }
 
   static void upload(
@@ -128,6 +130,6 @@ class IsolateProcess {
     logger.info("new isolate finish");
     message.sendPort?.send("ok");
     RustLib.dispose();
-    print("lib dispose");
+    logger.info("lib dispose");
   }
 }

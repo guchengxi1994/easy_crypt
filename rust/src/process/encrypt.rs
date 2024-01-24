@@ -10,7 +10,7 @@ use aes_gcm_siv::Aes256GcmSiv;
 use walkdir::WalkDir;
 use zip::write::FileOptions;
 
-use crate::emit::emitter::Emitter;
+use crate::{constants::CUSTOM_HEADER, emit::emitter::Emitter};
 
 #[derive(Debug, Clone)]
 pub struct EncryptItem {
@@ -186,6 +186,8 @@ impl Enctypt {
         let mut file = std::fs::File::open(p.clone())?;
         let mut file_save = std::fs::File::create(file_save_path.clone())?;
         let mut buffer = vec![0; crate::constants::ONE_MB.try_into().unwrap()];
+
+        file_save.write_all(CUSTOM_HEADER.as_bytes())?;
 
         let cipher = Aes256GcmSiv::new(self.key.as_bytes().into());
         let nonce = Nonce::from_slice(b"_EasyCrypt__"); // 96-bits; unique per message
