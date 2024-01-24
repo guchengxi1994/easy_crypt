@@ -3,7 +3,7 @@ import 'dart:convert';
 import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:easy_crypt/account/account_screen.dart';
 import 'package:easy_crypt/account/notifiers/account_notifier.dart';
-import 'package:easy_crypt/bridge/native.dart';
+import 'package:easy_crypt/src/rust/api/simple.dart';
 import 'package:easy_crypt/common/logger.dart';
 import 'package:easy_crypt/customize_flow/flow_screen.dart';
 import 'package:easy_crypt/gen/strings.g.dart';
@@ -32,7 +32,7 @@ const double minWidth = 70;
 const double maxWidth = 200;
 
 class _LayoutState extends ConsumerState<Layout> with TickerProviderStateMixin {
-  final stream = api.nativeMessageStream();
+  final stream = nativeMessageStream();
 
   late final notifier =
       ExpandCollapseNotifier(minWidth: minWidth, maxWidth: maxWidth);
