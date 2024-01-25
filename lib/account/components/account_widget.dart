@@ -128,7 +128,9 @@ class AccountWidget extends ConsumerWidget {
               const TextSpan(
                   text: "(It is better to have a session token)",
                   style: TextStyle(color: Colors.amberAccent)),
-            if (account.sessionToken != null && account.sessionToken != "")
+            if (account.sessionToken != null &&
+                account.sessionToken != "" &&
+                account.sessionToken!.length > 5)
               TextSpan(
                   text: account.sessionToken!.replaceRange(3, null, "***")),
           ])),

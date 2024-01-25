@@ -56,7 +56,7 @@ mod tests {
         Nonce, // Or `Aes128GcmSiv`
     };
     use once_cell::sync::Lazy;
-    use opendal::raw::oio::ReadExt;
+    use opendal::{raw::oio::ReadExt, EntryMode};
     use tokio::io::AsyncWriteExt;
     // use opendal::services::S3;
 
@@ -401,6 +401,33 @@ mod tests {
         let length = meta.content_length();
 
         println!("length  {:?}", length);
+
+        anyhow::Ok(())
+    }
+
+    #[tokio::test]
+    async fn opendal_minio_list_test() -> anyhow::Result<()> {
+        let op;
+
+        {
+            op = (*MINIO_OPERATOR.lock().unwrap()).clone();
+        }
+
+        let r = op.list_with("/").await?;
+
+        println!("{:?}", r.len());
+
+        for entry in r {
+            match entry.metadata().mode() {
+                EntryMode::FILE => {
+                    println!("Handling file")
+                }
+                EntryMode::DIR => {
+                    println!("Handling dir {}", entry.path())
+                }
+                EntryMode::Unknown => continue,
+            }
+        }
 
         anyhow::Ok(())
     }

@@ -1,8 +1,10 @@
 import 'package:easy_crypt/account/notifiers/account_notifier.dart';
+import 'package:easy_crypt/common/toast_utils.dart';
 import 'package:easy_crypt/isar/account.dart';
 import 'package:easy_crypt/style/app_style.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:easy_crypt/src/rust/api/s3.dart' as s3;
 
 class AddAccountDialog extends ConsumerStatefulWidget {
   const AddAccountDialog({super.key});
@@ -20,6 +22,8 @@ class _AddAccountDialogState extends ConsumerState<AddAccountDialog>
     super.initState();
     tabController = TabController(length: 2, vsync: this);
   }
+
+  bool isChecking = false;
 
   @override
   Widget build(BuildContext context) {
@@ -55,8 +59,51 @@ class _AddAccountDialogState extends ConsumerState<AddAccountDialog>
               children: [
                 const Spacer(),
                 TextButton(
+                    onPressed: isChecking
+                        ? null
+                        : () {
+                            if (tabController.index == 0 &&
+                                _formKey.currentState!.validate()) {
+                              setState(() {
+                                isChecking = true;
+                              });
+
+                              s3
+                                  .checkAccountAvailable(
+                                      endpoint: s3endpointController.text,
+                                      bucketname: s3bucketController.text,
+                                      accessKey: s3accessKeyController.text,
+                                      sessionKey: s3sessionKeyController.text,
+                                      region: s3regionController.text,
+                                      sessionToken:
+                                          s3SessionTokenController.text)
+                                  .then((value) {
+                                if (value) {
+                                  ToastUtils.sucess(context, title: "checked");
+                                } else {
+                                  ToastUtils.error(context,
+                                      title: "not available");
+                                }
+                              }).then((value) {
+                                setState(() {
+                                  isChecking = false;
+                                });
+                              });
+                            }
+                          },
+                    child: isChecking
+                        ? const SizedBox.square(
+                            dimension: 20,
+                            child: CircularProgressIndicator(),
+                          )
+                        : const Text("Check")),
+                const SizedBox(
+                  width: 20,
+                ),
+                TextButton(
                     onPressed: () {
-                      if (_formKey.currentState!.validate()) {
+                      if (tabController.index == 0 &&
+                          _formKey.currentState!.validate()) {
                         Account account = Account()
                           ..accesskey = s3accessKeyController.text
                           ..accountType = AccountType.S3
@@ -173,7 +220,7 @@ class _AddAccountDialogState extends ConsumerState<AddAccountDialog>
                   "access key",
                   TextFormField(
                     validator: (value) {
-                      if (value == null || value == "") {
+                      if (value == null || value == "" || value.length < 5) {
                         return "";
                       }
                       return null;
@@ -193,7 +240,7 @@ class _AddAccountDialogState extends ConsumerState<AddAccountDialog>
                   "session key",
                   TextFormField(
                     validator: (value) {
-                      if (value == null || value == "") {
+                      if (value == null || value == "" || value.length < 5) {
                         return "";
                       }
                       return null;

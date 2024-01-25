@@ -86,9 +86,15 @@ impl S3Client {
             Err(_) => None,
         }
     }
+
+    pub async fn check_available(&self) -> bool {
+        let r = self.op.list_with("/").await;
+        return r.is_ok();
+    }
 }
 
 impl S3Client {
+    // used , remove later
     pub fn init(
         endpoint: String,
         bucketname: String,
