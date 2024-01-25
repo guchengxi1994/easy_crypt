@@ -11,6 +11,7 @@ import 'dart:convert';
 import 'frb_generated.dart';
 import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated_web.dart';
 import 'process/encrypt.dart';
+import 'process/transfer.dart';
 
 abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   RustLibApiImplPlatform({
@@ -33,6 +34,15 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   EncryptItem dco_decode_encrypt_item(dynamic raw);
 
   @protected
+  Entry dco_decode_entry(dynamic raw);
+
+  @protected
+  EntryType dco_decode_entry_type(dynamic raw);
+
+  @protected
+  int dco_decode_i_32(dynamic raw);
+
+  @protected
   int dco_decode_i_64(dynamic raw);
 
   @protected
@@ -40,6 +50,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   List<EncryptItem> dco_decode_list_encrypt_item(dynamic raw);
+
+  @protected
+  List<Entry> dco_decode_list_entry(dynamic raw);
 
   @protected
   Uint8List dco_decode_list_prim_u_8_strict(dynamic raw);
@@ -66,6 +79,15 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   EncryptItem sse_decode_encrypt_item(SseDeserializer deserializer);
 
   @protected
+  Entry sse_decode_entry(SseDeserializer deserializer);
+
+  @protected
+  EntryType sse_decode_entry_type(SseDeserializer deserializer);
+
+  @protected
+  int sse_decode_i_32(SseDeserializer deserializer);
+
+  @protected
   int sse_decode_i_64(SseDeserializer deserializer);
 
   @protected
@@ -73,6 +95,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   List<EncryptItem> sse_decode_list_encrypt_item(SseDeserializer deserializer);
+
+  @protected
+  List<Entry> sse_decode_list_entry(SseDeserializer deserializer);
 
   @protected
   Uint8List sse_decode_list_prim_u_8_strict(SseDeserializer deserializer);
@@ -85,9 +110,6 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   void sse_decode_unit(SseDeserializer deserializer);
-
-  @protected
-  int sse_decode_i_32(SseDeserializer deserializer);
 
   @protected
   void sse_encode_AnyhowException(
@@ -103,6 +125,15 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   void sse_encode_encrypt_item(EncryptItem self, SseSerializer serializer);
 
   @protected
+  void sse_encode_entry(Entry self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_entry_type(EntryType self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_i_32(int self, SseSerializer serializer);
+
+  @protected
   void sse_encode_i_64(int self, SseSerializer serializer);
 
   @protected
@@ -111,6 +142,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   @protected
   void sse_encode_list_encrypt_item(
       List<EncryptItem> self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_list_entry(List<Entry> self, SseSerializer serializer);
 
   @protected
   void sse_encode_list_prim_u_8_strict(
@@ -124,9 +158,6 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   void sse_encode_unit(void self, SseSerializer serializer);
-
-  @protected
-  void sse_encode_i_32(int self, SseSerializer serializer);
 }
 
 // Section: wire_class

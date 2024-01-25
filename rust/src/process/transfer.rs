@@ -39,6 +39,16 @@ pub trait Transfer {
 // a global `S3Client`
 pub static S3CLIENT: Lazy<RwLock<Option<S3Client>>> = Lazy::new(|| RwLock::new(None));
 
+pub enum EntryType {
+    File,
+    Folder,
+}
+
+pub struct Entry {
+    pub _type: EntryType,
+    pub path: String,
+}
+
 pub struct S3Client {
     pub endpoint: String,
     pub bucketname: String,
@@ -91,10 +101,38 @@ impl S3Client {
         let r = self.op.list_with("/").await;
         return r.is_ok();
     }
+
+    pub async fn list_objs(&self, path: String) -> Vec<Entry> {
+        let r = self.op.list_with(&path).await;
+        match r {
+            Ok(_r) => {
+                let mut v = Vec::new();
+
+                for i in _r {
+                    if i.metadata().is_dir() {
+                        v.push(Entry {
+                            _type: EntryType::Folder,
+                            path: i.path().to_owned(),
+                        });
+                    } else {
+                        v.push(Entry {
+                            _type: EntryType::File,
+                            path: i.path().to_owned(),
+                        });
+                    }
+                }
+
+                v
+            }
+            Err(_) => {
+                vec![]
+            }
+        }
+    }
 }
 
 impl S3Client {
-    // used , remove later
+    // unused , remove later
     pub fn init(
         endpoint: String,
         bucketname: String,

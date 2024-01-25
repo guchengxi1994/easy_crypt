@@ -9,7 +9,7 @@ use std::{
 
 use crate::{
     emit::emitter::Emitter,
-    process::transfer::{S3Client, Transfer, S3CLIENT},
+    process::transfer::{Entry, S3Client, Transfer, S3CLIENT},
 };
 
 // used , remove later
@@ -136,9 +136,6 @@ pub fn generate_pregisn_url(
     })
 }
 
-#[derive(Clone, Debug, Copy)]
-pub struct CheckAccount(bool);
-
 #[allow(unused_variables)]
 pub fn check_account_available(
     endpoint: String,
@@ -176,7 +173,7 @@ pub fn check_account_available(
         // _val = Arc::new(AtomicBool::new(binding));
         let _ = _val.fetch_update(Ordering::SeqCst, Ordering::SeqCst, |_| Some(binding));
 
-        println!("_val {:?}",_val);
+        println!("_val {:?}", _val);
     });
 
     let _ = handle.join();
@@ -184,4 +181,79 @@ pub fn check_account_available(
     // r.load(Ordering::SeqCst)
     let r = Arc::clone(&val);
     r.load(Ordering::SeqCst)
+}
+
+#[allow(unused_assignments)]
+pub fn list_objects(
+    endpoint: String,
+    bucketname: String,
+    access_key: String,
+    session_key: String,
+    session_token: Option<String>,
+    region: String,
+    path: String,
+    use_global: bool,
+) -> Vec<Entry> {
+    if use_global {
+        let mut need_reinit: bool = false;
+        {
+            let client = S3CLIENT.read().unwrap();
+            match (*client).as_ref() {
+                Some(_c) => {
+                    need_reinit = _c.access_key != access_key;
+                }
+                None => {
+                    need_reinit = true;
+                }
+            }
+        }
+
+        if need_reinit {
+            {
+                S3Client::init(
+                    endpoint,
+                    bucketname,
+                    access_key,
+                    session_key,
+                    session_token,
+                    region,
+                );
+            }
+        }
+
+        let rt = tokio::runtime::Runtime::new().unwrap();
+
+        let result = rt.block_on(async {
+            let client = S3CLIENT.read().unwrap();
+
+            match (*client).as_ref() {
+                Some(_c) => {
+                    return _c.list_objs(path).await;
+                }
+                None => {
+                    return vec![];
+                }
+            }
+        });
+
+        return result;
+    } else {
+        let rt = tokio::runtime::Runtime::new().unwrap();
+        let result = rt.block_on(async {
+            let client = S3Client::from(
+                endpoint,
+                bucketname,
+                access_key,
+                session_key,
+                session_token,
+                region,
+            );
+            if let Some(_cli) = client {
+                return _cli.list_objs(path).await;
+            }
+
+            return vec![];
+        });
+        return result;
+    }
 }

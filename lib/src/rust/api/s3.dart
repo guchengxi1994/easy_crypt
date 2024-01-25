@@ -4,6 +4,7 @@
 // ignore_for_file: invalid_use_of_internal_member, unused_import, unnecessary_import
 
 import '../frb_generated.dart';
+import '../process/transfer.dart';
 import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated.dart';
 
 Future<void> initS3Client(
@@ -90,4 +91,25 @@ Future<bool> checkAccountAvailable(
         sessionKey: sessionKey,
         sessionToken: sessionToken,
         region: region,
+        hint: hint);
+
+Future<List<Entry>> listObjects(
+        {required String endpoint,
+        required String bucketname,
+        required String accessKey,
+        required String sessionKey,
+        String? sessionToken,
+        required String region,
+        required String path,
+        required bool useGlobal,
+        dynamic hint}) =>
+    RustLib.instance.api.listObjects(
+        endpoint: endpoint,
+        bucketname: bucketname,
+        accessKey: accessKey,
+        sessionKey: sessionKey,
+        sessionToken: sessionToken,
+        region: region,
+        path: path,
+        useGlobal: useGlobal,
         hint: hint);

@@ -1,5 +1,6 @@
 import 'package:easy_crypt/account/components/modify_account_dialog.dart';
 import 'package:easy_crypt/account/notifiers/account_notifier.dart';
+import 'package:easy_crypt/file_system/s3.dart';
 import 'package:easy_crypt/isar/account.dart';
 import 'package:easy_crypt/style/app_style.dart';
 import 'package:flutter/material.dart';
@@ -51,6 +52,31 @@ class AccountWidget extends ConsumerWidget {
                 overflow: TextOverflow.ellipsis,
               ),
               const Spacer(),
+              InkWell(
+                child: const Icon(
+                  Icons.preview,
+                  color: Colors.blue,
+                ),
+                onTap: () {
+                  showGeneralDialog(
+                      barrierDismissible: true,
+                      barrierLabel: "s3preview",
+                      context: context,
+                      pageBuilder: (c, _, __) {
+                        return Center(
+                          child: S3FilePreview(
+                              accesskey: account.accesskey!,
+                              bucketname: account.bucketname!,
+                              endpoint: account.endpoint!,
+                              sessionToken: account.sessionToken,
+                              sessionkey: account.sessionKey!),
+                        );
+                      });
+                },
+              ),
+              const SizedBox(
+                width: 10,
+              ),
               InkWell(
                 child: const Icon(
                   Icons.change_circle,
