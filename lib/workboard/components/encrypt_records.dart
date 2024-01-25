@@ -4,7 +4,8 @@ import 'package:data_table_2/data_table_2.dart';
 import 'package:date_format/date_format.dart';
 import 'package:desktop_drop/desktop_drop.dart';
 import 'package:easy_crypt/account/notifiers/account_notifier.dart';
-import 'package:easy_crypt/src/rust/api/simple.dart' as api;
+import 'package:easy_crypt/src/rust/api/crypt.dart' as crypt;
+import 'package:easy_crypt/src/rust/api/s3.dart' as s3;
 import 'package:easy_crypt/common/clipboard_utils.dart';
 import 'package:easy_crypt/common/dev_utils.dart';
 import 'package:easy_crypt/common/replace_name.dart';
@@ -277,33 +278,32 @@ class _EncryptRecordsWidgetState extends ConsumerState<EncryptRecordsWidget> {
                                                         // print(e.to);
                                                         if (e.toType ==
                                                             StorageType.S3) {
-                                                          final url = await api
-                                                              .generatePregisnUrl(
-                                                                  endpoint: e
-                                                                      .account
-                                                                      .value!
-                                                                      .endpoint!,
-                                                                  bucketname: e
-                                                                      .account
-                                                                      .value!
-                                                                      .bucketname!,
-                                                                  accessKey: e
-                                                                      .account
-                                                                      .value!
-                                                                      .accesskey!,
-                                                                  sessionKey: e
-                                                                      .account
-                                                                      .value!
-                                                                      .sessionKey!,
-                                                                  region: e
-                                                                      .account
-                                                                      .value!
-                                                                      .region!,
-                                                                  sessionToken: e
-                                                                      .account
-                                                                      .value!
-                                                                      .sessionToken!,
-                                                                  obj: e.to!);
+                                                          final url = await s3.generatePregisnUrl(
+                                                              endpoint: e
+                                                                  .account
+                                                                  .value!
+                                                                  .endpoint!,
+                                                              bucketname: e
+                                                                  .account
+                                                                  .value!
+                                                                  .bucketname!,
+                                                              accessKey: e
+                                                                  .account
+                                                                  .value!
+                                                                  .accesskey!,
+                                                              sessionKey: e
+                                                                  .account
+                                                                  .value!
+                                                                  .sessionKey!,
+                                                              region: e
+                                                                  .account
+                                                                  .value!
+                                                                  .region!,
+                                                              sessionToken: e
+                                                                  .account
+                                                                  .value!
+                                                                  .sessionToken!,
+                                                              obj: e.to!);
                                                           if (url != null) {
                                                             await copyToClipboard(
                                                                 url);
@@ -393,7 +393,7 @@ class _EncryptRecordsWidgetState extends ConsumerState<EncryptRecordsWidget> {
               InkWell(
                 onTap: () {
                   /// TODO use isolate
-                  api
+                  crypt
                       .encrypt(
                           saveDir: DevUtils.cachePath,
                           files: [

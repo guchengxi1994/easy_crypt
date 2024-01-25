@@ -1,6 +1,7 @@
 import 'dart:isolate';
 
-import 'package:easy_crypt/src/rust/api/simple.dart' as api;
+import 'package:easy_crypt/src/rust/api/crypt.dart' as crypt;
+import 'package:easy_crypt/src/rust/api/s3.dart' as s3;
 import 'package:easy_crypt/common/dev_utils.dart';
 import 'package:easy_crypt/common/logger.dart';
 import 'package:easy_crypt/isar/account.dart';
@@ -60,7 +61,7 @@ class IsolateProcess {
   static void _execEncrypt(Message message) async {
     logger.info("new isolate start");
     await RustLib.init();
-    final s = await api.encrypt(
+    final s = await crypt.encrypt(
         saveDir: DevUtils.cachePath, files: message.paths, key: message.key);
     logger.info("new isolate finish");
     message.sendPort?.send(s);
@@ -118,7 +119,7 @@ class IsolateProcess {
   static void _upload(UploadMessage message) async {
     logger.info("new isolate start");
     await RustLib.init();
-    await api.uploadToS3WithConfig(
+    await s3.uploadToS3WithConfig(
         endpoint: message.endpoint,
         bucketname: message.bucketname,
         accessKey: message.accessKey,

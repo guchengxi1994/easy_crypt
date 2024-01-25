@@ -65,7 +65,7 @@ fn wire_compress_impl(
             deserializer.end();
             move |context| {
                 transform_result_sse((move || {
-                    Result::<_, ()>::Ok(crate::api::simple::compress(api_paths, api_save_dir))
+                    Result::<_, ()>::Ok(crate::api::crypt::compress(api_paths, api_save_dir))
                 })())
             }
         },
@@ -100,7 +100,7 @@ fn wire_decrypt_impl(
             deserializer.end();
             move |context| {
                 transform_result_sse((move || {
-                    Result::<_, ()>::Ok(crate::api::simple::decrypt(
+                    Result::<_, ()>::Ok(crate::api::crypt::decrypt(
                         api_save_dir,
                         api_path,
                         api_key,
@@ -136,40 +136,7 @@ fn wire_default_key_impl(
             deserializer.end();
             move |context| {
                 transform_result_sse((move || {
-                    Result::<_, ()>::Ok(crate::api::simple::default_key())
-                })())
-            }
-        },
-    )
-}
-fn wire_download_from_s3_impl(
-    port_: flutter_rust_bridge::for_generated::MessagePort,
-    ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,
-    rust_vec_len_: i32,
-    data_len_: i32,
-) {
-    FLUTTER_RUST_BRIDGE_HANDLER.wrap_normal::<flutter_rust_bridge::for_generated::SseCodec, _, _>(
-        flutter_rust_bridge::for_generated::TaskInfo {
-            debug_name: "download_from_s3",
-            port: Some(port_),
-            mode: flutter_rust_bridge::for_generated::FfiCallMode::Normal,
-        },
-        move || {
-            let message = unsafe {
-                flutter_rust_bridge::for_generated::Dart2RustMessageSse::from_wire(
-                    ptr_,
-                    rust_vec_len_,
-                    data_len_,
-                )
-            };
-            let mut deserializer =
-                flutter_rust_bridge::for_generated::SseDeserializer::new(message);
-            let api_p = <String>::sse_decode(&mut deserializer);
-            let api_obj = <String>::sse_decode(&mut deserializer);
-            deserializer.end();
-            move |context| {
-                transform_result_sse((move || {
-                    Result::<_, ()>::Ok(crate::api::simple::download_from_s3(api_p, api_obj))
+                    Result::<_, ()>::Ok(crate::api::crypt::default_key())
                 })())
             }
         },
@@ -204,7 +171,7 @@ fn wire_encrypt_impl(
             deserializer.end();
             move |context| {
                 transform_result_sse((move || {
-                    Result::<_, ()>::Ok(crate::api::simple::encrypt(
+                    Result::<_, ()>::Ok(crate::api::crypt::encrypt(
                         api_save_dir,
                         api_files,
                         api_key,
@@ -240,7 +207,115 @@ fn wire_flow_preview_impl(
             deserializer.end();
             move |context| {
                 transform_result_sse((move || {
-                    Result::<_, ()>::Ok(crate::api::simple::flow_preview(api_operators))
+                    Result::<_, ()>::Ok(crate::api::crypt::flow_preview(api_operators))
+                })())
+            }
+        },
+    )
+}
+fn wire_random_key_impl(
+    port_: flutter_rust_bridge::for_generated::MessagePort,
+    ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,
+    rust_vec_len_: i32,
+    data_len_: i32,
+) {
+    FLUTTER_RUST_BRIDGE_HANDLER.wrap_normal::<flutter_rust_bridge::for_generated::SseCodec, _, _>(
+        flutter_rust_bridge::for_generated::TaskInfo {
+            debug_name: "random_key",
+            port: Some(port_),
+            mode: flutter_rust_bridge::for_generated::FfiCallMode::Normal,
+        },
+        move || {
+            let message = unsafe {
+                flutter_rust_bridge::for_generated::Dart2RustMessageSse::from_wire(
+                    ptr_,
+                    rust_vec_len_,
+                    data_len_,
+                )
+            };
+            let mut deserializer =
+                flutter_rust_bridge::for_generated::SseDeserializer::new(message);
+            deserializer.end();
+            move |context| {
+                transform_result_sse((move || {
+                    Result::<_, ()>::Ok(crate::api::crypt::random_key())
+                })())
+            }
+        },
+    )
+}
+fn wire_check_account_available_impl(
+    port_: flutter_rust_bridge::for_generated::MessagePort,
+    ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,
+    rust_vec_len_: i32,
+    data_len_: i32,
+) {
+    FLUTTER_RUST_BRIDGE_HANDLER.wrap_normal::<flutter_rust_bridge::for_generated::SseCodec, _, _>(
+        flutter_rust_bridge::for_generated::TaskInfo {
+            debug_name: "check_account_available",
+            port: Some(port_),
+            mode: flutter_rust_bridge::for_generated::FfiCallMode::Normal,
+        },
+        move || {
+            let message = unsafe {
+                flutter_rust_bridge::for_generated::Dart2RustMessageSse::from_wire(
+                    ptr_,
+                    rust_vec_len_,
+                    data_len_,
+                )
+            };
+            let mut deserializer =
+                flutter_rust_bridge::for_generated::SseDeserializer::new(message);
+            let api_endpoint = <String>::sse_decode(&mut deserializer);
+            let api_bucketname = <String>::sse_decode(&mut deserializer);
+            let api_access_key = <String>::sse_decode(&mut deserializer);
+            let api_session_key = <String>::sse_decode(&mut deserializer);
+            let api_session_token = <Option<String>>::sse_decode(&mut deserializer);
+            let api_region = <String>::sse_decode(&mut deserializer);
+            deserializer.end();
+            move |context| {
+                transform_result_sse((move || {
+                    Result::<_, ()>::Ok(crate::api::s3::check_account_available(
+                        api_endpoint,
+                        api_bucketname,
+                        api_access_key,
+                        api_session_key,
+                        api_session_token,
+                        api_region,
+                    ))
+                })())
+            }
+        },
+    )
+}
+fn wire_download_from_s3_impl(
+    port_: flutter_rust_bridge::for_generated::MessagePort,
+    ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,
+    rust_vec_len_: i32,
+    data_len_: i32,
+) {
+    FLUTTER_RUST_BRIDGE_HANDLER.wrap_normal::<flutter_rust_bridge::for_generated::SseCodec, _, _>(
+        flutter_rust_bridge::for_generated::TaskInfo {
+            debug_name: "download_from_s3",
+            port: Some(port_),
+            mode: flutter_rust_bridge::for_generated::FfiCallMode::Normal,
+        },
+        move || {
+            let message = unsafe {
+                flutter_rust_bridge::for_generated::Dart2RustMessageSse::from_wire(
+                    ptr_,
+                    rust_vec_len_,
+                    data_len_,
+                )
+            };
+            let mut deserializer =
+                flutter_rust_bridge::for_generated::SseDeserializer::new(message);
+            let api_p = <String>::sse_decode(&mut deserializer);
+            let api_obj = <String>::sse_decode(&mut deserializer);
+            deserializer.end();
+            move |context| {
+                transform_result_sse((move || {
+                    Result::<_, ()>::Ok(crate::api::s3::download_from_s3(api_p, api_obj))
                 })())
             }
         },
@@ -278,13 +353,186 @@ fn wire_generate_pregisn_url_impl(
             deserializer.end();
             move |context| {
                 transform_result_sse((move || {
-                    Result::<_, ()>::Ok(crate::api::simple::generate_pregisn_url(
+                    Result::<_, ()>::Ok(crate::api::s3::generate_pregisn_url(
                         api_endpoint,
                         api_bucketname,
                         api_access_key,
                         api_session_key,
                         api_session_token,
                         api_region,
+                        api_obj,
+                    ))
+                })())
+            }
+        },
+    )
+}
+fn wire_init_s3_client_impl(
+    port_: flutter_rust_bridge::for_generated::MessagePort,
+    ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,
+    rust_vec_len_: i32,
+    data_len_: i32,
+) {
+    FLUTTER_RUST_BRIDGE_HANDLER.wrap_normal::<flutter_rust_bridge::for_generated::SseCodec, _, _>(
+        flutter_rust_bridge::for_generated::TaskInfo {
+            debug_name: "init_s3_client",
+            port: Some(port_),
+            mode: flutter_rust_bridge::for_generated::FfiCallMode::Normal,
+        },
+        move || {
+            let message = unsafe {
+                flutter_rust_bridge::for_generated::Dart2RustMessageSse::from_wire(
+                    ptr_,
+                    rust_vec_len_,
+                    data_len_,
+                )
+            };
+            let mut deserializer =
+                flutter_rust_bridge::for_generated::SseDeserializer::new(message);
+            let api_endpoint = <String>::sse_decode(&mut deserializer);
+            let api_bucketname = <String>::sse_decode(&mut deserializer);
+            let api_access_key = <String>::sse_decode(&mut deserializer);
+            let api_session_key = <String>::sse_decode(&mut deserializer);
+            let api_session_token = <Option<String>>::sse_decode(&mut deserializer);
+            let api_region = <String>::sse_decode(&mut deserializer);
+            deserializer.end();
+            move |context| {
+                transform_result_sse((move || {
+                    Result::<_, ()>::Ok(crate::api::s3::init_s3_client(
+                        api_endpoint,
+                        api_bucketname,
+                        api_access_key,
+                        api_session_key,
+                        api_session_token,
+                        api_region,
+                    ))
+                })())
+            }
+        },
+    )
+}
+fn wire_list_objects_impl(
+    port_: flutter_rust_bridge::for_generated::MessagePort,
+    ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,
+    rust_vec_len_: i32,
+    data_len_: i32,
+) {
+    FLUTTER_RUST_BRIDGE_HANDLER.wrap_normal::<flutter_rust_bridge::for_generated::SseCodec, _, _>(
+        flutter_rust_bridge::for_generated::TaskInfo {
+            debug_name: "list_objects",
+            port: Some(port_),
+            mode: flutter_rust_bridge::for_generated::FfiCallMode::Normal,
+        },
+        move || {
+            let message = unsafe {
+                flutter_rust_bridge::for_generated::Dart2RustMessageSse::from_wire(
+                    ptr_,
+                    rust_vec_len_,
+                    data_len_,
+                )
+            };
+            let mut deserializer =
+                flutter_rust_bridge::for_generated::SseDeserializer::new(message);
+            let api_endpoint = <String>::sse_decode(&mut deserializer);
+            let api_bucketname = <String>::sse_decode(&mut deserializer);
+            let api_access_key = <String>::sse_decode(&mut deserializer);
+            let api_session_key = <String>::sse_decode(&mut deserializer);
+            let api_session_token = <Option<String>>::sse_decode(&mut deserializer);
+            let api_region = <String>::sse_decode(&mut deserializer);
+            let api_path = <String>::sse_decode(&mut deserializer);
+            let api_use_global = <bool>::sse_decode(&mut deserializer);
+            deserializer.end();
+            move |context| {
+                transform_result_sse((move || {
+                    Result::<_, ()>::Ok(crate::api::s3::list_objects(
+                        api_endpoint,
+                        api_bucketname,
+                        api_access_key,
+                        api_session_key,
+                        api_session_token,
+                        api_region,
+                        api_path,
+                        api_use_global,
+                    ))
+                })())
+            }
+        },
+    )
+}
+fn wire_upload_to_s3_impl(
+    port_: flutter_rust_bridge::for_generated::MessagePort,
+    ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,
+    rust_vec_len_: i32,
+    data_len_: i32,
+) {
+    FLUTTER_RUST_BRIDGE_HANDLER.wrap_normal::<flutter_rust_bridge::for_generated::SseCodec, _, _>(
+        flutter_rust_bridge::for_generated::TaskInfo {
+            debug_name: "upload_to_s3",
+            port: Some(port_),
+            mode: flutter_rust_bridge::for_generated::FfiCallMode::Normal,
+        },
+        move || {
+            let message = unsafe {
+                flutter_rust_bridge::for_generated::Dart2RustMessageSse::from_wire(
+                    ptr_,
+                    rust_vec_len_,
+                    data_len_,
+                )
+            };
+            let mut deserializer =
+                flutter_rust_bridge::for_generated::SseDeserializer::new(message);
+            let api_p = <String>::sse_decode(&mut deserializer);
+            let api_obj = <String>::sse_decode(&mut deserializer);
+            deserializer.end();
+            move |context| {
+                transform_result_sse((move || {
+                    Result::<_, ()>::Ok(crate::api::s3::upload_to_s3(api_p, api_obj))
+                })())
+            }
+        },
+    )
+}
+fn wire_upload_to_s3_with_config_impl(
+    port_: flutter_rust_bridge::for_generated::MessagePort,
+    ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,
+    rust_vec_len_: i32,
+    data_len_: i32,
+) {
+    FLUTTER_RUST_BRIDGE_HANDLER.wrap_normal::<flutter_rust_bridge::for_generated::SseCodec, _, _>(
+        flutter_rust_bridge::for_generated::TaskInfo {
+            debug_name: "upload_to_s3_with_config",
+            port: Some(port_),
+            mode: flutter_rust_bridge::for_generated::FfiCallMode::Normal,
+        },
+        move || {
+            let message = unsafe {
+                flutter_rust_bridge::for_generated::Dart2RustMessageSse::from_wire(
+                    ptr_,
+                    rust_vec_len_,
+                    data_len_,
+                )
+            };
+            let mut deserializer =
+                flutter_rust_bridge::for_generated::SseDeserializer::new(message);
+            let api_endpoint = <String>::sse_decode(&mut deserializer);
+            let api_bucketname = <String>::sse_decode(&mut deserializer);
+            let api_access_key = <String>::sse_decode(&mut deserializer);
+            let api_session_key = <String>::sse_decode(&mut deserializer);
+            let api_session_token = <Option<String>>::sse_decode(&mut deserializer);
+            let api_region = <String>::sse_decode(&mut deserializer);
+            let api_p = <String>::sse_decode(&mut deserializer);
+            let api_obj = <String>::sse_decode(&mut deserializer);
+            deserializer.end();
+            move |context| {
+                transform_result_sse((move || {
+                    Result::<_, ()>::Ok(crate::api::s3::upload_to_s3_with_config(
+                        api_endpoint,
+                        api_bucketname,
+                        api_access_key,
+                        api_session_key,
+                        api_session_token,
+                        api_region,
+                        api_p,
                         api_obj,
                     ))
                 })())
@@ -352,50 +600,6 @@ fn wire_init_app_impl(
         },
     )
 }
-fn wire_init_s3_client_impl(
-    port_: flutter_rust_bridge::for_generated::MessagePort,
-    ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,
-    rust_vec_len_: i32,
-    data_len_: i32,
-) {
-    FLUTTER_RUST_BRIDGE_HANDLER.wrap_normal::<flutter_rust_bridge::for_generated::SseCodec, _, _>(
-        flutter_rust_bridge::for_generated::TaskInfo {
-            debug_name: "init_s3_client",
-            port: Some(port_),
-            mode: flutter_rust_bridge::for_generated::FfiCallMode::Normal,
-        },
-        move || {
-            let message = unsafe {
-                flutter_rust_bridge::for_generated::Dart2RustMessageSse::from_wire(
-                    ptr_,
-                    rust_vec_len_,
-                    data_len_,
-                )
-            };
-            let mut deserializer =
-                flutter_rust_bridge::for_generated::SseDeserializer::new(message);
-            let api_endpoint = <String>::sse_decode(&mut deserializer);
-            let api_bucketname = <String>::sse_decode(&mut deserializer);
-            let api_access_key = <String>::sse_decode(&mut deserializer);
-            let api_session_key = <String>::sse_decode(&mut deserializer);
-            let api_session_token = <Option<String>>::sse_decode(&mut deserializer);
-            let api_region = <String>::sse_decode(&mut deserializer);
-            deserializer.end();
-            move |context| {
-                transform_result_sse((move || {
-                    Result::<_, ()>::Ok(crate::api::simple::init_s3_client(
-                        api_endpoint,
-                        api_bucketname,
-                        api_access_key,
-                        api_session_key,
-                        api_session_token,
-                        api_region,
-                    ))
-                })())
-            }
-        },
-    )
-}
 fn wire_native_message_stream_impl(
     port_: flutter_rust_bridge::for_generated::MessagePort,
     ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,
@@ -424,37 +628,6 @@ fn wire_native_message_stream_impl(
                     crate::api::simple::native_message_stream(StreamSink::new(
                         context.rust2dart_context().stream_sink::<_, String>(),
                     ))
-                })())
-            }
-        },
-    )
-}
-fn wire_random_key_impl(
-    port_: flutter_rust_bridge::for_generated::MessagePort,
-    ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,
-    rust_vec_len_: i32,
-    data_len_: i32,
-) {
-    FLUTTER_RUST_BRIDGE_HANDLER.wrap_normal::<flutter_rust_bridge::for_generated::SseCodec, _, _>(
-        flutter_rust_bridge::for_generated::TaskInfo {
-            debug_name: "random_key",
-            port: Some(port_),
-            mode: flutter_rust_bridge::for_generated::FfiCallMode::Normal,
-        },
-        move || {
-            let message = unsafe {
-                flutter_rust_bridge::for_generated::Dart2RustMessageSse::from_wire(
-                    ptr_,
-                    rust_vec_len_,
-                    data_len_,
-                )
-            };
-            let mut deserializer =
-                flutter_rust_bridge::for_generated::SseDeserializer::new(message);
-            deserializer.end();
-            move |context| {
-                transform_result_sse((move || {
-                    Result::<_, ()>::Ok(crate::api::simple::random_key())
                 })())
             }
         },
@@ -491,87 +664,6 @@ fn wire_test_encrypt_impl(
         },
     )
 }
-fn wire_upload_to_s3_impl(
-    port_: flutter_rust_bridge::for_generated::MessagePort,
-    ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,
-    rust_vec_len_: i32,
-    data_len_: i32,
-) {
-    FLUTTER_RUST_BRIDGE_HANDLER.wrap_normal::<flutter_rust_bridge::for_generated::SseCodec, _, _>(
-        flutter_rust_bridge::for_generated::TaskInfo {
-            debug_name: "upload_to_s3",
-            port: Some(port_),
-            mode: flutter_rust_bridge::for_generated::FfiCallMode::Normal,
-        },
-        move || {
-            let message = unsafe {
-                flutter_rust_bridge::for_generated::Dart2RustMessageSse::from_wire(
-                    ptr_,
-                    rust_vec_len_,
-                    data_len_,
-                )
-            };
-            let mut deserializer =
-                flutter_rust_bridge::for_generated::SseDeserializer::new(message);
-            let api_p = <String>::sse_decode(&mut deserializer);
-            let api_obj = <String>::sse_decode(&mut deserializer);
-            deserializer.end();
-            move |context| {
-                transform_result_sse((move || {
-                    Result::<_, ()>::Ok(crate::api::simple::upload_to_s3(api_p, api_obj))
-                })())
-            }
-        },
-    )
-}
-fn wire_upload_to_s3_with_config_impl(
-    port_: flutter_rust_bridge::for_generated::MessagePort,
-    ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,
-    rust_vec_len_: i32,
-    data_len_: i32,
-) {
-    FLUTTER_RUST_BRIDGE_HANDLER.wrap_normal::<flutter_rust_bridge::for_generated::SseCodec, _, _>(
-        flutter_rust_bridge::for_generated::TaskInfo {
-            debug_name: "upload_to_s3_with_config",
-            port: Some(port_),
-            mode: flutter_rust_bridge::for_generated::FfiCallMode::Normal,
-        },
-        move || {
-            let message = unsafe {
-                flutter_rust_bridge::for_generated::Dart2RustMessageSse::from_wire(
-                    ptr_,
-                    rust_vec_len_,
-                    data_len_,
-                )
-            };
-            let mut deserializer =
-                flutter_rust_bridge::for_generated::SseDeserializer::new(message);
-            let api_endpoint = <String>::sse_decode(&mut deserializer);
-            let api_bucketname = <String>::sse_decode(&mut deserializer);
-            let api_access_key = <String>::sse_decode(&mut deserializer);
-            let api_session_key = <String>::sse_decode(&mut deserializer);
-            let api_session_token = <Option<String>>::sse_decode(&mut deserializer);
-            let api_region = <String>::sse_decode(&mut deserializer);
-            let api_p = <String>::sse_decode(&mut deserializer);
-            let api_obj = <String>::sse_decode(&mut deserializer);
-            deserializer.end();
-            move |context| {
-                transform_result_sse((move || {
-                    Result::<_, ()>::Ok(crate::api::simple::upload_to_s3_with_config(
-                        api_endpoint,
-                        api_bucketname,
-                        api_access_key,
-                        api_session_key,
-                        api_session_token,
-                        api_region,
-                        api_p,
-                        api_obj,
-                    ))
-                })())
-            }
-        },
-    )
-}
 
 // Section: dart2rust
 
@@ -590,6 +682,13 @@ impl SseDecode for String {
     }
 }
 
+impl SseDecode for bool {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        deserializer.cursor.read_u8().unwrap() != 0
+    }
+}
+
 impl SseDecode for crate::process::encrypt::EncryptItem {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
@@ -599,6 +698,37 @@ impl SseDecode for crate::process::encrypt::EncryptItem {
             file_path: var_filePath,
             file_id: var_fileId,
         };
+    }
+}
+
+impl SseDecode for crate::process::transfer::Entry {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        let mut var_type = <crate::process::transfer::EntryType>::sse_decode(deserializer);
+        let mut var_path = <String>::sse_decode(deserializer);
+        return crate::process::transfer::Entry {
+            _type: var_type,
+            path: var_path,
+        };
+    }
+}
+
+impl SseDecode for crate::process::transfer::EntryType {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        let mut inner = <i32>::sse_decode(deserializer);
+        return match inner {
+            0 => crate::process::transfer::EntryType::File,
+            1 => crate::process::transfer::EntryType::Folder,
+            _ => unreachable!("Invalid variant for EntryType: {}", inner),
+        };
+    }
+}
+
+impl SseDecode for i32 {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        deserializer.cursor.read_i32::<NativeEndian>().unwrap()
     }
 }
 
@@ -630,6 +760,18 @@ impl SseDecode for Vec<crate::process::encrypt::EncryptItem> {
             ans_.push(<crate::process::encrypt::EncryptItem>::sse_decode(
                 deserializer,
             ));
+        }
+        return ans_;
+    }
+}
+
+impl SseDecode for Vec<crate::process::transfer::Entry> {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        let mut len_ = <i32>::sse_decode(deserializer);
+        let mut ans_ = vec![];
+        for idx_ in 0..len_ {
+            ans_.push(<crate::process::transfer::Entry>::sse_decode(deserializer));
         }
         return ans_;
     }
@@ -670,20 +812,6 @@ impl SseDecode for () {
     fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {}
 }
 
-impl SseDecode for i32 {
-    // Codec=Sse (Serialization based), see doc to use other codecs
-    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
-        deserializer.cursor.read_i32::<NativeEndian>().unwrap()
-    }
-}
-
-impl SseDecode for bool {
-    // Codec=Sse (Serialization based), see doc to use other codecs
-    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
-        deserializer.cursor.read_u8().unwrap() != 0
-    }
-}
-
 fn pde_ffi_dispatcher_primary_impl(
     func_id: i32,
     port: flutter_rust_bridge::for_generated::MessagePort,
@@ -693,20 +821,22 @@ fn pde_ffi_dispatcher_primary_impl(
 ) {
     // Codec=Pde (Serialization + dispatch), see doc to use other codecs
     match func_id {
-        9 => wire_compress_impl(port, ptr, rust_vec_len, data_len),
-        8 => wire_decrypt_impl(port, ptr, rust_vec_len, data_len),
-        5 => wire_default_key_impl(port, ptr, rust_vec_len, data_len),
-        14 => wire_download_from_s3_impl(port, ptr, rust_vec_len, data_len),
-        7 => wire_encrypt_impl(port, ptr, rust_vec_len, data_len),
-        10 => wire_flow_preview_impl(port, ptr, rust_vec_len, data_len),
-        15 => wire_generate_pregisn_url_impl(port, ptr, rust_vec_len, data_len),
-        2 => wire_init_app_impl(port, ptr, rust_vec_len, data_len),
-        11 => wire_init_s3_client_impl(port, ptr, rust_vec_len, data_len),
-        4 => wire_native_message_stream_impl(port, ptr, rust_vec_len, data_len),
-        6 => wire_random_key_impl(port, ptr, rust_vec_len, data_len),
-        3 => wire_test_encrypt_impl(port, ptr, rust_vec_len, data_len),
-        12 => wire_upload_to_s3_impl(port, ptr, rust_vec_len, data_len),
-        13 => wire_upload_to_s3_with_config_impl(port, ptr, rust_vec_len, data_len),
+        5 => wire_compress_impl(port, ptr, rust_vec_len, data_len),
+        4 => wire_decrypt_impl(port, ptr, rust_vec_len, data_len),
+        1 => wire_default_key_impl(port, ptr, rust_vec_len, data_len),
+        3 => wire_encrypt_impl(port, ptr, rust_vec_len, data_len),
+        6 => wire_flow_preview_impl(port, ptr, rust_vec_len, data_len),
+        2 => wire_random_key_impl(port, ptr, rust_vec_len, data_len),
+        12 => wire_check_account_available_impl(port, ptr, rust_vec_len, data_len),
+        10 => wire_download_from_s3_impl(port, ptr, rust_vec_len, data_len),
+        11 => wire_generate_pregisn_url_impl(port, ptr, rust_vec_len, data_len),
+        7 => wire_init_s3_client_impl(port, ptr, rust_vec_len, data_len),
+        13 => wire_list_objects_impl(port, ptr, rust_vec_len, data_len),
+        8 => wire_upload_to_s3_impl(port, ptr, rust_vec_len, data_len),
+        9 => wire_upload_to_s3_with_config_impl(port, ptr, rust_vec_len, data_len),
+        15 => wire_init_app_impl(port, ptr, rust_vec_len, data_len),
+        17 => wire_native_message_stream_impl(port, ptr, rust_vec_len, data_len),
+        16 => wire_test_encrypt_impl(port, ptr, rust_vec_len, data_len),
         _ => unreachable!(),
     }
 }
@@ -719,7 +849,7 @@ fn pde_ffi_dispatcher_sync_impl(
 ) -> flutter_rust_bridge::for_generated::WireSyncRust2DartSse {
     // Codec=Pde (Serialization + dispatch), see doc to use other codecs
     match func_id {
-        1 => wire_greet_impl(ptr, rust_vec_len, data_len),
+        14 => wire_greet_impl(ptr, rust_vec_len, data_len),
         _ => unreachable!(),
     }
 }
@@ -747,6 +877,47 @@ impl flutter_rust_bridge::IntoIntoDart<crate::process::encrypt::EncryptItem>
         self
     }
 }
+// Codec=Dco (DartCObject based), see doc to use other codecs
+impl flutter_rust_bridge::IntoDart for crate::process::transfer::Entry {
+    fn into_dart(self) -> flutter_rust_bridge::for_generated::DartAbi {
+        [
+            self._type.into_into_dart().into_dart(),
+            self.path.into_into_dart().into_dart(),
+        ]
+        .into_dart()
+    }
+}
+impl flutter_rust_bridge::for_generated::IntoDartExceptPrimitive
+    for crate::process::transfer::Entry
+{
+}
+impl flutter_rust_bridge::IntoIntoDart<crate::process::transfer::Entry>
+    for crate::process::transfer::Entry
+{
+    fn into_into_dart(self) -> crate::process::transfer::Entry {
+        self
+    }
+}
+// Codec=Dco (DartCObject based), see doc to use other codecs
+impl flutter_rust_bridge::IntoDart for crate::process::transfer::EntryType {
+    fn into_dart(self) -> flutter_rust_bridge::for_generated::DartAbi {
+        match self {
+            Self::File => 0.into_dart(),
+            Self::Folder => 1.into_dart(),
+        }
+    }
+}
+impl flutter_rust_bridge::for_generated::IntoDartExceptPrimitive
+    for crate::process::transfer::EntryType
+{
+}
+impl flutter_rust_bridge::IntoIntoDart<crate::process::transfer::EntryType>
+    for crate::process::transfer::EntryType
+{
+    fn into_into_dart(self) -> crate::process::transfer::EntryType {
+        self
+    }
+}
 
 impl SseEncode for flutter_rust_bridge::for_generated::anyhow::Error {
     // Codec=Sse (Serialization based), see doc to use other codecs
@@ -762,11 +933,49 @@ impl SseEncode for String {
     }
 }
 
+impl SseEncode for bool {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        serializer.cursor.write_u8(self as _).unwrap();
+    }
+}
+
 impl SseEncode for crate::process::encrypt::EncryptItem {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
         <String>::sse_encode(self.file_path, serializer);
         <i64>::sse_encode(self.file_id, serializer);
+    }
+}
+
+impl SseEncode for crate::process::transfer::Entry {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        <crate::process::transfer::EntryType>::sse_encode(self._type, serializer);
+        <String>::sse_encode(self.path, serializer);
+    }
+}
+
+impl SseEncode for crate::process::transfer::EntryType {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        <i32>::sse_encode(
+            match self {
+                crate::process::transfer::EntryType::File => 0,
+                crate::process::transfer::EntryType::Folder => 1,
+                _ => {
+                    unimplemented!("");
+                }
+            },
+            serializer,
+        );
+    }
+}
+
+impl SseEncode for i32 {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        serializer.cursor.write_i32::<NativeEndian>(self).unwrap();
     }
 }
 
@@ -793,6 +1002,16 @@ impl SseEncode for Vec<crate::process::encrypt::EncryptItem> {
         <i32>::sse_encode(self.len() as _, serializer);
         for item in self {
             <crate::process::encrypt::EncryptItem>::sse_encode(item, serializer);
+        }
+    }
+}
+
+impl SseEncode for Vec<crate::process::transfer::Entry> {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        <i32>::sse_encode(self.len() as _, serializer);
+        for item in self {
+            <crate::process::transfer::Entry>::sse_encode(item, serializer);
         }
     }
 }
@@ -827,20 +1046,6 @@ impl SseEncode for u8 {
 impl SseEncode for () {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {}
-}
-
-impl SseEncode for i32 {
-    // Codec=Sse (Serialization based), see doc to use other codecs
-    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
-        serializer.cursor.write_i32::<NativeEndian>(self).unwrap();
-    }
-}
-
-impl SseEncode for bool {
-    // Codec=Sse (Serialization based), see doc to use other codecs
-    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
-        serializer.cursor.write_u8(self as _).unwrap();
-    }
 }
 
 #[cfg(not(target_family = "wasm"))]

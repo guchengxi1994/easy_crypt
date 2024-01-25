@@ -3,12 +3,15 @@
 
 // ignore_for_file: unused_import, unused_element, unnecessary_import, duplicate_ignore, invalid_use_of_internal_member, annotate_overrides, non_constant_identifier_names, curly_braces_in_flow_control_structures, prefer_const_literals_to_create_immutables, unused_field
 
+import 'api/crypt.dart';
+import 'api/s3.dart';
 import 'api/simple.dart';
 import 'dart:async';
 import 'dart:convert';
 import 'frb_generated.io.dart' if (dart.library.html) 'frb_generated.web.dart';
 import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated.dart';
 import 'process/encrypt.dart';
+import 'process/transfer.dart';
 
 /// Main entrypoint of the Rust API
 class RustLib extends BaseEntrypoint<RustLibApi, RustLibApiImpl, RustLibWire> {
@@ -77,9 +80,6 @@ abstract class RustLibApi extends BaseApi {
 
   Future<String> defaultKey({dynamic hint});
 
-  Future<void> downloadFromS3(
-      {required String p, required String obj, dynamic hint});
-
   Future<String> encrypt(
       {required String saveDir,
       required List<EncryptItem> files,
@@ -88,6 +88,20 @@ abstract class RustLibApi extends BaseApi {
 
   Future<List<String>> flowPreview(
       {required List<String> operators, dynamic hint});
+
+  Future<String> randomKey({dynamic hint});
+
+  Future<bool> checkAccountAvailable(
+      {required String endpoint,
+      required String bucketname,
+      required String accessKey,
+      required String sessionKey,
+      String? sessionToken,
+      required String region,
+      dynamic hint});
+
+  Future<void> downloadFromS3(
+      {required String p, required String obj, dynamic hint});
 
   Future<String?> generatePregisnUrl(
       {required String endpoint,
@@ -99,10 +113,6 @@ abstract class RustLibApi extends BaseApi {
       required String obj,
       dynamic hint});
 
-  String greet({required String name, dynamic hint});
-
-  Future<void> initApp({dynamic hint});
-
   Future<void> initS3Client(
       {required String endpoint,
       required String bucketname,
@@ -112,11 +122,16 @@ abstract class RustLibApi extends BaseApi {
       required String region,
       dynamic hint});
 
-  Stream<String> nativeMessageStream({dynamic hint});
-
-  Future<String> randomKey({dynamic hint});
-
-  Future<void> testEncrypt({dynamic hint});
+  Future<List<Entry>> listObjects(
+      {required String endpoint,
+      required String bucketname,
+      required String accessKey,
+      required String sessionKey,
+      String? sessionToken,
+      required String region,
+      required String path,
+      required bool useGlobal,
+      dynamic hint});
 
   Future<void> uploadToS3(
       {required String p, required String obj, dynamic hint});
@@ -131,6 +146,14 @@ abstract class RustLibApi extends BaseApi {
       required String p,
       required String obj,
       dynamic hint});
+
+  String greet({required String name, dynamic hint});
+
+  Future<void> initApp({dynamic hint});
+
+  Stream<String> nativeMessageStream({dynamic hint});
+
+  Future<void> testEncrypt({dynamic hint});
 }
 
 class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
@@ -150,7 +173,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         sse_encode_list_String(paths, serializer);
         sse_encode_String(saveDir, serializer);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 9, port: port_);
+            funcId: 5, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_String,
@@ -183,7 +206,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         sse_encode_String(key, serializer);
         sse_encode_opt_String(fileType, serializer);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 8, port: port_);
+            funcId: 4, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_String,
@@ -207,7 +230,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       callFfi: (port_) {
         final serializer = SseSerializer(generalizedFrbRustBinding);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 5, port: port_);
+            funcId: 1, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_String,
@@ -226,33 +249,6 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       );
 
   @override
-  Future<void> downloadFromS3(
-      {required String p, required String obj, dynamic hint}) {
-    return handler.executeNormal(NormalTask(
-      callFfi: (port_) {
-        final serializer = SseSerializer(generalizedFrbRustBinding);
-        sse_encode_String(p, serializer);
-        sse_encode_String(obj, serializer);
-        pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 14, port: port_);
-      },
-      codec: SseCodec(
-        decodeSuccessData: sse_decode_unit,
-        decodeErrorData: null,
-      ),
-      constMeta: kDownloadFromS3ConstMeta,
-      argValues: [p, obj],
-      apiImpl: this,
-      hint: hint,
-    ));
-  }
-
-  TaskConstMeta get kDownloadFromS3ConstMeta => const TaskConstMeta(
-        debugName: "download_from_s3",
-        argNames: ["p", "obj"],
-      );
-
-  @override
   Future<String> encrypt(
       {required String saveDir,
       required List<EncryptItem> files,
@@ -265,7 +261,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         sse_encode_list_encrypt_item(files, serializer);
         sse_encode_String(key, serializer);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 7, port: port_);
+            funcId: 3, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_String,
@@ -291,7 +287,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         final serializer = SseSerializer(generalizedFrbRustBinding);
         sse_encode_list_String(operators, serializer);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 10, port: port_);
+            funcId: 6, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_list_String,
@@ -307,6 +303,108 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   TaskConstMeta get kFlowPreviewConstMeta => const TaskConstMeta(
         debugName: "flow_preview",
         argNames: ["operators"],
+      );
+
+  @override
+  Future<String> randomKey({dynamic hint}) {
+    return handler.executeNormal(NormalTask(
+      callFfi: (port_) {
+        final serializer = SseSerializer(generalizedFrbRustBinding);
+        pdeCallFfi(generalizedFrbRustBinding, serializer,
+            funcId: 2, port: port_);
+      },
+      codec: SseCodec(
+        decodeSuccessData: sse_decode_String,
+        decodeErrorData: null,
+      ),
+      constMeta: kRandomKeyConstMeta,
+      argValues: [],
+      apiImpl: this,
+      hint: hint,
+    ));
+  }
+
+  TaskConstMeta get kRandomKeyConstMeta => const TaskConstMeta(
+        debugName: "random_key",
+        argNames: [],
+      );
+
+  @override
+  Future<bool> checkAccountAvailable(
+      {required String endpoint,
+      required String bucketname,
+      required String accessKey,
+      required String sessionKey,
+      String? sessionToken,
+      required String region,
+      dynamic hint}) {
+    return handler.executeNormal(NormalTask(
+      callFfi: (port_) {
+        final serializer = SseSerializer(generalizedFrbRustBinding);
+        sse_encode_String(endpoint, serializer);
+        sse_encode_String(bucketname, serializer);
+        sse_encode_String(accessKey, serializer);
+        sse_encode_String(sessionKey, serializer);
+        sse_encode_opt_String(sessionToken, serializer);
+        sse_encode_String(region, serializer);
+        pdeCallFfi(generalizedFrbRustBinding, serializer,
+            funcId: 12, port: port_);
+      },
+      codec: SseCodec(
+        decodeSuccessData: sse_decode_bool,
+        decodeErrorData: null,
+      ),
+      constMeta: kCheckAccountAvailableConstMeta,
+      argValues: [
+        endpoint,
+        bucketname,
+        accessKey,
+        sessionKey,
+        sessionToken,
+        region
+      ],
+      apiImpl: this,
+      hint: hint,
+    ));
+  }
+
+  TaskConstMeta get kCheckAccountAvailableConstMeta => const TaskConstMeta(
+        debugName: "check_account_available",
+        argNames: [
+          "endpoint",
+          "bucketname",
+          "accessKey",
+          "sessionKey",
+          "sessionToken",
+          "region"
+        ],
+      );
+
+  @override
+  Future<void> downloadFromS3(
+      {required String p, required String obj, dynamic hint}) {
+    return handler.executeNormal(NormalTask(
+      callFfi: (port_) {
+        final serializer = SseSerializer(generalizedFrbRustBinding);
+        sse_encode_String(p, serializer);
+        sse_encode_String(obj, serializer);
+        pdeCallFfi(generalizedFrbRustBinding, serializer,
+            funcId: 10, port: port_);
+      },
+      codec: SseCodec(
+        decodeSuccessData: sse_decode_unit,
+        decodeErrorData: null,
+      ),
+      constMeta: kDownloadFromS3ConstMeta,
+      argValues: [p, obj],
+      apiImpl: this,
+      hint: hint,
+    ));
+  }
+
+  TaskConstMeta get kDownloadFromS3ConstMeta => const TaskConstMeta(
+        debugName: "download_from_s3",
+        argNames: ["p", "obj"],
       );
 
   @override
@@ -330,7 +428,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         sse_encode_String(region, serializer);
         sse_encode_String(obj, serializer);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 15, port: port_);
+            funcId: 11, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_opt_String,
@@ -365,54 +463,6 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       );
 
   @override
-  String greet({required String name, dynamic hint}) {
-    return handler.executeSync(SyncTask(
-      callFfi: () {
-        final serializer = SseSerializer(generalizedFrbRustBinding);
-        sse_encode_String(name, serializer);
-        return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 1)!;
-      },
-      codec: SseCodec(
-        decodeSuccessData: sse_decode_String,
-        decodeErrorData: null,
-      ),
-      constMeta: kGreetConstMeta,
-      argValues: [name],
-      apiImpl: this,
-      hint: hint,
-    ));
-  }
-
-  TaskConstMeta get kGreetConstMeta => const TaskConstMeta(
-        debugName: "greet",
-        argNames: ["name"],
-      );
-
-  @override
-  Future<void> initApp({dynamic hint}) {
-    return handler.executeNormal(NormalTask(
-      callFfi: (port_) {
-        final serializer = SseSerializer(generalizedFrbRustBinding);
-        pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 2, port: port_);
-      },
-      codec: SseCodec(
-        decodeSuccessData: sse_decode_unit,
-        decodeErrorData: null,
-      ),
-      constMeta: kInitAppConstMeta,
-      argValues: [],
-      apiImpl: this,
-      hint: hint,
-    ));
-  }
-
-  TaskConstMeta get kInitAppConstMeta => const TaskConstMeta(
-        debugName: "init_app",
-        argNames: [],
-      );
-
-  @override
   Future<void> initS3Client(
       {required String endpoint,
       required String bucketname,
@@ -431,7 +481,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         sse_encode_opt_String(sessionToken, serializer);
         sse_encode_String(region, serializer);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 11, port: port_);
+            funcId: 7, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_unit,
@@ -464,75 +514,62 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       );
 
   @override
-  Stream<String> nativeMessageStream({dynamic hint}) {
-    return handler.executeStream(StreamTask(
-      callFfi: (port_) {
-        final serializer = SseSerializer(generalizedFrbRustBinding);
-        pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 4, port: port_);
-      },
-      codec: SseCodec(
-        decodeSuccessData: sse_decode_String,
-        decodeErrorData: sse_decode_AnyhowException,
-      ),
-      constMeta: kNativeMessageStreamConstMeta,
-      argValues: [],
-      apiImpl: this,
-      hint: hint,
-    ));
-  }
-
-  TaskConstMeta get kNativeMessageStreamConstMeta => const TaskConstMeta(
-        debugName: "native_message_stream",
-        argNames: [],
-      );
-
-  @override
-  Future<String> randomKey({dynamic hint}) {
+  Future<List<Entry>> listObjects(
+      {required String endpoint,
+      required String bucketname,
+      required String accessKey,
+      required String sessionKey,
+      String? sessionToken,
+      required String region,
+      required String path,
+      required bool useGlobal,
+      dynamic hint}) {
     return handler.executeNormal(NormalTask(
       callFfi: (port_) {
         final serializer = SseSerializer(generalizedFrbRustBinding);
+        sse_encode_String(endpoint, serializer);
+        sse_encode_String(bucketname, serializer);
+        sse_encode_String(accessKey, serializer);
+        sse_encode_String(sessionKey, serializer);
+        sse_encode_opt_String(sessionToken, serializer);
+        sse_encode_String(region, serializer);
+        sse_encode_String(path, serializer);
+        sse_encode_bool(useGlobal, serializer);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 6, port: port_);
+            funcId: 13, port: port_);
       },
       codec: SseCodec(
-        decodeSuccessData: sse_decode_String,
+        decodeSuccessData: sse_decode_list_entry,
         decodeErrorData: null,
       ),
-      constMeta: kRandomKeyConstMeta,
-      argValues: [],
+      constMeta: kListObjectsConstMeta,
+      argValues: [
+        endpoint,
+        bucketname,
+        accessKey,
+        sessionKey,
+        sessionToken,
+        region,
+        path,
+        useGlobal
+      ],
       apiImpl: this,
       hint: hint,
     ));
   }
 
-  TaskConstMeta get kRandomKeyConstMeta => const TaskConstMeta(
-        debugName: "random_key",
-        argNames: [],
-      );
-
-  @override
-  Future<void> testEncrypt({dynamic hint}) {
-    return handler.executeNormal(NormalTask(
-      callFfi: (port_) {
-        final serializer = SseSerializer(generalizedFrbRustBinding);
-        pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 3, port: port_);
-      },
-      codec: SseCodec(
-        decodeSuccessData: sse_decode_unit,
-        decodeErrorData: null,
-      ),
-      constMeta: kTestEncryptConstMeta,
-      argValues: [],
-      apiImpl: this,
-      hint: hint,
-    ));
-  }
-
-  TaskConstMeta get kTestEncryptConstMeta => const TaskConstMeta(
-        debugName: "test_encrypt",
-        argNames: [],
+  TaskConstMeta get kListObjectsConstMeta => const TaskConstMeta(
+        debugName: "list_objects",
+        argNames: [
+          "endpoint",
+          "bucketname",
+          "accessKey",
+          "sessionKey",
+          "sessionToken",
+          "region",
+          "path",
+          "useGlobal"
+        ],
       );
 
   @override
@@ -544,7 +581,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         sse_encode_String(p, serializer);
         sse_encode_String(obj, serializer);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 12, port: port_);
+            funcId: 8, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_unit,
@@ -585,7 +622,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         sse_encode_String(p, serializer);
         sse_encode_String(obj, serializer);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 13, port: port_);
+            funcId: 9, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_unit,
@@ -621,6 +658,102 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         ],
       );
 
+  @override
+  String greet({required String name, dynamic hint}) {
+    return handler.executeSync(SyncTask(
+      callFfi: () {
+        final serializer = SseSerializer(generalizedFrbRustBinding);
+        sse_encode_String(name, serializer);
+        return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 14)!;
+      },
+      codec: SseCodec(
+        decodeSuccessData: sse_decode_String,
+        decodeErrorData: null,
+      ),
+      constMeta: kGreetConstMeta,
+      argValues: [name],
+      apiImpl: this,
+      hint: hint,
+    ));
+  }
+
+  TaskConstMeta get kGreetConstMeta => const TaskConstMeta(
+        debugName: "greet",
+        argNames: ["name"],
+      );
+
+  @override
+  Future<void> initApp({dynamic hint}) {
+    return handler.executeNormal(NormalTask(
+      callFfi: (port_) {
+        final serializer = SseSerializer(generalizedFrbRustBinding);
+        pdeCallFfi(generalizedFrbRustBinding, serializer,
+            funcId: 15, port: port_);
+      },
+      codec: SseCodec(
+        decodeSuccessData: sse_decode_unit,
+        decodeErrorData: null,
+      ),
+      constMeta: kInitAppConstMeta,
+      argValues: [],
+      apiImpl: this,
+      hint: hint,
+    ));
+  }
+
+  TaskConstMeta get kInitAppConstMeta => const TaskConstMeta(
+        debugName: "init_app",
+        argNames: [],
+      );
+
+  @override
+  Stream<String> nativeMessageStream({dynamic hint}) {
+    return handler.executeStream(StreamTask(
+      callFfi: (port_) {
+        final serializer = SseSerializer(generalizedFrbRustBinding);
+        pdeCallFfi(generalizedFrbRustBinding, serializer,
+            funcId: 17, port: port_);
+      },
+      codec: SseCodec(
+        decodeSuccessData: sse_decode_String,
+        decodeErrorData: sse_decode_AnyhowException,
+      ),
+      constMeta: kNativeMessageStreamConstMeta,
+      argValues: [],
+      apiImpl: this,
+      hint: hint,
+    ));
+  }
+
+  TaskConstMeta get kNativeMessageStreamConstMeta => const TaskConstMeta(
+        debugName: "native_message_stream",
+        argNames: [],
+      );
+
+  @override
+  Future<void> testEncrypt({dynamic hint}) {
+    return handler.executeNormal(NormalTask(
+      callFfi: (port_) {
+        final serializer = SseSerializer(generalizedFrbRustBinding);
+        pdeCallFfi(generalizedFrbRustBinding, serializer,
+            funcId: 16, port: port_);
+      },
+      codec: SseCodec(
+        decodeSuccessData: sse_decode_unit,
+        decodeErrorData: null,
+      ),
+      constMeta: kTestEncryptConstMeta,
+      argValues: [],
+      apiImpl: this,
+      hint: hint,
+    ));
+  }
+
+  TaskConstMeta get kTestEncryptConstMeta => const TaskConstMeta(
+        debugName: "test_encrypt",
+        argNames: [],
+      );
+
   @protected
   AnyhowException dco_decode_AnyhowException(dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
@@ -634,6 +767,12 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  bool dco_decode_bool(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return raw as bool;
+  }
+
+  @protected
   EncryptItem dco_decode_encrypt_item(dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
     final arr = raw as List<dynamic>;
@@ -643,6 +782,30 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       filePath: dco_decode_String(arr[0]),
       fileId: dco_decode_i_64(arr[1]),
     );
+  }
+
+  @protected
+  Entry dco_decode_entry(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    final arr = raw as List<dynamic>;
+    if (arr.length != 2)
+      throw Exception('unexpected arr length: expect 2 but see ${arr.length}');
+    return Entry(
+      type: dco_decode_entry_type(arr[0]),
+      path: dco_decode_String(arr[1]),
+    );
+  }
+
+  @protected
+  EntryType dco_decode_entry_type(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return EntryType.values[raw as int];
+  }
+
+  @protected
+  int dco_decode_i_32(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return raw as int;
   }
 
   @protected
@@ -661,6 +824,12 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   List<EncryptItem> dco_decode_list_encrypt_item(dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
     return (raw as List<dynamic>).map(dco_decode_encrypt_item).toList();
+  }
+
+  @protected
+  List<Entry> dco_decode_list_entry(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return (raw as List<dynamic>).map(dco_decode_entry).toList();
   }
 
   @protected
@@ -702,11 +871,38 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  bool sse_decode_bool(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    return deserializer.buffer.getUint8() != 0;
+  }
+
+  @protected
   EncryptItem sse_decode_encrypt_item(SseDeserializer deserializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     var var_filePath = sse_decode_String(deserializer);
     var var_fileId = sse_decode_i_64(deserializer);
     return EncryptItem(filePath: var_filePath, fileId: var_fileId);
+  }
+
+  @protected
+  Entry sse_decode_entry(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    var var_type = sse_decode_entry_type(deserializer);
+    var var_path = sse_decode_String(deserializer);
+    return Entry(type: var_type, path: var_path);
+  }
+
+  @protected
+  EntryType sse_decode_entry_type(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    var inner = sse_decode_i_32(deserializer);
+    return EntryType.values[inner];
+  }
+
+  @protected
+  int sse_decode_i_32(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    return deserializer.buffer.getInt32();
   }
 
   @protected
@@ -735,6 +931,18 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
     var ans_ = <EncryptItem>[];
     for (var idx_ = 0; idx_ < len_; ++idx_) {
       ans_.add(sse_decode_encrypt_item(deserializer));
+    }
+    return ans_;
+  }
+
+  @protected
+  List<Entry> sse_decode_list_entry(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+
+    var len_ = sse_decode_i_32(deserializer);
+    var ans_ = <Entry>[];
+    for (var idx_ = 0; idx_ < len_; ++idx_) {
+      ans_.add(sse_decode_entry(deserializer));
     }
     return ans_;
   }
@@ -769,18 +977,6 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
-  int sse_decode_i_32(SseDeserializer deserializer) {
-    // Codec=Sse (Serialization based), see doc to use other codecs
-    return deserializer.buffer.getInt32();
-  }
-
-  @protected
-  bool sse_decode_bool(SseDeserializer deserializer) {
-    // Codec=Sse (Serialization based), see doc to use other codecs
-    return deserializer.buffer.getUint8() != 0;
-  }
-
-  @protected
   void sse_encode_AnyhowException(
       AnyhowException self, SseSerializer serializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
@@ -795,10 +991,35 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  void sse_encode_bool(bool self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    serializer.buffer.putUint8(self ? 1 : 0);
+  }
+
+  @protected
   void sse_encode_encrypt_item(EncryptItem self, SseSerializer serializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     sse_encode_String(self.filePath, serializer);
     sse_encode_i_64(self.fileId, serializer);
+  }
+
+  @protected
+  void sse_encode_entry(Entry self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_entry_type(self.type, serializer);
+    sse_encode_String(self.path, serializer);
+  }
+
+  @protected
+  void sse_encode_entry_type(EntryType self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_i_32(self.index, serializer);
+  }
+
+  @protected
+  void sse_encode_i_32(int self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    serializer.buffer.putInt32(self);
   }
 
   @protected
@@ -823,6 +1044,15 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
     sse_encode_i_32(self.length, serializer);
     for (final item in self) {
       sse_encode_encrypt_item(item, serializer);
+    }
+  }
+
+  @protected
+  void sse_encode_list_entry(List<Entry> self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_i_32(self.length, serializer);
+    for (final item in self) {
+      sse_encode_entry(item, serializer);
     }
   }
 
@@ -853,17 +1083,5 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   @protected
   void sse_encode_unit(void self, SseSerializer serializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
-  }
-
-  @protected
-  void sse_encode_i_32(int self, SseSerializer serializer) {
-    // Codec=Sse (Serialization based), see doc to use other codecs
-    serializer.buffer.putInt32(self);
-  }
-
-  @protected
-  void sse_encode_bool(bool self, SseSerializer serializer) {
-    // Codec=Sse (Serialization based), see doc to use other codecs
-    serializer.buffer.putUint8(self ? 1 : 0);
   }
 }

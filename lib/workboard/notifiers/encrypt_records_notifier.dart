@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'dart:io';
 
-import 'package:easy_crypt/src/rust/api/simple.dart' as api;
+import 'package:easy_crypt/src/rust/api/crypt.dart' as crypt;
 import 'package:easy_crypt/isar/database.dart';
 import 'package:easy_crypt/isar/files.dart';
 import 'package:easy_crypt/isar/transfer_records.dart';
@@ -38,9 +38,9 @@ class EncryptRecordsNotifier
         for (final i in files) {
           Files record = Files();
           if (useDefaultKey) {
-            record.key = await api.defaultKey();
+            record.key = await crypt.defaultKey();
           } else {
-            record.key = await api.randomKey();
+            record.key = await crypt.randomKey();
           }
 
           record.filePath = i.path;
