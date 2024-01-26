@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import 'components/encrypt_records.dart';
+import 'components/records.dart';
 
 class Workboard extends StatefulWidget {
   const Workboard({super.key});
@@ -12,6 +12,6 @@ class Workboard extends StatefulWidget {
 class _WorkboardState extends State<Workboard> {
   @override
   Widget build(BuildContext context) {
-    return const EncryptRecordsWidget();
+    return const RecordsWidget();
   }
 }

@@ -6,7 +6,7 @@
 /// Locales: 2
 /// Strings: 40 (20 per locale)
 ///
-/// Built on 2024-01-22 at 03:26 UTC
+/// Built on 2024-01-26 at 02:41 UTC
 
 // coverage:ignore-file
 // ignore_for_file: type=lint
@@ -184,7 +184,7 @@ class _StringsEncryptionColumnEn {
 	// Translations
 	String get no => 'No.';
 	String get filepath => 'File Path';
-	String get encryptedPath => 'Encrypted Path';
+	String get encryptedPath => 'Result Path';
 	String get key => 'Password';
 	String get createAt => 'Create At';
 	String get operation => 'Operations';
@@ -201,7 +201,7 @@ class _StringsEncryptionTableEn {
 	String get next => 'Next';
 	String get cpfilepath => 'Copy File Path';
 	String get cpkey => 'Copy Password';
-	String get startencrypt => 'Start Encrypt';
+	String get startencrypt => 'Start';
 	String get rmrecord => 'Remove Record';
 	String get upto => 'Upload To';
 	String get shareto => 'Share To';
@@ -270,7 +270,7 @@ class _StringsEncryptionColumnZhCn implements _StringsEncryptionColumnEn {
 	// Translations
 	@override String get no => '编号';
 	@override String get filepath => '文件路径';
-	@override String get encryptedPath => '加密路径';
+	@override String get encryptedPath => '结果路径';
 	@override String get key => '密钥';
 	@override String get createAt => '创建时间';
 	@override String get operation => '操作';
@@ -287,7 +287,7 @@ class _StringsEncryptionTableZhCn implements _StringsEncryptionTableEn {
 	@override String get next => '下一页';
 	@override String get cpfilepath => '复制文件路径';
 	@override String get cpkey => '复制密钥';
-	@override String get startencrypt => '开始加密';
+	@override String get startencrypt => '开始';
 	@override String get rmrecord => '删除记录';
 	@override String get upto => '上传到...';
 	@override String get shareto => '分享到...';
@@ -307,7 +307,7 @@ extension on Translations {
 			case 'layout.account': return 'Account';
 			case 'encryption.column.no': return 'No.';
 			case 'encryption.column.filepath': return 'File Path';
-			case 'encryption.column.encryptedPath': return 'Encrypted Path';
+			case 'encryption.column.encryptedPath': return 'Result Path';
 			case 'encryption.column.key': return 'Password';
 			case 'encryption.column.createAt': return 'Create At';
 			case 'encryption.column.operation': return 'Operations';
@@ -315,7 +315,7 @@ extension on Translations {
 			case 'encryption.table.next': return 'Next';
 			case 'encryption.table.cpfilepath': return 'Copy File Path';
 			case 'encryption.table.cpkey': return 'Copy Password';
-			case 'encryption.table.startencrypt': return 'Start Encrypt';
+			case 'encryption.table.startencrypt': return 'Start';
 			case 'encryption.table.rmrecord': return 'Remove Record';
 			case 'encryption.table.upto': return 'Upload To';
 			case 'encryption.table.shareto': return 'Share To';
@@ -335,7 +335,7 @@ extension on _StringsZhCn {
 			case 'layout.account': return '账号';
 			case 'encryption.column.no': return '编号';
 			case 'encryption.column.filepath': return '文件路径';
-			case 'encryption.column.encryptedPath': return '加密路径';
+			case 'encryption.column.encryptedPath': return '结果路径';
 			case 'encryption.column.key': return '密钥';
 			case 'encryption.column.createAt': return '创建时间';
 			case 'encryption.column.operation': return '操作';
@@ -343,7 +343,7 @@ extension on _StringsZhCn {
 			case 'encryption.table.next': return '下一页';
 			case 'encryption.table.cpfilepath': return '复制文件路径';
 			case 'encryption.table.cpkey': return '复制密钥';
-			case 'encryption.table.startencrypt': return '开始加密';
+			case 'encryption.table.startencrypt': return '开始';
 			case 'encryption.table.rmrecord': return '删除记录';
 			case 'encryption.table.upto': return '上传到...';
 			case 'encryption.table.shareto': return '分享到...';

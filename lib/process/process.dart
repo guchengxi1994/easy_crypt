@@ -10,7 +10,7 @@ import 'package:easy_crypt/isar/files.dart';
 import 'package:easy_crypt/isar/transfer_records.dart';
 import 'package:easy_crypt/src/rust/frb_generated.dart';
 import 'package:easy_crypt/src/rust/process/encrypt.dart';
-import 'package:easy_crypt/workboard/notifiers/encrypt_records_notifier.dart';
+import 'package:easy_crypt/workboard/notifiers/records_notifier.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:isar/isar.dart';
 
@@ -97,7 +97,7 @@ class IsolateProcess {
         });
 
         if (ref != null) {
-          ref.read(encryptRecordsProvider.notifier).loadTransferLogs(p);
+          ref.read(recordsProvider.notifier).loadTransferLogs(p);
         }
       }
     });

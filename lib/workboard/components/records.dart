@@ -16,7 +16,8 @@ import 'package:easy_crypt/process/process.dart';
 import 'package:easy_crypt/src/rust/process/encrypt.dart';
 import 'package:easy_crypt/style/app_style.dart';
 import 'package:easy_crypt/workboard/components/multiple_files_dialog.dart';
-import 'package:easy_crypt/workboard/notifiers/encrypt_records_notifier.dart';
+import 'package:easy_crypt/workboard/models/decrypt_param_dialog_model.dart';
+import 'package:easy_crypt/workboard/notifiers/records_notifier.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_context_menu/flutter_context_menu.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -25,30 +26,31 @@ import 'package:collection/collection.dart';
 import 'package:open_file/open_file.dart';
 import 'package:super_clipboard/super_clipboard.dart';
 
-import '../models/encrypt_records_state.dart';
+import '../models/records_state.dart';
+import 'decrypt_param_dialog.dart';
 
-class EncryptRecordsWidget extends ConsumerStatefulWidget {
-  const EncryptRecordsWidget({super.key});
+class RecordsWidget extends ConsumerStatefulWidget {
+  const RecordsWidget({super.key});
 
   @override
-  ConsumerState<EncryptRecordsWidget> createState() =>
-      _EncryptRecordsWidgetState();
+  ConsumerState<RecordsWidget> createState() => _EncryptRecordsWidgetState();
 }
 
-class _EncryptRecordsWidgetState extends ConsumerState<EncryptRecordsWidget> {
+class _EncryptRecordsWidgetState extends ConsumerState<RecordsWidget> {
   final clipboard = SystemClipboard.instance;
 
   @override
   Widget build(BuildContext context) {
     final _ = ref.watch(settingsNotifier);
-    final encrypts = ref.watch(encryptRecordsProvider);
+    final encrypts = ref.watch(recordsProvider);
     return DropTarget(onDragDone: (details) {
       if (details.files.isNotEmpty) {
         if (details.files.length == 1) {
           ref
-              .read(encryptRecordsProvider.notifier)
+              .read(recordsProvider.notifier)
               .newRecords(details.files, useDefaultKey: false);
         } else {
+          /// TODO complete this logic
           showGeneralDialog(
               context: context,
               barrierColor: Colors.transparent,
@@ -63,7 +65,7 @@ class _EncryptRecordsWidgetState extends ConsumerState<EncryptRecordsWidget> {
       }
     }, child: Builder(builder: (c) {
       return switch (encrypts) {
-        AsyncValue<EncryptRecordsState>(:final value?) => _buildTable(value),
+        AsyncValue<RecordsState>(:final value?) => _buildTable(value),
         _ => const Center(
             child: CircularProgressIndicator(),
           ),
@@ -71,7 +73,7 @@ class _EncryptRecordsWidgetState extends ConsumerState<EncryptRecordsWidget> {
     }));
   }
 
-  Widget _buildTable(EncryptRecordsState value) {
+  Widget _buildTable(RecordsState value) {
     return Padding(
       padding: const EdgeInsets.only(left: 20, right: 20),
       child: Column(
@@ -101,14 +103,12 @@ class _EncryptRecordsWidgetState extends ConsumerState<EncryptRecordsWidget> {
                       onPressed: value.pageId == 1
                           ? null
                           : () {
-                              ref
-                                  .read(encryptRecordsProvider.notifier)
-                                  .prevPage();
+                              ref.read(recordsProvider.notifier).prevPage();
                             },
                       child: Text(t.encryption.table.prev)),
                   TextButton(
                       onPressed: () {
-                        ref.read(encryptRecordsProvider.notifier).nextPage();
+                        ref.read(recordsProvider.notifier).nextPage();
                       },
                       child: Text(t.encryption.table.next)),
                 ],
@@ -120,13 +120,13 @@ class _EncryptRecordsWidgetState extends ConsumerState<EncryptRecordsWidget> {
     );
   }
 
-  DataRow2 _buildRow(EncryptRecord f, int index) {
+  DataRow2 _buildRow(Record f, int index) {
     final s3Accounts = ref.read(accountProvider.notifier).getS3();
 
     return DataRow2(
         decoration: BoxDecoration(
           border: const Border(top: BorderSide(color: Colors.grey, width: 1)),
-          gradient: f.status == EncryptStatus.onProgress
+          gradient: f.status == ProgressStatus.onProgress
               ? LinearGradient(
                   stops: [0, f.progress, 1],
                   colors: [Colors.white, AppStyle.progressColor, Colors.white],
@@ -135,6 +135,9 @@ class _EncryptRecordsWidgetState extends ConsumerState<EncryptRecordsWidget> {
         ),
         cells: [
           DataCell(Text(f.id.toString())),
+          DataCell(f.isEncrypt
+              ? const Icon(Icons.lock)
+              : const Icon(Icons.lock_open)),
           DataCell(Tooltip(
             message: f.filePath.toString(),
             child: Row(
@@ -163,7 +166,8 @@ class _EncryptRecordsWidgetState extends ConsumerState<EncryptRecordsWidget> {
             ),
           )),
           DataCell(
-            f.status == EncryptStatus.unstart || f.status == EncryptStatus.done
+            f.status == ProgressStatus.unstart ||
+                    f.status == ProgressStatus.done
                 ? Row(
                     children: [
                       if (f.savePath != null)
@@ -340,9 +344,8 @@ class _EncryptRecordsWidgetState extends ConsumerState<EncryptRecordsWidget> {
                                       ),
                                       onSelected: () {
                                         ref
-                                            .read(
-                                                encryptRecordsProvider.notifier)
-                                            .removeEncryptedFile(f);
+                                            .read(recordsProvider.notifier)
+                                            .removeFile(f);
                                       },
                                     )
                                   ],
@@ -361,50 +364,90 @@ class _EncryptRecordsWidgetState extends ConsumerState<EncryptRecordsWidget> {
                   )
                 : Text("${(f.progress * 100).ceil()}%"),
           ),
-          DataCell(Row(
-            children: [
-              Expanded(
-                  child: Text(
-                f.key.toString(),
-                maxLines: 1,
-                softWrap: true,
-                overflow: TextOverflow.ellipsis,
-              )),
-              if (f.key != null)
-                InkWell(
-                  onTap: () async {
-                    await copyToClipboard(f.key ?? "");
-                  },
-                  child: Tooltip(
-                    message: t.encryption.table.cpkey,
-                    child: const Icon(
-                      Icons.copy,
-                      size: AppStyle.rowIconSize,
-                    ),
-                  ),
+          DataCell(!f.isEncrypt
+              ? Row(
+                  children: [
+                    Expanded(
+                        child: Text(
+                      f.key.toString(),
+                      maxLines: 1,
+                      softWrap: true,
+                      overflow: TextOverflow.ellipsis,
+                    )),
+                    if (f.key != null)
+                      InkWell(
+                        onTap: () async {
+                          await copyToClipboard(f.key ?? "");
+                        },
+                        child: Tooltip(
+                          message: t.encryption.table.cpkey,
+                          child: const Icon(
+                            Icons.copy,
+                            size: AppStyle.rowIconSize,
+                          ),
+                        ),
+                      )
+                  ],
                 )
-            ],
-          )),
+              : Text(
+                  f.key.toString(),
+                  maxLines: 1,
+                  softWrap: true,
+                  overflow: TextOverflow.ellipsis,
+                )),
           DataCell(Text(formatDate(
               DateTime.fromMillisecondsSinceEpoch(f.createAt),
               [yyyy, "-", mm, "-", dd]))),
           DataCell(Row(
             children: [
               InkWell(
-                onTap: () {
-                  /// TODO use isolate
-                  crypt
-                      .encrypt(
-                          saveDir: DevUtils.cachePath,
-                          files: [
-                            EncryptItem(filePath: f.filePath!, fileId: f.id)
-                          ],
-                          key: f.key!)
-                      .then((value) {
-                    ref
-                        .read(encryptRecordsProvider.notifier)
-                        .changeProgress(f.id, 1, saved: value);
-                  });
+                onTap: () async {
+                  if (!f.isEncrypt) {
+                    /// TODO use isolate
+                    crypt
+                        .encrypt(
+                            saveDir: DevUtils.cachePath,
+                            files: [
+                              EncryptItem(filePath: f.filePath!, fileId: f.id)
+                            ],
+                            key: f.key!)
+                        .then((value) {
+                      ref
+                          .read(recordsProvider.notifier)
+                          .changeProgress(f.id, 1, saved: value);
+                    });
+                  } else {
+                    DecryptParamDialogModel? r = await showGeneralDialog(
+                        barrierDismissible: true,
+                        barrierLabel: "decrypt dialog",
+                        context: context,
+                        pageBuilder: (c, _, __) {
+                          return Center(
+                            child: DecryptParamDialog(
+                              needsKey: f.key == null,
+                            ),
+                          );
+                        });
+
+                    if (r != null) {
+                      crypt
+                          .decrypt(
+                              saveDir: DevUtils.cachePath,
+                              path: f.filePath!,
+                              fileType: r.fileType,
+                              fileId: f.id,
+                              key: f.key != null ? f.key! : r.key)
+                          .then((value) {
+                        ref
+                            .read(recordsProvider.notifier)
+                            .changeProgress(f.id, 1, saved: value);
+                      });
+
+                      if (r.saveKey) {
+                        ref.read(recordsProvider.notifier).setKey(f.id, r.key);
+                      }
+                    }
+                  }
                 },
                 child: Tooltip(
                   message: t.encryption.table.startencrypt,
@@ -416,7 +459,7 @@ class _EncryptRecordsWidgetState extends ConsumerState<EncryptRecordsWidget> {
               ),
               InkWell(
                 onTap: () {
-                  ref.read(encryptRecordsProvider.notifier).removeLog(f);
+                  ref.read(recordsProvider.notifier).removeRecord(f);
                 },
                 child: Tooltip(
                   message: t.encryption.table.rmrecord,
@@ -438,6 +481,15 @@ class _EncryptRecordsWidgetState extends ConsumerState<EncryptRecordsWidget> {
         label: Text(
           t.encryption.column.no,
           style: const TextStyle(fontWeight: FontWeight.bold),
+        ),
+        size: ColumnSize.L,
+        numeric: false,
+      ),
+      const DataColumn2(
+        fixedWidth: 90,
+        label: Text(
+          "type",
+          style: TextStyle(fontWeight: FontWeight.bold),
         ),
         size: ColumnSize.L,
         numeric: false,

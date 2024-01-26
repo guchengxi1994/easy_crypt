@@ -9,23 +9,21 @@ import 'package:file_selector/file_selector.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:isar/isar.dart';
 
-import '../models/encrypt_records_state.dart';
+import '../models/records_state.dart';
 
-class EncryptRecordsNotifier
-    extends AutoDisposeAsyncNotifier<EncryptRecordsState> {
+class RecordsNotifier extends AutoDisposeAsyncNotifier<RecordsState> {
   final IsarDatabase database = IsarDatabase();
 
   static const pageSize = 10;
 
   @override
-  FutureOr<EncryptRecordsState> build() async {
+  FutureOr<RecordsState> build() async {
     List<Files> logs =
         await database.isar!.files.where().offset(0).limit(pageSize).findAll();
-    return EncryptRecordsState(
+    return RecordsState(
         list: logs.map((e) {
       // print("e.transferRecords.toList()  ${e.transferRecords.toList().length}");
-      return EncryptRecord.fromModel(e,
-          transferRecords: e.transferRecords.toList());
+      return Record.fromModel(e, transferRecords: e.transferRecords.toList());
     }).toList());
   }
 
@@ -37,14 +35,20 @@ class EncryptRecordsNotifier
         List<Files> records = [];
         for (final i in files) {
           Files record = Files();
-          if (useDefaultKey) {
-            record.key = await crypt.defaultKey();
+          final b = await crypt.isEasyEncryptFile(p: i.path);
+
+          if (!b) {
+            if (useDefaultKey) {
+              record.key = await crypt.defaultKey();
+            } else {
+              record.key = await crypt.randomKey();
+            }
           } else {
-            record.key = await crypt.randomKey();
+            record.key = "";
           }
 
           record.filePath = i.path;
-          record.jobType = JobType.encryption;
+          record.jobType = !b ? JobType.encryption : JobType.decryption;
           records.add(record);
         }
 
@@ -56,8 +60,8 @@ class EncryptRecordsNotifier
           .offset(0)
           .limit(pageSize)
           .findAll();
-      return EncryptRecordsState(
-          list: records.map((e) => EncryptRecord.fromModel(e)).toList());
+      return RecordsState(
+          list: records.map((e) => Record.fromModel(e)).toList());
     });
   }
 
@@ -87,7 +91,7 @@ class EncryptRecordsNotifier
     if (item != null) {
       if (saved != null) {
         item.savePath = saved;
-        item.status = EncryptStatus.done;
+        item.status = ProgressStatus.done;
 
         await database.isar!.writeTxn(() async {
           final record =
@@ -98,7 +102,7 @@ class EncryptRecordsNotifier
           }
         });
       } else {
-        item.status = EncryptStatus.onProgress;
+        item.status = ProgressStatus.onProgress;
       }
 
       item.progress = progress;
@@ -106,7 +110,7 @@ class EncryptRecordsNotifier
     state = AsyncValue.data(state.value!.copyWith(null, null));
   }
 
-  removeEncryptedFile(EncryptRecord f) async {
+  removeFile(Record f) async {
     if (f.savePath == null) {
       return;
     }
@@ -132,13 +136,29 @@ class EncryptRecordsNotifier
             .offset((state.value!.pageId - 1) * pageSize)
             .limit(pageSize)
             .findAll();
-        return EncryptRecordsState(
-            list: logs.map((e) => EncryptRecord.fromModel(e)).toList());
+        return RecordsState(
+            list: logs.map((e) => Record.fromModel(e)).toList());
       });
     }
   }
 
-  removeLog(EncryptRecord f, {bool removeEncryptedFile = false}) async {
+  setKey(int id, String key) async {
+    final f = await database.isar!.files.filter().idEqualTo(id).findFirst();
+
+    if (f != null) {
+      state = const AsyncLoading();
+      f.key = key;
+
+      state = await AsyncValue.guard(() async {
+        await database.isar!.writeTxn(() async {
+          await database.isar!.files.put(f);
+        });
+        return state.value!.copyWith(null, null);
+      });
+    }
+  }
+
+  removeRecord(Record f, {bool removeEncryptedFile = false}) async {
     if (removeEncryptedFile) {
       if (f.savePath == null) {
         return;
@@ -161,8 +181,8 @@ class EncryptRecordsNotifier
             .offset((state.value!.pageId - 1) * pageSize)
             .limit(pageSize)
             .findAll();
-        return EncryptRecordsState(
-            list: records.map((e) => EncryptRecord.fromModel(e)).toList());
+        return RecordsState(
+            list: records.map((e) => Record.fromModel(e)).toList());
       });
     }
   }
@@ -179,9 +199,9 @@ class EncryptRecordsNotifier
           .offset((state.value!.pageId - 2) * pageSize)
           .limit(pageSize)
           .findAll();
-      return EncryptRecordsState(
+      return RecordsState(
           list: records
-              .map((e) => EncryptRecord.fromModel(e,
+              .map((e) => Record.fromModel(e,
                   transferRecords: e.transferRecords.toList()))
               .toList(),
           pageId: state.value!.pageId - 1);
@@ -197,9 +217,9 @@ class EncryptRecordsNotifier
           .offset((state.value!.pageId) * pageSize)
           .limit(pageSize)
           .findAll();
-      return EncryptRecordsState(
+      return RecordsState(
           list: records
-              .map((e) => EncryptRecord.fromModel(e,
+              .map((e) => Record.fromModel(e,
                   transferRecords: e.transferRecords.toList()))
               .toList(),
           pageId: state.value!.pageId + 1);
@@ -207,7 +227,7 @@ class EncryptRecordsNotifier
   }
 }
 
-final encryptRecordsProvider = AutoDisposeAsyncNotifierProvider<
-    EncryptRecordsNotifier, EncryptRecordsState>(() {
-  return EncryptRecordsNotifier();
+final recordsProvider =
+    AutoDisposeAsyncNotifierProvider<RecordsNotifier, RecordsState>(() {
+  return RecordsNotifier();
 });
