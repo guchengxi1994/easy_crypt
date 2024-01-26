@@ -3,6 +3,8 @@ import 'dart:convert';
 import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:easy_crypt/account/account_screen.dart';
 import 'package:easy_crypt/account/notifiers/account_notifier.dart';
+import 'package:easy_crypt/common/dev_utils.dart';
+import 'package:easy_crypt/file_system/components/board.dart';
 import 'package:easy_crypt/src/rust/api/simple.dart';
 import 'package:easy_crypt/common/logger.dart';
 import 'package:easy_crypt/customize_flow/flow_screen.dart';
@@ -169,6 +171,7 @@ class _LayoutState extends ConsumerState<Layout> with TickerProviderStateMixin {
                       Container(
                         color: AppStyle.appColor,
                         child: NavigationRail(
+                          key: DevUtils.navigationKey,
                           onDestinationSelected: (value) {
                             ref.read(pageNavigator.notifier).changeState(value);
                           },
@@ -201,6 +204,15 @@ class _LayoutState extends ConsumerState<Layout> with TickerProviderStateMixin {
                                   Icons.account_box,
                                   color: AppStyle.appColor.withGreen(100),
                                 )),
+                            NavigationRailDestination(
+                                icon: const Icon(
+                                  Icons.featured_play_list,
+                                ),
+                                label: Text("New Feature"),
+                                selectedIcon: Icon(
+                                  Icons.featured_play_list,
+                                  color: AppStyle.appColor.withGreen(100),
+                                )),
                           ],
                           selectedIndex: ref.watch(pageNavigator),
                           extended: notifier.isExpanded,
@@ -212,10 +224,18 @@ class _LayoutState extends ConsumerState<Layout> with TickerProviderStateMixin {
                           child: PageView(
                         physics: const NeverScrollableScrollPhysics(),
                         controller: PageNavigatorNotifier.controller,
-                        children: const [
-                          Workboard(),
-                          FlowScreen(),
-                          AccountScreen()
+                        children: [
+                          const Workboard(),
+                          const FlowScreen(),
+                          const AccountScreen(),
+                          Board(
+                            left: Container(
+                              color: Colors.red,
+                            ),
+                            right: Container(
+                              color: Colors.green,
+                            ),
+                          )
                         ],
                       ))
                     ],

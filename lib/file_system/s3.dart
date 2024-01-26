@@ -15,6 +15,8 @@ class S3FilePreview extends ConsumerWidget {
       required this.endpoint,
       required this.sessionToken,
       required this.sessionkey,
+      this.height,
+      this.width,
       this.region = "cn-shanghai"});
   final String endpoint;
   final String accesskey;
@@ -22,6 +24,8 @@ class S3FilePreview extends ConsumerWidget {
   final String bucketname;
   final String? sessionToken;
   final String region;
+  final double? width;
+  final double? height;
 
   late final s3Provider = AutoDisposeAsyncNotifierProvider<S3Notifier, S3State>(
       () => S3Notifier(
@@ -39,8 +43,8 @@ class S3FilePreview extends ConsumerWidget {
       borderRadius: BorderRadius.circular(4),
       child: Container(
         padding: const EdgeInsets.all(20),
-        width: 0.8 * MediaQuery.of(context).size.width,
-        height: 0.8 * MediaQuery.of(context).size.height,
+        width: width ?? 0.8 * MediaQuery.of(context).size.width,
+        height: height ?? 0.8 * MediaQuery.of(context).size.height,
         decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(4), color: Colors.white),
         child: Builder(builder: (c) {
@@ -72,6 +76,20 @@ class S3FilePreview extends ConsumerWidget {
   }
 
   Widget _buildContent(List<Entry> entries, WidgetRef ref) {
+    if (entries.isEmpty) {
+      return Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          SizedBox.square(
+            dimension: 200,
+            child: Image.asset("assets/images/error.png"),
+          ),
+          Text("Opps, something is wrong")
+        ],
+      );
+    }
+
     return Align(
       alignment: Alignment.topLeft,
       child: Wrap(

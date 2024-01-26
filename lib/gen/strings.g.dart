@@ -6,7 +6,7 @@
 /// Locales: 2
 /// Strings: 40 (20 per locale)
 ///
-/// Built on 2024-01-26 at 02:41 UTC
+/// Built on 2024-01-26 at 09:10 UTC
 
 // coverage:ignore-file
 // ignore_for_file: type=lint
@@ -159,7 +159,7 @@ class _StringsLayoutEn {
 	final Translations _root; // ignore: unused_field
 
 	// Translations
-	String get encryption => 'Encryption';
+	String get encryption => 'Workboard';
 	String get custom => 'Custom Algorithm';
 	String get account => 'Account';
 }
@@ -245,7 +245,7 @@ class _StringsLayoutZhCn implements _StringsLayoutEn {
 	@override final _StringsZhCn _root; // ignore: unused_field
 
 	// Translations
-	@override String get encryption => '文件加密';
+	@override String get encryption => '工作台';
 	@override String get custom => '自定义加密算法';
 	@override String get account => '账号';
 }
@@ -302,7 +302,7 @@ class _StringsEncryptionTableZhCn implements _StringsEncryptionTableEn {
 extension on Translations {
 	dynamic _flatMapFunction(String path) {
 		switch (path) {
-			case 'layout.encryption': return 'Encryption';
+			case 'layout.encryption': return 'Workboard';
 			case 'layout.custom': return 'Custom Algorithm';
 			case 'layout.account': return 'Account';
 			case 'encryption.column.no': return 'No.';
@@ -330,7 +330,7 @@ extension on Translations {
 extension on _StringsZhCn {
 	dynamic _flatMapFunction(String path) {
 		switch (path) {
-			case 'layout.encryption': return '文件加密';
+			case 'layout.encryption': return '工作台';
 			case 'layout.custom': return '自定义加密算法';
 			case 'layout.account': return '账号';
 			case 'encryption.column.no': return '编号';
