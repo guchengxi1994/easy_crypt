@@ -5,8 +5,8 @@ use super::emitter::Emitter;
 #[derive(Serialize, Deserialize, Debug)]
 pub struct DecryptMessage {
     pub file_path: String,
-    pub total_size: usize,
-    pub encrypt_size: usize,
+    pub total_size: u64,
+    pub encrypt_size: u64,
     pub unique_id: Option<i64>,
     #[serde(rename = "type")]
     pub _type: i8,

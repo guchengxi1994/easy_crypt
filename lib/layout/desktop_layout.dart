@@ -11,7 +11,7 @@ import 'package:easy_crypt/layout/components/jobs_box.dart';
 import 'package:easy_crypt/layout/models/job_state.dart';
 import 'package:easy_crypt/layout/notifiers/job_notifier.dart';
 import 'package:easy_crypt/style/app_style.dart';
-import 'package:easy_crypt/workboard/notifiers/encrypt_records_notifier.dart';
+import 'package:easy_crypt/workboard/notifiers/records_notifier.dart';
 import 'package:easy_crypt/workboard/workboard.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -59,12 +59,15 @@ class _LayoutState extends ConsumerState<Layout> with TickerProviderStateMixin {
       logger.info(event);
       final j = jsonDecode(event);
       if (j["type"] == 2) {
-        ref.read(encryptRecordsProvider.notifier).changeProgress(
+        ref.read(recordsProvider.notifier).changeProgress(
             j["unique_id"], j["encrypt_size"] / j["total_size"]);
       } else if (j["type"] == 3) {
       } else if (j['type'] == 4) {
         UploadJob uploadJob = UploadJob.fromJson(j);
         ref.read(jobProvider.notifier).update(uploadJob);
+      } else if (j['type'] == 1) {
+        ref.read(recordsProvider.notifier).changeProgress(
+            j["unique_id"], j["total_size"] / j["encrypt_size"]);
       }
     });
 

@@ -26,9 +26,15 @@ Future<String> decrypt(
         required String path,
         required String key,
         String? fileType,
+        required int fileId,
         dynamic hint}) =>
     RustLib.instance.api.decrypt(
-        saveDir: saveDir, path: path, key: key, fileType: fileType, hint: hint);
+        saveDir: saveDir,
+        path: path,
+        key: key,
+        fileType: fileType,
+        fileId: fileId,
+        hint: hint);
 
 Future<String> compress(
         {required List<String> paths, required String saveDir, dynamic hint}) =>
@@ -37,3 +43,6 @@ Future<String> compress(
 Future<List<String>> flowPreview(
         {required List<String> operators, dynamic hint}) =>
     RustLib.instance.api.flowPreview(operators: operators, hint: hint);
+
+Future<bool> isEasyEncryptFile({required String p, dynamic hint}) =>
+    RustLib.instance.api.isEasyEncryptFile(p: p, hint: hint);

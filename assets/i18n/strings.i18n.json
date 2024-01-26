@@ -8,7 +8,7 @@
         "column":{
             "no":"No.",
             "filepath":"File Path",
-            "encryptedPath":"Encrypted Path",
+            "encryptedPath":"Result Path",
             "key":"Password",
             "createAt":"Create At",
             "operation":"Operations"
@@ -18,7 +18,7 @@
             "next":"Next",
             "cpfilepath":"Copy File Path",
             "cpkey":"Copy Password",
-            "startencrypt":"Start Encrypt",
+            "startencrypt":"Start",
             "rmrecord":"Remove Record",
             "upto":"Upload To",
             "shareto":"Share To",

@@ -206,7 +206,7 @@ impl Enctypt {
 
             if let Ok(text) = ciphertext {
                 file_save.write_all(&text)?;
-                message.encrypt_size += crate::constants::ONE_MB;
+                message.encrypt_size += text.len() as u64;
 
                 message.send_message();
             } else {

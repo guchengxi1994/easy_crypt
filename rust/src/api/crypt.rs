@@ -30,12 +30,19 @@ pub fn encrypt(
     }
 }
 
-pub fn decrypt(save_dir: String, path: String, key: String, file_type: Option<String>) -> String {
+pub fn decrypt(
+    save_dir: String,
+    path: String,
+    key: String,
+    file_type: Option<String>,
+    file_id: i64,
+) -> String {
     let de = crate::process::decrypt::Decrypt {
         path,
         key,
         save_dir,
         file_type,
+        file_id,
     };
     let s = de.decrypt_file();
     match s {
@@ -57,4 +64,16 @@ pub fn compress(paths: Vec<String>, save_dir: String) -> String {
 
 pub fn flow_preview(operators: Vec<String>) -> Vec<String> {
     crate::process::chain::get_results(operators)
+}
+
+pub fn is_easy_encrypt_file(p: String) -> bool {
+    let file = std::fs::File::open(p);
+    if let Ok(file) = file {
+        let r = crate::process::decrypt::Decrypt::is_easy_encrypt_file(&file);
+        if let Ok(r) = r {
+            return r;
+        }
+    }
+
+    false
 }
