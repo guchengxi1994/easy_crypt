@@ -3,5 +3,6 @@
 //
 
 pub mod crypt;
+pub mod datasource;
 pub mod s3;
 pub mod simple;
