@@ -60,7 +60,10 @@ mod tests {
     use tokio::io::AsyncWriteExt;
     // use opendal::services::S3;
 
-    use crate::emit::{self, emitter::Emitter};
+    use crate::{
+        emit::{self, emitter::Emitter},
+        process::datasource::{LocalStorage, S3Client, DATASOURCES},
+    };
 
     #[test]
     fn key() {
@@ -517,6 +520,52 @@ mod tests {
 
             println!("duration : {} , json {:?}", duration, message);
         }
+
+        anyhow::Ok(())
+    }
+
+    #[tokio::test]
+    async fn opendal_local_test() -> anyhow::Result<()> {
+        let mut builder = opendal::services::Fs::default();
+        builder.root("D:/AppFlowy");
+        let op = opendal::Operator::new(builder)?.finish();
+
+        let r = op.list_with("/").await?;
+
+        println!("{:?}", r.len());
+
+        for entry in r {
+            match entry.metadata().mode() {
+                EntryMode::FILE => {
+                    println!("Handling file")
+                }
+                EntryMode::DIR => {
+                    println!("Handling dir {}", entry.path())
+                }
+                EntryMode::Unknown => continue,
+            }
+        }
+
+        anyhow::Ok(())
+    }
+
+    #[test]
+    fn test_cache_datasources() -> anyhow::Result<()> {
+        let mut a = DATASOURCES.write().unwrap();
+
+        let client1 = LocalStorage::from("/".to_owned()).unwrap();
+        let client2 = S3Client::from(
+            "1".to_owned(),
+            "2".to_owned(),
+            "3".to_owned(),
+            "4".to_owned(),
+            None,
+            "5".to_owned(),
+        )
+        .unwrap();
+
+        (*a).datasources.push(Box::new(client1));
+        (*a).datasources.push(Box::new(client2));
 
         anyhow::Ok(())
     }

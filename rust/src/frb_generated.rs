@@ -735,25 +735,25 @@ impl SseDecode for crate::process::encrypt::EncryptItem {
     }
 }
 
-impl SseDecode for crate::process::transfer::Entry {
+impl SseDecode for crate::process::datasource::Entry {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
-        let mut var_type = <crate::process::transfer::EntryType>::sse_decode(deserializer);
+        let mut var_type = <crate::process::datasource::EntryType>::sse_decode(deserializer);
         let mut var_path = <String>::sse_decode(deserializer);
-        return crate::process::transfer::Entry {
+        return crate::process::datasource::Entry {
             _type: var_type,
             path: var_path,
         };
     }
 }
 
-impl SseDecode for crate::process::transfer::EntryType {
+impl SseDecode for crate::process::datasource::EntryType {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
         let mut inner = <i32>::sse_decode(deserializer);
         return match inner {
-            0 => crate::process::transfer::EntryType::File,
-            1 => crate::process::transfer::EntryType::Folder,
+            0 => crate::process::datasource::EntryType::File,
+            1 => crate::process::datasource::EntryType::Folder,
             _ => unreachable!("Invalid variant for EntryType: {}", inner),
         };
     }
@@ -799,13 +799,15 @@ impl SseDecode for Vec<crate::process::encrypt::EncryptItem> {
     }
 }
 
-impl SseDecode for Vec<crate::process::transfer::Entry> {
+impl SseDecode for Vec<crate::process::datasource::Entry> {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
         let mut len_ = <i32>::sse_decode(deserializer);
         let mut ans_ = vec![];
         for idx_ in 0..len_ {
-            ans_.push(<crate::process::transfer::Entry>::sse_decode(deserializer));
+            ans_.push(<crate::process::datasource::Entry>::sse_decode(
+                deserializer,
+            ));
         }
         return ans_;
     }
@@ -913,7 +915,7 @@ impl flutter_rust_bridge::IntoIntoDart<crate::process::encrypt::EncryptItem>
     }
 }
 // Codec=Dco (DartCObject based), see doc to use other codecs
-impl flutter_rust_bridge::IntoDart for crate::process::transfer::Entry {
+impl flutter_rust_bridge::IntoDart for crate::process::datasource::Entry {
     fn into_dart(self) -> flutter_rust_bridge::for_generated::DartAbi {
         [
             self._type.into_into_dart().into_dart(),
@@ -923,18 +925,18 @@ impl flutter_rust_bridge::IntoDart for crate::process::transfer::Entry {
     }
 }
 impl flutter_rust_bridge::for_generated::IntoDartExceptPrimitive
-    for crate::process::transfer::Entry
+    for crate::process::datasource::Entry
 {
 }
-impl flutter_rust_bridge::IntoIntoDart<crate::process::transfer::Entry>
-    for crate::process::transfer::Entry
+impl flutter_rust_bridge::IntoIntoDart<crate::process::datasource::Entry>
+    for crate::process::datasource::Entry
 {
-    fn into_into_dart(self) -> crate::process::transfer::Entry {
+    fn into_into_dart(self) -> crate::process::datasource::Entry {
         self
     }
 }
 // Codec=Dco (DartCObject based), see doc to use other codecs
-impl flutter_rust_bridge::IntoDart for crate::process::transfer::EntryType {
+impl flutter_rust_bridge::IntoDart for crate::process::datasource::EntryType {
     fn into_dart(self) -> flutter_rust_bridge::for_generated::DartAbi {
         match self {
             Self::File => 0.into_dart(),
@@ -943,13 +945,13 @@ impl flutter_rust_bridge::IntoDart for crate::process::transfer::EntryType {
     }
 }
 impl flutter_rust_bridge::for_generated::IntoDartExceptPrimitive
-    for crate::process::transfer::EntryType
+    for crate::process::datasource::EntryType
 {
 }
-impl flutter_rust_bridge::IntoIntoDart<crate::process::transfer::EntryType>
-    for crate::process::transfer::EntryType
+impl flutter_rust_bridge::IntoIntoDart<crate::process::datasource::EntryType>
+    for crate::process::datasource::EntryType
 {
-    fn into_into_dart(self) -> crate::process::transfer::EntryType {
+    fn into_into_dart(self) -> crate::process::datasource::EntryType {
         self
     }
 }
@@ -983,21 +985,21 @@ impl SseEncode for crate::process::encrypt::EncryptItem {
     }
 }
 
-impl SseEncode for crate::process::transfer::Entry {
+impl SseEncode for crate::process::datasource::Entry {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
-        <crate::process::transfer::EntryType>::sse_encode(self._type, serializer);
+        <crate::process::datasource::EntryType>::sse_encode(self._type, serializer);
         <String>::sse_encode(self.path, serializer);
     }
 }
 
-impl SseEncode for crate::process::transfer::EntryType {
+impl SseEncode for crate::process::datasource::EntryType {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
         <i32>::sse_encode(
             match self {
-                crate::process::transfer::EntryType::File => 0,
-                crate::process::transfer::EntryType::Folder => 1,
+                crate::process::datasource::EntryType::File => 0,
+                crate::process::datasource::EntryType::Folder => 1,
                 _ => {
                     unimplemented!("");
                 }
@@ -1041,12 +1043,12 @@ impl SseEncode for Vec<crate::process::encrypt::EncryptItem> {
     }
 }
 
-impl SseEncode for Vec<crate::process::transfer::Entry> {
+impl SseEncode for Vec<crate::process::datasource::Entry> {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
         <i32>::sse_encode(self.len() as _, serializer);
         for item in self {
-            <crate::process::transfer::Entry>::sse_encode(item, serializer);
+            <crate::process::datasource::Entry>::sse_encode(item, serializer);
         }
     }
 }

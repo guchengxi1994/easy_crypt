@@ -9,7 +9,7 @@ use std::{
 
 use crate::{
     emit::emitter::Emitter,
-    process::transfer::{Entry, S3Client, Transfer, S3CLIENT},
+    process::datasource::{Entry, S3Client, Transfer, S3CLIENT},
 };
 
 // used , remove later
@@ -21,7 +21,7 @@ pub fn init_s3_client(
     session_token: Option<String>,
     region: String,
 ) {
-    crate::process::transfer::S3Client::init(
+    crate::process::datasource::S3Client::init(
         endpoint,
         bucketname,
         access_key,

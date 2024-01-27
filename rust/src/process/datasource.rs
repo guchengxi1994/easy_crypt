@@ -39,6 +39,23 @@ pub trait Transfer {
 // a global `S3Client`
 pub static S3CLIENT: Lazy<RwLock<Option<S3Client>>> = Lazy::new(|| RwLock::new(None));
 
+pub static DATASOURCES: Lazy<RwLock<CacheDatasources>> =
+    Lazy::new(|| RwLock::new(CacheDatasources::default()));
+
+pub struct CacheDatasources {
+    pub datasources: Vec<Box<dyn ClientTrait + Send + Sync>>,
+}
+
+pub trait ClientTrait {}
+
+impl CacheDatasources {
+    pub fn default() -> Self {
+        CacheDatasources {
+            datasources: Vec::new(),
+        }
+    }
+}
+
 pub enum EntryType {
     File,
     Folder,
@@ -58,6 +75,8 @@ pub struct S3Client {
     pub region: String,
     pub op: opendal::Operator,
 }
+
+impl ClientTrait for S3Client {}
 
 impl S3Client {
     pub fn from(
@@ -82,7 +101,7 @@ impl S3Client {
         match op {
             Ok(_op) => {
                 let _o = _op.layer(opendal::layers::LoggingLayer::default()).finish();
-                let client = crate::process::transfer::S3Client {
+                let client = crate::process::datasource::S3Client {
                     endpoint,
                     bucketname,
                     access_key,
@@ -259,5 +278,29 @@ impl Transfer for S3Client {
         }
 
         anyhow::Ok("".to_owned())
+    }
+}
+
+pub struct LocalStorage {
+    pub root: String,
+    pub op: opendal::Operator,
+}
+
+impl ClientTrait for LocalStorage {}
+
+impl LocalStorage {
+    // unused , remove later
+    pub fn from(path: String) -> Option<Self> {
+        let mut builder = opendal::services::Fs::default();
+        builder.root(&path);
+
+        let op = opendal::Operator::new(builder);
+        match op {
+            Ok(_op) => {
+                let _o = _op.layer(opendal::layers::LoggingLayer::default()).finish();
+                Some(Self { op: _o, root: path })
+            }
+            Err(_) => None,
+        }
     }
 }
