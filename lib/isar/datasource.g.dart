@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'account.dart';
+part of 'datasource.dart';
 
 // **************************************************************************
 // IsarCollectionGenerator
@@ -9,34 +9,34 @@ part of 'account.dart';
 // coverage:ignore-file
 // ignore_for_file: duplicate_ignore, non_constant_identifier_names, constant_identifier_names, invalid_use_of_protected_member, unnecessary_cast, prefer_const_constructors, lines_longer_than_80_chars, require_trailing_commas, inference_failure_on_function_invocation, unnecessary_parenthesis, unnecessary_raw_strings, unnecessary_null_checks, join_return_with_assignment, prefer_final_locals, avoid_js_rounded_ints, avoid_positional_boolean_parameters, always_specify_types
 
-extension GetAccountCollection on Isar {
-  IsarCollection<Account> get accounts => this.collection();
+extension GetDatasourceCollection on Isar {
+  IsarCollection<Datasource> get datasources => this.collection();
 }
 
-const AccountSchema = CollectionSchema(
-  name: r'Account',
-  id: -6646797162501847804,
+const DatasourceSchema = CollectionSchema(
+  name: r'Datasource',
+  id: -7340283554694642184,
   properties: {
     r'accesskey': PropertySchema(
       id: 0,
       name: r'accesskey',
       type: IsarType.string,
     ),
-    r'accountType': PropertySchema(
-      id: 1,
-      name: r'accountType',
-      type: IsarType.byte,
-      enumMap: _AccountaccountTypeEnumValueMap,
-    ),
     r'bucketname': PropertySchema(
-      id: 2,
+      id: 1,
       name: r'bucketname',
       type: IsarType.string,
     ),
     r'createAt': PropertySchema(
-      id: 3,
+      id: 2,
       name: r'createAt',
       type: IsarType.long,
+    ),
+    r'datasourceType': PropertySchema(
+      id: 3,
+      name: r'datasourceType',
+      type: IsarType.byte,
+      enumMap: _DatasourcedatasourceTypeEnumValueMap,
     ),
     r'endpoint': PropertySchema(
       id: 4,
@@ -79,22 +79,22 @@ const AccountSchema = CollectionSchema(
       type: IsarType.string,
     )
   },
-  estimateSize: _accountEstimateSize,
-  serialize: _accountSerialize,
-  deserialize: _accountDeserialize,
-  deserializeProp: _accountDeserializeProp,
+  estimateSize: _datasourceEstimateSize,
+  serialize: _datasourceSerialize,
+  deserialize: _datasourceDeserialize,
+  deserializeProp: _datasourceDeserializeProp,
   idName: r'id',
   indexes: {},
   links: {},
   embeddedSchemas: {},
-  getId: _accountGetId,
-  getLinks: _accountGetLinks,
-  attach: _accountAttach,
+  getId: _datasourceGetId,
+  getLinks: _datasourceGetLinks,
+  attach: _datasourceAttach,
   version: '3.1.0+1',
 );
 
-int _accountEstimateSize(
-  Account object,
+int _datasourceEstimateSize(
+  Datasource object,
   List<int> offsets,
   Map<Type, List<int>> allOffsets,
 ) {
@@ -162,16 +162,16 @@ int _accountEstimateSize(
   return bytesCount;
 }
 
-void _accountSerialize(
-  Account object,
+void _datasourceSerialize(
+  Datasource object,
   IsarWriter writer,
   List<int> offsets,
   Map<Type, List<int>> allOffsets,
 ) {
   writer.writeString(offsets[0], object.accesskey);
-  writer.writeByte(offsets[1], object.accountType.index);
-  writer.writeString(offsets[2], object.bucketname);
-  writer.writeLong(offsets[3], object.createAt);
+  writer.writeString(offsets[1], object.bucketname);
+  writer.writeLong(offsets[2], object.createAt);
+  writer.writeByte(offsets[3], object.datasourceType.index);
   writer.writeString(offsets[4], object.endpoint);
   writer.writeString(offsets[5], object.name);
   writer.writeString(offsets[6], object.password);
@@ -182,19 +182,19 @@ void _accountSerialize(
   writer.writeString(offsets[11], object.username);
 }
 
-Account _accountDeserialize(
+Datasource _datasourceDeserialize(
   Id id,
   IsarReader reader,
   List<int> offsets,
   Map<Type, List<int>> allOffsets,
 ) {
-  final object = Account();
+  final object = Datasource();
   object.accesskey = reader.readStringOrNull(offsets[0]);
-  object.accountType =
-      _AccountaccountTypeValueEnumMap[reader.readByteOrNull(offsets[1])] ??
-          AccountType.S3;
-  object.bucketname = reader.readStringOrNull(offsets[2]);
-  object.createAt = reader.readLong(offsets[3]);
+  object.bucketname = reader.readStringOrNull(offsets[1]);
+  object.createAt = reader.readLong(offsets[2]);
+  object.datasourceType = _DatasourcedatasourceTypeValueEnumMap[
+          reader.readByteOrNull(offsets[3])] ??
+      DatasourceType.S3;
   object.endpoint = reader.readStringOrNull(offsets[4]);
   object.id = id;
   object.name = reader.readStringOrNull(offsets[5]);
@@ -207,7 +207,7 @@ Account _accountDeserialize(
   return object;
 }
 
-P _accountDeserializeProp<P>(
+P _datasourceDeserializeProp<P>(
   IsarReader reader,
   int propertyId,
   int offset,
@@ -217,12 +217,13 @@ P _accountDeserializeProp<P>(
     case 0:
       return (reader.readStringOrNull(offset)) as P;
     case 1:
-      return (_AccountaccountTypeValueEnumMap[reader.readByteOrNull(offset)] ??
-          AccountType.S3) as P;
-    case 2:
       return (reader.readStringOrNull(offset)) as P;
-    case 3:
+    case 2:
       return (reader.readLong(offset)) as P;
+    case 3:
+      return (_DatasourcedatasourceTypeValueEnumMap[
+              reader.readByteOrNull(offset)] ??
+          DatasourceType.S3) as P;
     case 4:
       return (reader.readStringOrNull(offset)) as P;
     case 5:
@@ -244,37 +245,41 @@ P _accountDeserializeProp<P>(
   }
 }
 
-const _AccountaccountTypeEnumValueMap = {
+const _DatasourcedatasourceTypeEnumValueMap = {
   'S3': 0,
   'Webdav': 1,
+  'Local': 2,
 };
-const _AccountaccountTypeValueEnumMap = {
-  0: AccountType.S3,
-  1: AccountType.Webdav,
+const _DatasourcedatasourceTypeValueEnumMap = {
+  0: DatasourceType.S3,
+  1: DatasourceType.Webdav,
+  2: DatasourceType.Local,
 };
 
-Id _accountGetId(Account object) {
+Id _datasourceGetId(Datasource object) {
   return object.id;
 }
 
-List<IsarLinkBase<dynamic>> _accountGetLinks(Account object) {
+List<IsarLinkBase<dynamic>> _datasourceGetLinks(Datasource object) {
   return [];
 }
 
-void _accountAttach(IsarCollection<dynamic> col, Id id, Account object) {
+void _datasourceAttach(IsarCollection<dynamic> col, Id id, Datasource object) {
   object.id = id;
 }
 
-extension AccountQueryWhereSort on QueryBuilder<Account, Account, QWhere> {
-  QueryBuilder<Account, Account, QAfterWhere> anyId() {
+extension DatasourceQueryWhereSort
+    on QueryBuilder<Datasource, Datasource, QWhere> {
+  QueryBuilder<Datasource, Datasource, QAfterWhere> anyId() {
     return QueryBuilder.apply(this, (query) {
       return query.addWhereClause(const IdWhereClause.any());
     });
   }
 }
 
-extension AccountQueryWhere on QueryBuilder<Account, Account, QWhereClause> {
-  QueryBuilder<Account, Account, QAfterWhereClause> idEqualTo(Id id) {
+extension DatasourceQueryWhere
+    on QueryBuilder<Datasource, Datasource, QWhereClause> {
+  QueryBuilder<Datasource, Datasource, QAfterWhereClause> idEqualTo(Id id) {
     return QueryBuilder.apply(this, (query) {
       return query.addWhereClause(IdWhereClause.between(
         lower: id,
@@ -283,7 +288,7 @@ extension AccountQueryWhere on QueryBuilder<Account, Account, QWhereClause> {
     });
   }
 
-  QueryBuilder<Account, Account, QAfterWhereClause> idNotEqualTo(Id id) {
+  QueryBuilder<Datasource, Datasource, QAfterWhereClause> idNotEqualTo(Id id) {
     return QueryBuilder.apply(this, (query) {
       if (query.whereSort == Sort.asc) {
         return query
@@ -305,7 +310,7 @@ extension AccountQueryWhere on QueryBuilder<Account, Account, QWhereClause> {
     });
   }
 
-  QueryBuilder<Account, Account, QAfterWhereClause> idGreaterThan(Id id,
+  QueryBuilder<Datasource, Datasource, QAfterWhereClause> idGreaterThan(Id id,
       {bool include = false}) {
     return QueryBuilder.apply(this, (query) {
       return query.addWhereClause(
@@ -314,7 +319,7 @@ extension AccountQueryWhere on QueryBuilder<Account, Account, QWhereClause> {
     });
   }
 
-  QueryBuilder<Account, Account, QAfterWhereClause> idLessThan(Id id,
+  QueryBuilder<Datasource, Datasource, QAfterWhereClause> idLessThan(Id id,
       {bool include = false}) {
     return QueryBuilder.apply(this, (query) {
       return query.addWhereClause(
@@ -323,7 +328,7 @@ extension AccountQueryWhere on QueryBuilder<Account, Account, QWhereClause> {
     });
   }
 
-  QueryBuilder<Account, Account, QAfterWhereClause> idBetween(
+  QueryBuilder<Datasource, Datasource, QAfterWhereClause> idBetween(
     Id lowerId,
     Id upperId, {
     bool includeLower = true,
@@ -340,9 +345,10 @@ extension AccountQueryWhere on QueryBuilder<Account, Account, QWhereClause> {
   }
 }
 
-extension AccountQueryFilter
-    on QueryBuilder<Account, Account, QFilterCondition> {
-  QueryBuilder<Account, Account, QAfterFilterCondition> accesskeyIsNull() {
+extension DatasourceQueryFilter
+    on QueryBuilder<Datasource, Datasource, QFilterCondition> {
+  QueryBuilder<Datasource, Datasource, QAfterFilterCondition>
+      accesskeyIsNull() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(const FilterCondition.isNull(
         property: r'accesskey',
@@ -350,7 +356,8 @@ extension AccountQueryFilter
     });
   }
 
-  QueryBuilder<Account, Account, QAfterFilterCondition> accesskeyIsNotNull() {
+  QueryBuilder<Datasource, Datasource, QAfterFilterCondition>
+      accesskeyIsNotNull() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(const FilterCondition.isNotNull(
         property: r'accesskey',
@@ -358,7 +365,7 @@ extension AccountQueryFilter
     });
   }
 
-  QueryBuilder<Account, Account, QAfterFilterCondition> accesskeyEqualTo(
+  QueryBuilder<Datasource, Datasource, QAfterFilterCondition> accesskeyEqualTo(
     String? value, {
     bool caseSensitive = true,
   }) {
@@ -371,7 +378,8 @@ extension AccountQueryFilter
     });
   }
 
-  QueryBuilder<Account, Account, QAfterFilterCondition> accesskeyGreaterThan(
+  QueryBuilder<Datasource, Datasource, QAfterFilterCondition>
+      accesskeyGreaterThan(
     String? value, {
     bool include = false,
     bool caseSensitive = true,
@@ -386,7 +394,7 @@ extension AccountQueryFilter
     });
   }
 
-  QueryBuilder<Account, Account, QAfterFilterCondition> accesskeyLessThan(
+  QueryBuilder<Datasource, Datasource, QAfterFilterCondition> accesskeyLessThan(
     String? value, {
     bool include = false,
     bool caseSensitive = true,
@@ -401,7 +409,7 @@ extension AccountQueryFilter
     });
   }
 
-  QueryBuilder<Account, Account, QAfterFilterCondition> accesskeyBetween(
+  QueryBuilder<Datasource, Datasource, QAfterFilterCondition> accesskeyBetween(
     String? lower,
     String? upper, {
     bool includeLower = true,
@@ -420,7 +428,8 @@ extension AccountQueryFilter
     });
   }
 
-  QueryBuilder<Account, Account, QAfterFilterCondition> accesskeyStartsWith(
+  QueryBuilder<Datasource, Datasource, QAfterFilterCondition>
+      accesskeyStartsWith(
     String value, {
     bool caseSensitive = true,
   }) {
@@ -433,7 +442,7 @@ extension AccountQueryFilter
     });
   }
 
-  QueryBuilder<Account, Account, QAfterFilterCondition> accesskeyEndsWith(
+  QueryBuilder<Datasource, Datasource, QAfterFilterCondition> accesskeyEndsWith(
     String value, {
     bool caseSensitive = true,
   }) {
@@ -446,7 +455,7 @@ extension AccountQueryFilter
     });
   }
 
-  QueryBuilder<Account, Account, QAfterFilterCondition> accesskeyContains(
+  QueryBuilder<Datasource, Datasource, QAfterFilterCondition> accesskeyContains(
       String value,
       {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
@@ -458,7 +467,7 @@ extension AccountQueryFilter
     });
   }
 
-  QueryBuilder<Account, Account, QAfterFilterCondition> accesskeyMatches(
+  QueryBuilder<Datasource, Datasource, QAfterFilterCondition> accesskeyMatches(
       String pattern,
       {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
@@ -470,7 +479,8 @@ extension AccountQueryFilter
     });
   }
 
-  QueryBuilder<Account, Account, QAfterFilterCondition> accesskeyIsEmpty() {
+  QueryBuilder<Datasource, Datasource, QAfterFilterCondition>
+      accesskeyIsEmpty() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.equalTo(
         property: r'accesskey',
@@ -479,7 +489,8 @@ extension AccountQueryFilter
     });
   }
 
-  QueryBuilder<Account, Account, QAfterFilterCondition> accesskeyIsNotEmpty() {
+  QueryBuilder<Datasource, Datasource, QAfterFilterCondition>
+      accesskeyIsNotEmpty() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.greaterThan(
         property: r'accesskey',
@@ -488,60 +499,8 @@ extension AccountQueryFilter
     });
   }
 
-  QueryBuilder<Account, Account, QAfterFilterCondition> accountTypeEqualTo(
-      AccountType value) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'accountType',
-        value: value,
-      ));
-    });
-  }
-
-  QueryBuilder<Account, Account, QAfterFilterCondition> accountTypeGreaterThan(
-    AccountType value, {
-    bool include = false,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.greaterThan(
-        include: include,
-        property: r'accountType',
-        value: value,
-      ));
-    });
-  }
-
-  QueryBuilder<Account, Account, QAfterFilterCondition> accountTypeLessThan(
-    AccountType value, {
-    bool include = false,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.lessThan(
-        include: include,
-        property: r'accountType',
-        value: value,
-      ));
-    });
-  }
-
-  QueryBuilder<Account, Account, QAfterFilterCondition> accountTypeBetween(
-    AccountType lower,
-    AccountType upper, {
-    bool includeLower = true,
-    bool includeUpper = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.between(
-        property: r'accountType',
-        lower: lower,
-        includeLower: includeLower,
-        upper: upper,
-        includeUpper: includeUpper,
-      ));
-    });
-  }
-
-  QueryBuilder<Account, Account, QAfterFilterCondition> bucketnameIsNull() {
+  QueryBuilder<Datasource, Datasource, QAfterFilterCondition>
+      bucketnameIsNull() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(const FilterCondition.isNull(
         property: r'bucketname',
@@ -549,7 +508,8 @@ extension AccountQueryFilter
     });
   }
 
-  QueryBuilder<Account, Account, QAfterFilterCondition> bucketnameIsNotNull() {
+  QueryBuilder<Datasource, Datasource, QAfterFilterCondition>
+      bucketnameIsNotNull() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(const FilterCondition.isNotNull(
         property: r'bucketname',
@@ -557,7 +517,7 @@ extension AccountQueryFilter
     });
   }
 
-  QueryBuilder<Account, Account, QAfterFilterCondition> bucketnameEqualTo(
+  QueryBuilder<Datasource, Datasource, QAfterFilterCondition> bucketnameEqualTo(
     String? value, {
     bool caseSensitive = true,
   }) {
@@ -570,7 +530,8 @@ extension AccountQueryFilter
     });
   }
 
-  QueryBuilder<Account, Account, QAfterFilterCondition> bucketnameGreaterThan(
+  QueryBuilder<Datasource, Datasource, QAfterFilterCondition>
+      bucketnameGreaterThan(
     String? value, {
     bool include = false,
     bool caseSensitive = true,
@@ -585,7 +546,8 @@ extension AccountQueryFilter
     });
   }
 
-  QueryBuilder<Account, Account, QAfterFilterCondition> bucketnameLessThan(
+  QueryBuilder<Datasource, Datasource, QAfterFilterCondition>
+      bucketnameLessThan(
     String? value, {
     bool include = false,
     bool caseSensitive = true,
@@ -600,7 +562,7 @@ extension AccountQueryFilter
     });
   }
 
-  QueryBuilder<Account, Account, QAfterFilterCondition> bucketnameBetween(
+  QueryBuilder<Datasource, Datasource, QAfterFilterCondition> bucketnameBetween(
     String? lower,
     String? upper, {
     bool includeLower = true,
@@ -619,7 +581,8 @@ extension AccountQueryFilter
     });
   }
 
-  QueryBuilder<Account, Account, QAfterFilterCondition> bucketnameStartsWith(
+  QueryBuilder<Datasource, Datasource, QAfterFilterCondition>
+      bucketnameStartsWith(
     String value, {
     bool caseSensitive = true,
   }) {
@@ -632,7 +595,8 @@ extension AccountQueryFilter
     });
   }
 
-  QueryBuilder<Account, Account, QAfterFilterCondition> bucketnameEndsWith(
+  QueryBuilder<Datasource, Datasource, QAfterFilterCondition>
+      bucketnameEndsWith(
     String value, {
     bool caseSensitive = true,
   }) {
@@ -645,9 +609,8 @@ extension AccountQueryFilter
     });
   }
 
-  QueryBuilder<Account, Account, QAfterFilterCondition> bucketnameContains(
-      String value,
-      {bool caseSensitive = true}) {
+  QueryBuilder<Datasource, Datasource, QAfterFilterCondition>
+      bucketnameContains(String value, {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.contains(
         property: r'bucketname',
@@ -657,7 +620,7 @@ extension AccountQueryFilter
     });
   }
 
-  QueryBuilder<Account, Account, QAfterFilterCondition> bucketnameMatches(
+  QueryBuilder<Datasource, Datasource, QAfterFilterCondition> bucketnameMatches(
       String pattern,
       {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
@@ -669,7 +632,8 @@ extension AccountQueryFilter
     });
   }
 
-  QueryBuilder<Account, Account, QAfterFilterCondition> bucketnameIsEmpty() {
+  QueryBuilder<Datasource, Datasource, QAfterFilterCondition>
+      bucketnameIsEmpty() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.equalTo(
         property: r'bucketname',
@@ -678,7 +642,8 @@ extension AccountQueryFilter
     });
   }
 
-  QueryBuilder<Account, Account, QAfterFilterCondition> bucketnameIsNotEmpty() {
+  QueryBuilder<Datasource, Datasource, QAfterFilterCondition>
+      bucketnameIsNotEmpty() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.greaterThan(
         property: r'bucketname',
@@ -687,7 +652,7 @@ extension AccountQueryFilter
     });
   }
 
-  QueryBuilder<Account, Account, QAfterFilterCondition> createAtEqualTo(
+  QueryBuilder<Datasource, Datasource, QAfterFilterCondition> createAtEqualTo(
       int value) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.equalTo(
@@ -697,7 +662,8 @@ extension AccountQueryFilter
     });
   }
 
-  QueryBuilder<Account, Account, QAfterFilterCondition> createAtGreaterThan(
+  QueryBuilder<Datasource, Datasource, QAfterFilterCondition>
+      createAtGreaterThan(
     int value, {
     bool include = false,
   }) {
@@ -710,7 +676,7 @@ extension AccountQueryFilter
     });
   }
 
-  QueryBuilder<Account, Account, QAfterFilterCondition> createAtLessThan(
+  QueryBuilder<Datasource, Datasource, QAfterFilterCondition> createAtLessThan(
     int value, {
     bool include = false,
   }) {
@@ -723,7 +689,7 @@ extension AccountQueryFilter
     });
   }
 
-  QueryBuilder<Account, Account, QAfterFilterCondition> createAtBetween(
+  QueryBuilder<Datasource, Datasource, QAfterFilterCondition> createAtBetween(
     int lower,
     int upper, {
     bool includeLower = true,
@@ -740,7 +706,63 @@ extension AccountQueryFilter
     });
   }
 
-  QueryBuilder<Account, Account, QAfterFilterCondition> endpointIsNull() {
+  QueryBuilder<Datasource, Datasource, QAfterFilterCondition>
+      datasourceTypeEqualTo(DatasourceType value) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'datasourceType',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<Datasource, Datasource, QAfterFilterCondition>
+      datasourceTypeGreaterThan(
+    DatasourceType value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'datasourceType',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<Datasource, Datasource, QAfterFilterCondition>
+      datasourceTypeLessThan(
+    DatasourceType value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'datasourceType',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<Datasource, Datasource, QAfterFilterCondition>
+      datasourceTypeBetween(
+    DatasourceType lower,
+    DatasourceType upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'datasourceType',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+      ));
+    });
+  }
+
+  QueryBuilder<Datasource, Datasource, QAfterFilterCondition> endpointIsNull() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(const FilterCondition.isNull(
         property: r'endpoint',
@@ -748,7 +770,8 @@ extension AccountQueryFilter
     });
   }
 
-  QueryBuilder<Account, Account, QAfterFilterCondition> endpointIsNotNull() {
+  QueryBuilder<Datasource, Datasource, QAfterFilterCondition>
+      endpointIsNotNull() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(const FilterCondition.isNotNull(
         property: r'endpoint',
@@ -756,7 +779,7 @@ extension AccountQueryFilter
     });
   }
 
-  QueryBuilder<Account, Account, QAfterFilterCondition> endpointEqualTo(
+  QueryBuilder<Datasource, Datasource, QAfterFilterCondition> endpointEqualTo(
     String? value, {
     bool caseSensitive = true,
   }) {
@@ -769,7 +792,8 @@ extension AccountQueryFilter
     });
   }
 
-  QueryBuilder<Account, Account, QAfterFilterCondition> endpointGreaterThan(
+  QueryBuilder<Datasource, Datasource, QAfterFilterCondition>
+      endpointGreaterThan(
     String? value, {
     bool include = false,
     bool caseSensitive = true,
@@ -784,7 +808,7 @@ extension AccountQueryFilter
     });
   }
 
-  QueryBuilder<Account, Account, QAfterFilterCondition> endpointLessThan(
+  QueryBuilder<Datasource, Datasource, QAfterFilterCondition> endpointLessThan(
     String? value, {
     bool include = false,
     bool caseSensitive = true,
@@ -799,7 +823,7 @@ extension AccountQueryFilter
     });
   }
 
-  QueryBuilder<Account, Account, QAfterFilterCondition> endpointBetween(
+  QueryBuilder<Datasource, Datasource, QAfterFilterCondition> endpointBetween(
     String? lower,
     String? upper, {
     bool includeLower = true,
@@ -818,7 +842,8 @@ extension AccountQueryFilter
     });
   }
 
-  QueryBuilder<Account, Account, QAfterFilterCondition> endpointStartsWith(
+  QueryBuilder<Datasource, Datasource, QAfterFilterCondition>
+      endpointStartsWith(
     String value, {
     bool caseSensitive = true,
   }) {
@@ -831,7 +856,7 @@ extension AccountQueryFilter
     });
   }
 
-  QueryBuilder<Account, Account, QAfterFilterCondition> endpointEndsWith(
+  QueryBuilder<Datasource, Datasource, QAfterFilterCondition> endpointEndsWith(
     String value, {
     bool caseSensitive = true,
   }) {
@@ -844,7 +869,7 @@ extension AccountQueryFilter
     });
   }
 
-  QueryBuilder<Account, Account, QAfterFilterCondition> endpointContains(
+  QueryBuilder<Datasource, Datasource, QAfterFilterCondition> endpointContains(
       String value,
       {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
@@ -856,7 +881,7 @@ extension AccountQueryFilter
     });
   }
 
-  QueryBuilder<Account, Account, QAfterFilterCondition> endpointMatches(
+  QueryBuilder<Datasource, Datasource, QAfterFilterCondition> endpointMatches(
       String pattern,
       {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
@@ -868,7 +893,8 @@ extension AccountQueryFilter
     });
   }
 
-  QueryBuilder<Account, Account, QAfterFilterCondition> endpointIsEmpty() {
+  QueryBuilder<Datasource, Datasource, QAfterFilterCondition>
+      endpointIsEmpty() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.equalTo(
         property: r'endpoint',
@@ -877,7 +903,8 @@ extension AccountQueryFilter
     });
   }
 
-  QueryBuilder<Account, Account, QAfterFilterCondition> endpointIsNotEmpty() {
+  QueryBuilder<Datasource, Datasource, QAfterFilterCondition>
+      endpointIsNotEmpty() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.greaterThan(
         property: r'endpoint',
@@ -886,7 +913,8 @@ extension AccountQueryFilter
     });
   }
 
-  QueryBuilder<Account, Account, QAfterFilterCondition> idEqualTo(Id value) {
+  QueryBuilder<Datasource, Datasource, QAfterFilterCondition> idEqualTo(
+      Id value) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.equalTo(
         property: r'id',
@@ -895,7 +923,7 @@ extension AccountQueryFilter
     });
   }
 
-  QueryBuilder<Account, Account, QAfterFilterCondition> idGreaterThan(
+  QueryBuilder<Datasource, Datasource, QAfterFilterCondition> idGreaterThan(
     Id value, {
     bool include = false,
   }) {
@@ -908,7 +936,7 @@ extension AccountQueryFilter
     });
   }
 
-  QueryBuilder<Account, Account, QAfterFilterCondition> idLessThan(
+  QueryBuilder<Datasource, Datasource, QAfterFilterCondition> idLessThan(
     Id value, {
     bool include = false,
   }) {
@@ -921,7 +949,7 @@ extension AccountQueryFilter
     });
   }
 
-  QueryBuilder<Account, Account, QAfterFilterCondition> idBetween(
+  QueryBuilder<Datasource, Datasource, QAfterFilterCondition> idBetween(
     Id lower,
     Id upper, {
     bool includeLower = true,
@@ -938,7 +966,7 @@ extension AccountQueryFilter
     });
   }
 
-  QueryBuilder<Account, Account, QAfterFilterCondition> nameIsNull() {
+  QueryBuilder<Datasource, Datasource, QAfterFilterCondition> nameIsNull() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(const FilterCondition.isNull(
         property: r'name',
@@ -946,7 +974,7 @@ extension AccountQueryFilter
     });
   }
 
-  QueryBuilder<Account, Account, QAfterFilterCondition> nameIsNotNull() {
+  QueryBuilder<Datasource, Datasource, QAfterFilterCondition> nameIsNotNull() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(const FilterCondition.isNotNull(
         property: r'name',
@@ -954,7 +982,7 @@ extension AccountQueryFilter
     });
   }
 
-  QueryBuilder<Account, Account, QAfterFilterCondition> nameEqualTo(
+  QueryBuilder<Datasource, Datasource, QAfterFilterCondition> nameEqualTo(
     String? value, {
     bool caseSensitive = true,
   }) {
@@ -967,7 +995,7 @@ extension AccountQueryFilter
     });
   }
 
-  QueryBuilder<Account, Account, QAfterFilterCondition> nameGreaterThan(
+  QueryBuilder<Datasource, Datasource, QAfterFilterCondition> nameGreaterThan(
     String? value, {
     bool include = false,
     bool caseSensitive = true,
@@ -982,7 +1010,7 @@ extension AccountQueryFilter
     });
   }
 
-  QueryBuilder<Account, Account, QAfterFilterCondition> nameLessThan(
+  QueryBuilder<Datasource, Datasource, QAfterFilterCondition> nameLessThan(
     String? value, {
     bool include = false,
     bool caseSensitive = true,
@@ -997,7 +1025,7 @@ extension AccountQueryFilter
     });
   }
 
-  QueryBuilder<Account, Account, QAfterFilterCondition> nameBetween(
+  QueryBuilder<Datasource, Datasource, QAfterFilterCondition> nameBetween(
     String? lower,
     String? upper, {
     bool includeLower = true,
@@ -1016,7 +1044,7 @@ extension AccountQueryFilter
     });
   }
 
-  QueryBuilder<Account, Account, QAfterFilterCondition> nameStartsWith(
+  QueryBuilder<Datasource, Datasource, QAfterFilterCondition> nameStartsWith(
     String value, {
     bool caseSensitive = true,
   }) {
@@ -1029,7 +1057,7 @@ extension AccountQueryFilter
     });
   }
 
-  QueryBuilder<Account, Account, QAfterFilterCondition> nameEndsWith(
+  QueryBuilder<Datasource, Datasource, QAfterFilterCondition> nameEndsWith(
     String value, {
     bool caseSensitive = true,
   }) {
@@ -1042,7 +1070,7 @@ extension AccountQueryFilter
     });
   }
 
-  QueryBuilder<Account, Account, QAfterFilterCondition> nameContains(
+  QueryBuilder<Datasource, Datasource, QAfterFilterCondition> nameContains(
       String value,
       {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
@@ -1054,7 +1082,7 @@ extension AccountQueryFilter
     });
   }
 
-  QueryBuilder<Account, Account, QAfterFilterCondition> nameMatches(
+  QueryBuilder<Datasource, Datasource, QAfterFilterCondition> nameMatches(
       String pattern,
       {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
@@ -1066,7 +1094,7 @@ extension AccountQueryFilter
     });
   }
 
-  QueryBuilder<Account, Account, QAfterFilterCondition> nameIsEmpty() {
+  QueryBuilder<Datasource, Datasource, QAfterFilterCondition> nameIsEmpty() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.equalTo(
         property: r'name',
@@ -1075,7 +1103,7 @@ extension AccountQueryFilter
     });
   }
 
-  QueryBuilder<Account, Account, QAfterFilterCondition> nameIsNotEmpty() {
+  QueryBuilder<Datasource, Datasource, QAfterFilterCondition> nameIsNotEmpty() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.greaterThan(
         property: r'name',
@@ -1084,7 +1112,7 @@ extension AccountQueryFilter
     });
   }
 
-  QueryBuilder<Account, Account, QAfterFilterCondition> passwordIsNull() {
+  QueryBuilder<Datasource, Datasource, QAfterFilterCondition> passwordIsNull() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(const FilterCondition.isNull(
         property: r'password',
@@ -1092,7 +1120,8 @@ extension AccountQueryFilter
     });
   }
 
-  QueryBuilder<Account, Account, QAfterFilterCondition> passwordIsNotNull() {
+  QueryBuilder<Datasource, Datasource, QAfterFilterCondition>
+      passwordIsNotNull() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(const FilterCondition.isNotNull(
         property: r'password',
@@ -1100,7 +1129,7 @@ extension AccountQueryFilter
     });
   }
 
-  QueryBuilder<Account, Account, QAfterFilterCondition> passwordEqualTo(
+  QueryBuilder<Datasource, Datasource, QAfterFilterCondition> passwordEqualTo(
     String? value, {
     bool caseSensitive = true,
   }) {
@@ -1113,7 +1142,8 @@ extension AccountQueryFilter
     });
   }
 
-  QueryBuilder<Account, Account, QAfterFilterCondition> passwordGreaterThan(
+  QueryBuilder<Datasource, Datasource, QAfterFilterCondition>
+      passwordGreaterThan(
     String? value, {
     bool include = false,
     bool caseSensitive = true,
@@ -1128,7 +1158,7 @@ extension AccountQueryFilter
     });
   }
 
-  QueryBuilder<Account, Account, QAfterFilterCondition> passwordLessThan(
+  QueryBuilder<Datasource, Datasource, QAfterFilterCondition> passwordLessThan(
     String? value, {
     bool include = false,
     bool caseSensitive = true,
@@ -1143,7 +1173,7 @@ extension AccountQueryFilter
     });
   }
 
-  QueryBuilder<Account, Account, QAfterFilterCondition> passwordBetween(
+  QueryBuilder<Datasource, Datasource, QAfterFilterCondition> passwordBetween(
     String? lower,
     String? upper, {
     bool includeLower = true,
@@ -1162,7 +1192,8 @@ extension AccountQueryFilter
     });
   }
 
-  QueryBuilder<Account, Account, QAfterFilterCondition> passwordStartsWith(
+  QueryBuilder<Datasource, Datasource, QAfterFilterCondition>
+      passwordStartsWith(
     String value, {
     bool caseSensitive = true,
   }) {
@@ -1175,7 +1206,7 @@ extension AccountQueryFilter
     });
   }
 
-  QueryBuilder<Account, Account, QAfterFilterCondition> passwordEndsWith(
+  QueryBuilder<Datasource, Datasource, QAfterFilterCondition> passwordEndsWith(
     String value, {
     bool caseSensitive = true,
   }) {
@@ -1188,7 +1219,7 @@ extension AccountQueryFilter
     });
   }
 
-  QueryBuilder<Account, Account, QAfterFilterCondition> passwordContains(
+  QueryBuilder<Datasource, Datasource, QAfterFilterCondition> passwordContains(
       String value,
       {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
@@ -1200,7 +1231,7 @@ extension AccountQueryFilter
     });
   }
 
-  QueryBuilder<Account, Account, QAfterFilterCondition> passwordMatches(
+  QueryBuilder<Datasource, Datasource, QAfterFilterCondition> passwordMatches(
       String pattern,
       {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
@@ -1212,7 +1243,8 @@ extension AccountQueryFilter
     });
   }
 
-  QueryBuilder<Account, Account, QAfterFilterCondition> passwordIsEmpty() {
+  QueryBuilder<Datasource, Datasource, QAfterFilterCondition>
+      passwordIsEmpty() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.equalTo(
         property: r'password',
@@ -1221,7 +1253,8 @@ extension AccountQueryFilter
     });
   }
 
-  QueryBuilder<Account, Account, QAfterFilterCondition> passwordIsNotEmpty() {
+  QueryBuilder<Datasource, Datasource, QAfterFilterCondition>
+      passwordIsNotEmpty() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.greaterThan(
         property: r'password',
@@ -1230,7 +1263,7 @@ extension AccountQueryFilter
     });
   }
 
-  QueryBuilder<Account, Account, QAfterFilterCondition> regionIsNull() {
+  QueryBuilder<Datasource, Datasource, QAfterFilterCondition> regionIsNull() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(const FilterCondition.isNull(
         property: r'region',
@@ -1238,7 +1271,8 @@ extension AccountQueryFilter
     });
   }
 
-  QueryBuilder<Account, Account, QAfterFilterCondition> regionIsNotNull() {
+  QueryBuilder<Datasource, Datasource, QAfterFilterCondition>
+      regionIsNotNull() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(const FilterCondition.isNotNull(
         property: r'region',
@@ -1246,7 +1280,7 @@ extension AccountQueryFilter
     });
   }
 
-  QueryBuilder<Account, Account, QAfterFilterCondition> regionEqualTo(
+  QueryBuilder<Datasource, Datasource, QAfterFilterCondition> regionEqualTo(
     String? value, {
     bool caseSensitive = true,
   }) {
@@ -1259,7 +1293,7 @@ extension AccountQueryFilter
     });
   }
 
-  QueryBuilder<Account, Account, QAfterFilterCondition> regionGreaterThan(
+  QueryBuilder<Datasource, Datasource, QAfterFilterCondition> regionGreaterThan(
     String? value, {
     bool include = false,
     bool caseSensitive = true,
@@ -1274,7 +1308,7 @@ extension AccountQueryFilter
     });
   }
 
-  QueryBuilder<Account, Account, QAfterFilterCondition> regionLessThan(
+  QueryBuilder<Datasource, Datasource, QAfterFilterCondition> regionLessThan(
     String? value, {
     bool include = false,
     bool caseSensitive = true,
@@ -1289,7 +1323,7 @@ extension AccountQueryFilter
     });
   }
 
-  QueryBuilder<Account, Account, QAfterFilterCondition> regionBetween(
+  QueryBuilder<Datasource, Datasource, QAfterFilterCondition> regionBetween(
     String? lower,
     String? upper, {
     bool includeLower = true,
@@ -1308,7 +1342,7 @@ extension AccountQueryFilter
     });
   }
 
-  QueryBuilder<Account, Account, QAfterFilterCondition> regionStartsWith(
+  QueryBuilder<Datasource, Datasource, QAfterFilterCondition> regionStartsWith(
     String value, {
     bool caseSensitive = true,
   }) {
@@ -1321,7 +1355,7 @@ extension AccountQueryFilter
     });
   }
 
-  QueryBuilder<Account, Account, QAfterFilterCondition> regionEndsWith(
+  QueryBuilder<Datasource, Datasource, QAfterFilterCondition> regionEndsWith(
     String value, {
     bool caseSensitive = true,
   }) {
@@ -1334,7 +1368,7 @@ extension AccountQueryFilter
     });
   }
 
-  QueryBuilder<Account, Account, QAfterFilterCondition> regionContains(
+  QueryBuilder<Datasource, Datasource, QAfterFilterCondition> regionContains(
       String value,
       {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
@@ -1346,7 +1380,7 @@ extension AccountQueryFilter
     });
   }
 
-  QueryBuilder<Account, Account, QAfterFilterCondition> regionMatches(
+  QueryBuilder<Datasource, Datasource, QAfterFilterCondition> regionMatches(
       String pattern,
       {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
@@ -1358,7 +1392,7 @@ extension AccountQueryFilter
     });
   }
 
-  QueryBuilder<Account, Account, QAfterFilterCondition> regionIsEmpty() {
+  QueryBuilder<Datasource, Datasource, QAfterFilterCondition> regionIsEmpty() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.equalTo(
         property: r'region',
@@ -1367,7 +1401,8 @@ extension AccountQueryFilter
     });
   }
 
-  QueryBuilder<Account, Account, QAfterFilterCondition> regionIsNotEmpty() {
+  QueryBuilder<Datasource, Datasource, QAfterFilterCondition>
+      regionIsNotEmpty() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.greaterThan(
         property: r'region',
@@ -1376,7 +1411,8 @@ extension AccountQueryFilter
     });
   }
 
-  QueryBuilder<Account, Account, QAfterFilterCondition> sessionKeyIsNull() {
+  QueryBuilder<Datasource, Datasource, QAfterFilterCondition>
+      sessionKeyIsNull() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(const FilterCondition.isNull(
         property: r'sessionKey',
@@ -1384,7 +1420,8 @@ extension AccountQueryFilter
     });
   }
 
-  QueryBuilder<Account, Account, QAfterFilterCondition> sessionKeyIsNotNull() {
+  QueryBuilder<Datasource, Datasource, QAfterFilterCondition>
+      sessionKeyIsNotNull() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(const FilterCondition.isNotNull(
         property: r'sessionKey',
@@ -1392,7 +1429,7 @@ extension AccountQueryFilter
     });
   }
 
-  QueryBuilder<Account, Account, QAfterFilterCondition> sessionKeyEqualTo(
+  QueryBuilder<Datasource, Datasource, QAfterFilterCondition> sessionKeyEqualTo(
     String? value, {
     bool caseSensitive = true,
   }) {
@@ -1405,7 +1442,8 @@ extension AccountQueryFilter
     });
   }
 
-  QueryBuilder<Account, Account, QAfterFilterCondition> sessionKeyGreaterThan(
+  QueryBuilder<Datasource, Datasource, QAfterFilterCondition>
+      sessionKeyGreaterThan(
     String? value, {
     bool include = false,
     bool caseSensitive = true,
@@ -1420,7 +1458,8 @@ extension AccountQueryFilter
     });
   }
 
-  QueryBuilder<Account, Account, QAfterFilterCondition> sessionKeyLessThan(
+  QueryBuilder<Datasource, Datasource, QAfterFilterCondition>
+      sessionKeyLessThan(
     String? value, {
     bool include = false,
     bool caseSensitive = true,
@@ -1435,7 +1474,7 @@ extension AccountQueryFilter
     });
   }
 
-  QueryBuilder<Account, Account, QAfterFilterCondition> sessionKeyBetween(
+  QueryBuilder<Datasource, Datasource, QAfterFilterCondition> sessionKeyBetween(
     String? lower,
     String? upper, {
     bool includeLower = true,
@@ -1454,7 +1493,8 @@ extension AccountQueryFilter
     });
   }
 
-  QueryBuilder<Account, Account, QAfterFilterCondition> sessionKeyStartsWith(
+  QueryBuilder<Datasource, Datasource, QAfterFilterCondition>
+      sessionKeyStartsWith(
     String value, {
     bool caseSensitive = true,
   }) {
@@ -1467,7 +1507,8 @@ extension AccountQueryFilter
     });
   }
 
-  QueryBuilder<Account, Account, QAfterFilterCondition> sessionKeyEndsWith(
+  QueryBuilder<Datasource, Datasource, QAfterFilterCondition>
+      sessionKeyEndsWith(
     String value, {
     bool caseSensitive = true,
   }) {
@@ -1480,9 +1521,8 @@ extension AccountQueryFilter
     });
   }
 
-  QueryBuilder<Account, Account, QAfterFilterCondition> sessionKeyContains(
-      String value,
-      {bool caseSensitive = true}) {
+  QueryBuilder<Datasource, Datasource, QAfterFilterCondition>
+      sessionKeyContains(String value, {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.contains(
         property: r'sessionKey',
@@ -1492,7 +1532,7 @@ extension AccountQueryFilter
     });
   }
 
-  QueryBuilder<Account, Account, QAfterFilterCondition> sessionKeyMatches(
+  QueryBuilder<Datasource, Datasource, QAfterFilterCondition> sessionKeyMatches(
       String pattern,
       {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
@@ -1504,7 +1544,8 @@ extension AccountQueryFilter
     });
   }
 
-  QueryBuilder<Account, Account, QAfterFilterCondition> sessionKeyIsEmpty() {
+  QueryBuilder<Datasource, Datasource, QAfterFilterCondition>
+      sessionKeyIsEmpty() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.equalTo(
         property: r'sessionKey',
@@ -1513,7 +1554,8 @@ extension AccountQueryFilter
     });
   }
 
-  QueryBuilder<Account, Account, QAfterFilterCondition> sessionKeyIsNotEmpty() {
+  QueryBuilder<Datasource, Datasource, QAfterFilterCondition>
+      sessionKeyIsNotEmpty() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.greaterThan(
         property: r'sessionKey',
@@ -1522,7 +1564,8 @@ extension AccountQueryFilter
     });
   }
 
-  QueryBuilder<Account, Account, QAfterFilterCondition> sessionTokenIsNull() {
+  QueryBuilder<Datasource, Datasource, QAfterFilterCondition>
+      sessionTokenIsNull() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(const FilterCondition.isNull(
         property: r'sessionToken',
@@ -1530,7 +1573,7 @@ extension AccountQueryFilter
     });
   }
 
-  QueryBuilder<Account, Account, QAfterFilterCondition>
+  QueryBuilder<Datasource, Datasource, QAfterFilterCondition>
       sessionTokenIsNotNull() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(const FilterCondition.isNotNull(
@@ -1539,7 +1582,8 @@ extension AccountQueryFilter
     });
   }
 
-  QueryBuilder<Account, Account, QAfterFilterCondition> sessionTokenEqualTo(
+  QueryBuilder<Datasource, Datasource, QAfterFilterCondition>
+      sessionTokenEqualTo(
     String? value, {
     bool caseSensitive = true,
   }) {
@@ -1552,7 +1596,8 @@ extension AccountQueryFilter
     });
   }
 
-  QueryBuilder<Account, Account, QAfterFilterCondition> sessionTokenGreaterThan(
+  QueryBuilder<Datasource, Datasource, QAfterFilterCondition>
+      sessionTokenGreaterThan(
     String? value, {
     bool include = false,
     bool caseSensitive = true,
@@ -1567,7 +1612,8 @@ extension AccountQueryFilter
     });
   }
 
-  QueryBuilder<Account, Account, QAfterFilterCondition> sessionTokenLessThan(
+  QueryBuilder<Datasource, Datasource, QAfterFilterCondition>
+      sessionTokenLessThan(
     String? value, {
     bool include = false,
     bool caseSensitive = true,
@@ -1582,7 +1628,8 @@ extension AccountQueryFilter
     });
   }
 
-  QueryBuilder<Account, Account, QAfterFilterCondition> sessionTokenBetween(
+  QueryBuilder<Datasource, Datasource, QAfterFilterCondition>
+      sessionTokenBetween(
     String? lower,
     String? upper, {
     bool includeLower = true,
@@ -1601,7 +1648,8 @@ extension AccountQueryFilter
     });
   }
 
-  QueryBuilder<Account, Account, QAfterFilterCondition> sessionTokenStartsWith(
+  QueryBuilder<Datasource, Datasource, QAfterFilterCondition>
+      sessionTokenStartsWith(
     String value, {
     bool caseSensitive = true,
   }) {
@@ -1614,7 +1662,8 @@ extension AccountQueryFilter
     });
   }
 
-  QueryBuilder<Account, Account, QAfterFilterCondition> sessionTokenEndsWith(
+  QueryBuilder<Datasource, Datasource, QAfterFilterCondition>
+      sessionTokenEndsWith(
     String value, {
     bool caseSensitive = true,
   }) {
@@ -1627,9 +1676,8 @@ extension AccountQueryFilter
     });
   }
 
-  QueryBuilder<Account, Account, QAfterFilterCondition> sessionTokenContains(
-      String value,
-      {bool caseSensitive = true}) {
+  QueryBuilder<Datasource, Datasource, QAfterFilterCondition>
+      sessionTokenContains(String value, {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.contains(
         property: r'sessionToken',
@@ -1639,9 +1687,8 @@ extension AccountQueryFilter
     });
   }
 
-  QueryBuilder<Account, Account, QAfterFilterCondition> sessionTokenMatches(
-      String pattern,
-      {bool caseSensitive = true}) {
+  QueryBuilder<Datasource, Datasource, QAfterFilterCondition>
+      sessionTokenMatches(String pattern, {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.matches(
         property: r'sessionToken',
@@ -1651,7 +1698,8 @@ extension AccountQueryFilter
     });
   }
 
-  QueryBuilder<Account, Account, QAfterFilterCondition> sessionTokenIsEmpty() {
+  QueryBuilder<Datasource, Datasource, QAfterFilterCondition>
+      sessionTokenIsEmpty() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.equalTo(
         property: r'sessionToken',
@@ -1660,7 +1708,7 @@ extension AccountQueryFilter
     });
   }
 
-  QueryBuilder<Account, Account, QAfterFilterCondition>
+  QueryBuilder<Datasource, Datasource, QAfterFilterCondition>
       sessionTokenIsNotEmpty() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.greaterThan(
@@ -1670,7 +1718,7 @@ extension AccountQueryFilter
     });
   }
 
-  QueryBuilder<Account, Account, QAfterFilterCondition> urlIsNull() {
+  QueryBuilder<Datasource, Datasource, QAfterFilterCondition> urlIsNull() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(const FilterCondition.isNull(
         property: r'url',
@@ -1678,7 +1726,7 @@ extension AccountQueryFilter
     });
   }
 
-  QueryBuilder<Account, Account, QAfterFilterCondition> urlIsNotNull() {
+  QueryBuilder<Datasource, Datasource, QAfterFilterCondition> urlIsNotNull() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(const FilterCondition.isNotNull(
         property: r'url',
@@ -1686,7 +1734,7 @@ extension AccountQueryFilter
     });
   }
 
-  QueryBuilder<Account, Account, QAfterFilterCondition> urlEqualTo(
+  QueryBuilder<Datasource, Datasource, QAfterFilterCondition> urlEqualTo(
     String? value, {
     bool caseSensitive = true,
   }) {
@@ -1699,7 +1747,7 @@ extension AccountQueryFilter
     });
   }
 
-  QueryBuilder<Account, Account, QAfterFilterCondition> urlGreaterThan(
+  QueryBuilder<Datasource, Datasource, QAfterFilterCondition> urlGreaterThan(
     String? value, {
     bool include = false,
     bool caseSensitive = true,
@@ -1714,7 +1762,7 @@ extension AccountQueryFilter
     });
   }
 
-  QueryBuilder<Account, Account, QAfterFilterCondition> urlLessThan(
+  QueryBuilder<Datasource, Datasource, QAfterFilterCondition> urlLessThan(
     String? value, {
     bool include = false,
     bool caseSensitive = true,
@@ -1729,7 +1777,7 @@ extension AccountQueryFilter
     });
   }
 
-  QueryBuilder<Account, Account, QAfterFilterCondition> urlBetween(
+  QueryBuilder<Datasource, Datasource, QAfterFilterCondition> urlBetween(
     String? lower,
     String? upper, {
     bool includeLower = true,
@@ -1748,7 +1796,7 @@ extension AccountQueryFilter
     });
   }
 
-  QueryBuilder<Account, Account, QAfterFilterCondition> urlStartsWith(
+  QueryBuilder<Datasource, Datasource, QAfterFilterCondition> urlStartsWith(
     String value, {
     bool caseSensitive = true,
   }) {
@@ -1761,7 +1809,7 @@ extension AccountQueryFilter
     });
   }
 
-  QueryBuilder<Account, Account, QAfterFilterCondition> urlEndsWith(
+  QueryBuilder<Datasource, Datasource, QAfterFilterCondition> urlEndsWith(
     String value, {
     bool caseSensitive = true,
   }) {
@@ -1774,7 +1822,7 @@ extension AccountQueryFilter
     });
   }
 
-  QueryBuilder<Account, Account, QAfterFilterCondition> urlContains(
+  QueryBuilder<Datasource, Datasource, QAfterFilterCondition> urlContains(
       String value,
       {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
@@ -1786,7 +1834,7 @@ extension AccountQueryFilter
     });
   }
 
-  QueryBuilder<Account, Account, QAfterFilterCondition> urlMatches(
+  QueryBuilder<Datasource, Datasource, QAfterFilterCondition> urlMatches(
       String pattern,
       {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
@@ -1798,7 +1846,7 @@ extension AccountQueryFilter
     });
   }
 
-  QueryBuilder<Account, Account, QAfterFilterCondition> urlIsEmpty() {
+  QueryBuilder<Datasource, Datasource, QAfterFilterCondition> urlIsEmpty() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.equalTo(
         property: r'url',
@@ -1807,7 +1855,7 @@ extension AccountQueryFilter
     });
   }
 
-  QueryBuilder<Account, Account, QAfterFilterCondition> urlIsNotEmpty() {
+  QueryBuilder<Datasource, Datasource, QAfterFilterCondition> urlIsNotEmpty() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.greaterThan(
         property: r'url',
@@ -1816,7 +1864,7 @@ extension AccountQueryFilter
     });
   }
 
-  QueryBuilder<Account, Account, QAfterFilterCondition> usernameIsNull() {
+  QueryBuilder<Datasource, Datasource, QAfterFilterCondition> usernameIsNull() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(const FilterCondition.isNull(
         property: r'username',
@@ -1824,7 +1872,8 @@ extension AccountQueryFilter
     });
   }
 
-  QueryBuilder<Account, Account, QAfterFilterCondition> usernameIsNotNull() {
+  QueryBuilder<Datasource, Datasource, QAfterFilterCondition>
+      usernameIsNotNull() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(const FilterCondition.isNotNull(
         property: r'username',
@@ -1832,7 +1881,7 @@ extension AccountQueryFilter
     });
   }
 
-  QueryBuilder<Account, Account, QAfterFilterCondition> usernameEqualTo(
+  QueryBuilder<Datasource, Datasource, QAfterFilterCondition> usernameEqualTo(
     String? value, {
     bool caseSensitive = true,
   }) {
@@ -1845,7 +1894,8 @@ extension AccountQueryFilter
     });
   }
 
-  QueryBuilder<Account, Account, QAfterFilterCondition> usernameGreaterThan(
+  QueryBuilder<Datasource, Datasource, QAfterFilterCondition>
+      usernameGreaterThan(
     String? value, {
     bool include = false,
     bool caseSensitive = true,
@@ -1860,7 +1910,7 @@ extension AccountQueryFilter
     });
   }
 
-  QueryBuilder<Account, Account, QAfterFilterCondition> usernameLessThan(
+  QueryBuilder<Datasource, Datasource, QAfterFilterCondition> usernameLessThan(
     String? value, {
     bool include = false,
     bool caseSensitive = true,
@@ -1875,7 +1925,7 @@ extension AccountQueryFilter
     });
   }
 
-  QueryBuilder<Account, Account, QAfterFilterCondition> usernameBetween(
+  QueryBuilder<Datasource, Datasource, QAfterFilterCondition> usernameBetween(
     String? lower,
     String? upper, {
     bool includeLower = true,
@@ -1894,7 +1944,8 @@ extension AccountQueryFilter
     });
   }
 
-  QueryBuilder<Account, Account, QAfterFilterCondition> usernameStartsWith(
+  QueryBuilder<Datasource, Datasource, QAfterFilterCondition>
+      usernameStartsWith(
     String value, {
     bool caseSensitive = true,
   }) {
@@ -1907,7 +1958,7 @@ extension AccountQueryFilter
     });
   }
 
-  QueryBuilder<Account, Account, QAfterFilterCondition> usernameEndsWith(
+  QueryBuilder<Datasource, Datasource, QAfterFilterCondition> usernameEndsWith(
     String value, {
     bool caseSensitive = true,
   }) {
@@ -1920,7 +1971,7 @@ extension AccountQueryFilter
     });
   }
 
-  QueryBuilder<Account, Account, QAfterFilterCondition> usernameContains(
+  QueryBuilder<Datasource, Datasource, QAfterFilterCondition> usernameContains(
       String value,
       {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
@@ -1932,7 +1983,7 @@ extension AccountQueryFilter
     });
   }
 
-  QueryBuilder<Account, Account, QAfterFilterCondition> usernameMatches(
+  QueryBuilder<Datasource, Datasource, QAfterFilterCondition> usernameMatches(
       String pattern,
       {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
@@ -1944,7 +1995,8 @@ extension AccountQueryFilter
     });
   }
 
-  QueryBuilder<Account, Account, QAfterFilterCondition> usernameIsEmpty() {
+  QueryBuilder<Datasource, Datasource, QAfterFilterCondition>
+      usernameIsEmpty() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.equalTo(
         property: r'username',
@@ -1953,7 +2005,8 @@ extension AccountQueryFilter
     });
   }
 
-  QueryBuilder<Account, Account, QAfterFilterCondition> usernameIsNotEmpty() {
+  QueryBuilder<Datasource, Datasource, QAfterFilterCondition>
+      usernameIsNotEmpty() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.greaterThan(
         property: r'username',
@@ -1963,395 +2016,398 @@ extension AccountQueryFilter
   }
 }
 
-extension AccountQueryObject
-    on QueryBuilder<Account, Account, QFilterCondition> {}
+extension DatasourceQueryObject
+    on QueryBuilder<Datasource, Datasource, QFilterCondition> {}
 
-extension AccountQueryLinks
-    on QueryBuilder<Account, Account, QFilterCondition> {}
+extension DatasourceQueryLinks
+    on QueryBuilder<Datasource, Datasource, QFilterCondition> {}
 
-extension AccountQuerySortBy on QueryBuilder<Account, Account, QSortBy> {
-  QueryBuilder<Account, Account, QAfterSortBy> sortByAccesskey() {
+extension DatasourceQuerySortBy
+    on QueryBuilder<Datasource, Datasource, QSortBy> {
+  QueryBuilder<Datasource, Datasource, QAfterSortBy> sortByAccesskey() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'accesskey', Sort.asc);
     });
   }
 
-  QueryBuilder<Account, Account, QAfterSortBy> sortByAccesskeyDesc() {
+  QueryBuilder<Datasource, Datasource, QAfterSortBy> sortByAccesskeyDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'accesskey', Sort.desc);
     });
   }
 
-  QueryBuilder<Account, Account, QAfterSortBy> sortByAccountType() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'accountType', Sort.asc);
-    });
-  }
-
-  QueryBuilder<Account, Account, QAfterSortBy> sortByAccountTypeDesc() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'accountType', Sort.desc);
-    });
-  }
-
-  QueryBuilder<Account, Account, QAfterSortBy> sortByBucketname() {
+  QueryBuilder<Datasource, Datasource, QAfterSortBy> sortByBucketname() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'bucketname', Sort.asc);
     });
   }
 
-  QueryBuilder<Account, Account, QAfterSortBy> sortByBucketnameDesc() {
+  QueryBuilder<Datasource, Datasource, QAfterSortBy> sortByBucketnameDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'bucketname', Sort.desc);
     });
   }
 
-  QueryBuilder<Account, Account, QAfterSortBy> sortByCreateAt() {
+  QueryBuilder<Datasource, Datasource, QAfterSortBy> sortByCreateAt() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'createAt', Sort.asc);
     });
   }
 
-  QueryBuilder<Account, Account, QAfterSortBy> sortByCreateAtDesc() {
+  QueryBuilder<Datasource, Datasource, QAfterSortBy> sortByCreateAtDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'createAt', Sort.desc);
     });
   }
 
-  QueryBuilder<Account, Account, QAfterSortBy> sortByEndpoint() {
+  QueryBuilder<Datasource, Datasource, QAfterSortBy> sortByDatasourceType() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'datasourceType', Sort.asc);
+    });
+  }
+
+  QueryBuilder<Datasource, Datasource, QAfterSortBy>
+      sortByDatasourceTypeDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'datasourceType', Sort.desc);
+    });
+  }
+
+  QueryBuilder<Datasource, Datasource, QAfterSortBy> sortByEndpoint() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'endpoint', Sort.asc);
     });
   }
 
-  QueryBuilder<Account, Account, QAfterSortBy> sortByEndpointDesc() {
+  QueryBuilder<Datasource, Datasource, QAfterSortBy> sortByEndpointDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'endpoint', Sort.desc);
     });
   }
 
-  QueryBuilder<Account, Account, QAfterSortBy> sortByName() {
+  QueryBuilder<Datasource, Datasource, QAfterSortBy> sortByName() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'name', Sort.asc);
     });
   }
 
-  QueryBuilder<Account, Account, QAfterSortBy> sortByNameDesc() {
+  QueryBuilder<Datasource, Datasource, QAfterSortBy> sortByNameDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'name', Sort.desc);
     });
   }
 
-  QueryBuilder<Account, Account, QAfterSortBy> sortByPassword() {
+  QueryBuilder<Datasource, Datasource, QAfterSortBy> sortByPassword() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'password', Sort.asc);
     });
   }
 
-  QueryBuilder<Account, Account, QAfterSortBy> sortByPasswordDesc() {
+  QueryBuilder<Datasource, Datasource, QAfterSortBy> sortByPasswordDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'password', Sort.desc);
     });
   }
 
-  QueryBuilder<Account, Account, QAfterSortBy> sortByRegion() {
+  QueryBuilder<Datasource, Datasource, QAfterSortBy> sortByRegion() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'region', Sort.asc);
     });
   }
 
-  QueryBuilder<Account, Account, QAfterSortBy> sortByRegionDesc() {
+  QueryBuilder<Datasource, Datasource, QAfterSortBy> sortByRegionDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'region', Sort.desc);
     });
   }
 
-  QueryBuilder<Account, Account, QAfterSortBy> sortBySessionKey() {
+  QueryBuilder<Datasource, Datasource, QAfterSortBy> sortBySessionKey() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'sessionKey', Sort.asc);
     });
   }
 
-  QueryBuilder<Account, Account, QAfterSortBy> sortBySessionKeyDesc() {
+  QueryBuilder<Datasource, Datasource, QAfterSortBy> sortBySessionKeyDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'sessionKey', Sort.desc);
     });
   }
 
-  QueryBuilder<Account, Account, QAfterSortBy> sortBySessionToken() {
+  QueryBuilder<Datasource, Datasource, QAfterSortBy> sortBySessionToken() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'sessionToken', Sort.asc);
     });
   }
 
-  QueryBuilder<Account, Account, QAfterSortBy> sortBySessionTokenDesc() {
+  QueryBuilder<Datasource, Datasource, QAfterSortBy> sortBySessionTokenDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'sessionToken', Sort.desc);
     });
   }
 
-  QueryBuilder<Account, Account, QAfterSortBy> sortByUrl() {
+  QueryBuilder<Datasource, Datasource, QAfterSortBy> sortByUrl() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'url', Sort.asc);
     });
   }
 
-  QueryBuilder<Account, Account, QAfterSortBy> sortByUrlDesc() {
+  QueryBuilder<Datasource, Datasource, QAfterSortBy> sortByUrlDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'url', Sort.desc);
     });
   }
 
-  QueryBuilder<Account, Account, QAfterSortBy> sortByUsername() {
+  QueryBuilder<Datasource, Datasource, QAfterSortBy> sortByUsername() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'username', Sort.asc);
     });
   }
 
-  QueryBuilder<Account, Account, QAfterSortBy> sortByUsernameDesc() {
+  QueryBuilder<Datasource, Datasource, QAfterSortBy> sortByUsernameDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'username', Sort.desc);
     });
   }
 }
 
-extension AccountQuerySortThenBy
-    on QueryBuilder<Account, Account, QSortThenBy> {
-  QueryBuilder<Account, Account, QAfterSortBy> thenByAccesskey() {
+extension DatasourceQuerySortThenBy
+    on QueryBuilder<Datasource, Datasource, QSortThenBy> {
+  QueryBuilder<Datasource, Datasource, QAfterSortBy> thenByAccesskey() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'accesskey', Sort.asc);
     });
   }
 
-  QueryBuilder<Account, Account, QAfterSortBy> thenByAccesskeyDesc() {
+  QueryBuilder<Datasource, Datasource, QAfterSortBy> thenByAccesskeyDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'accesskey', Sort.desc);
     });
   }
 
-  QueryBuilder<Account, Account, QAfterSortBy> thenByAccountType() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'accountType', Sort.asc);
-    });
-  }
-
-  QueryBuilder<Account, Account, QAfterSortBy> thenByAccountTypeDesc() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'accountType', Sort.desc);
-    });
-  }
-
-  QueryBuilder<Account, Account, QAfterSortBy> thenByBucketname() {
+  QueryBuilder<Datasource, Datasource, QAfterSortBy> thenByBucketname() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'bucketname', Sort.asc);
     });
   }
 
-  QueryBuilder<Account, Account, QAfterSortBy> thenByBucketnameDesc() {
+  QueryBuilder<Datasource, Datasource, QAfterSortBy> thenByBucketnameDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'bucketname', Sort.desc);
     });
   }
 
-  QueryBuilder<Account, Account, QAfterSortBy> thenByCreateAt() {
+  QueryBuilder<Datasource, Datasource, QAfterSortBy> thenByCreateAt() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'createAt', Sort.asc);
     });
   }
 
-  QueryBuilder<Account, Account, QAfterSortBy> thenByCreateAtDesc() {
+  QueryBuilder<Datasource, Datasource, QAfterSortBy> thenByCreateAtDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'createAt', Sort.desc);
     });
   }
 
-  QueryBuilder<Account, Account, QAfterSortBy> thenByEndpoint() {
+  QueryBuilder<Datasource, Datasource, QAfterSortBy> thenByDatasourceType() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'datasourceType', Sort.asc);
+    });
+  }
+
+  QueryBuilder<Datasource, Datasource, QAfterSortBy>
+      thenByDatasourceTypeDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'datasourceType', Sort.desc);
+    });
+  }
+
+  QueryBuilder<Datasource, Datasource, QAfterSortBy> thenByEndpoint() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'endpoint', Sort.asc);
     });
   }
 
-  QueryBuilder<Account, Account, QAfterSortBy> thenByEndpointDesc() {
+  QueryBuilder<Datasource, Datasource, QAfterSortBy> thenByEndpointDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'endpoint', Sort.desc);
     });
   }
 
-  QueryBuilder<Account, Account, QAfterSortBy> thenById() {
+  QueryBuilder<Datasource, Datasource, QAfterSortBy> thenById() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'id', Sort.asc);
     });
   }
 
-  QueryBuilder<Account, Account, QAfterSortBy> thenByIdDesc() {
+  QueryBuilder<Datasource, Datasource, QAfterSortBy> thenByIdDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'id', Sort.desc);
     });
   }
 
-  QueryBuilder<Account, Account, QAfterSortBy> thenByName() {
+  QueryBuilder<Datasource, Datasource, QAfterSortBy> thenByName() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'name', Sort.asc);
     });
   }
 
-  QueryBuilder<Account, Account, QAfterSortBy> thenByNameDesc() {
+  QueryBuilder<Datasource, Datasource, QAfterSortBy> thenByNameDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'name', Sort.desc);
     });
   }
 
-  QueryBuilder<Account, Account, QAfterSortBy> thenByPassword() {
+  QueryBuilder<Datasource, Datasource, QAfterSortBy> thenByPassword() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'password', Sort.asc);
     });
   }
 
-  QueryBuilder<Account, Account, QAfterSortBy> thenByPasswordDesc() {
+  QueryBuilder<Datasource, Datasource, QAfterSortBy> thenByPasswordDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'password', Sort.desc);
     });
   }
 
-  QueryBuilder<Account, Account, QAfterSortBy> thenByRegion() {
+  QueryBuilder<Datasource, Datasource, QAfterSortBy> thenByRegion() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'region', Sort.asc);
     });
   }
 
-  QueryBuilder<Account, Account, QAfterSortBy> thenByRegionDesc() {
+  QueryBuilder<Datasource, Datasource, QAfterSortBy> thenByRegionDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'region', Sort.desc);
     });
   }
 
-  QueryBuilder<Account, Account, QAfterSortBy> thenBySessionKey() {
+  QueryBuilder<Datasource, Datasource, QAfterSortBy> thenBySessionKey() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'sessionKey', Sort.asc);
     });
   }
 
-  QueryBuilder<Account, Account, QAfterSortBy> thenBySessionKeyDesc() {
+  QueryBuilder<Datasource, Datasource, QAfterSortBy> thenBySessionKeyDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'sessionKey', Sort.desc);
     });
   }
 
-  QueryBuilder<Account, Account, QAfterSortBy> thenBySessionToken() {
+  QueryBuilder<Datasource, Datasource, QAfterSortBy> thenBySessionToken() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'sessionToken', Sort.asc);
     });
   }
 
-  QueryBuilder<Account, Account, QAfterSortBy> thenBySessionTokenDesc() {
+  QueryBuilder<Datasource, Datasource, QAfterSortBy> thenBySessionTokenDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'sessionToken', Sort.desc);
     });
   }
 
-  QueryBuilder<Account, Account, QAfterSortBy> thenByUrl() {
+  QueryBuilder<Datasource, Datasource, QAfterSortBy> thenByUrl() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'url', Sort.asc);
     });
   }
 
-  QueryBuilder<Account, Account, QAfterSortBy> thenByUrlDesc() {
+  QueryBuilder<Datasource, Datasource, QAfterSortBy> thenByUrlDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'url', Sort.desc);
     });
   }
 
-  QueryBuilder<Account, Account, QAfterSortBy> thenByUsername() {
+  QueryBuilder<Datasource, Datasource, QAfterSortBy> thenByUsername() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'username', Sort.asc);
     });
   }
 
-  QueryBuilder<Account, Account, QAfterSortBy> thenByUsernameDesc() {
+  QueryBuilder<Datasource, Datasource, QAfterSortBy> thenByUsernameDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'username', Sort.desc);
     });
   }
 }
 
-extension AccountQueryWhereDistinct
-    on QueryBuilder<Account, Account, QDistinct> {
-  QueryBuilder<Account, Account, QDistinct> distinctByAccesskey(
+extension DatasourceQueryWhereDistinct
+    on QueryBuilder<Datasource, Datasource, QDistinct> {
+  QueryBuilder<Datasource, Datasource, QDistinct> distinctByAccesskey(
       {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
       return query.addDistinctBy(r'accesskey', caseSensitive: caseSensitive);
     });
   }
 
-  QueryBuilder<Account, Account, QDistinct> distinctByAccountType() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addDistinctBy(r'accountType');
-    });
-  }
-
-  QueryBuilder<Account, Account, QDistinct> distinctByBucketname(
+  QueryBuilder<Datasource, Datasource, QDistinct> distinctByBucketname(
       {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
       return query.addDistinctBy(r'bucketname', caseSensitive: caseSensitive);
     });
   }
 
-  QueryBuilder<Account, Account, QDistinct> distinctByCreateAt() {
+  QueryBuilder<Datasource, Datasource, QDistinct> distinctByCreateAt() {
     return QueryBuilder.apply(this, (query) {
       return query.addDistinctBy(r'createAt');
     });
   }
 
-  QueryBuilder<Account, Account, QDistinct> distinctByEndpoint(
+  QueryBuilder<Datasource, Datasource, QDistinct> distinctByDatasourceType() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'datasourceType');
+    });
+  }
+
+  QueryBuilder<Datasource, Datasource, QDistinct> distinctByEndpoint(
       {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
       return query.addDistinctBy(r'endpoint', caseSensitive: caseSensitive);
     });
   }
 
-  QueryBuilder<Account, Account, QDistinct> distinctByName(
+  QueryBuilder<Datasource, Datasource, QDistinct> distinctByName(
       {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
       return query.addDistinctBy(r'name', caseSensitive: caseSensitive);
     });
   }
 
-  QueryBuilder<Account, Account, QDistinct> distinctByPassword(
+  QueryBuilder<Datasource, Datasource, QDistinct> distinctByPassword(
       {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
       return query.addDistinctBy(r'password', caseSensitive: caseSensitive);
     });
   }
 
-  QueryBuilder<Account, Account, QDistinct> distinctByRegion(
+  QueryBuilder<Datasource, Datasource, QDistinct> distinctByRegion(
       {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
       return query.addDistinctBy(r'region', caseSensitive: caseSensitive);
     });
   }
 
-  QueryBuilder<Account, Account, QDistinct> distinctBySessionKey(
+  QueryBuilder<Datasource, Datasource, QDistinct> distinctBySessionKey(
       {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
       return query.addDistinctBy(r'sessionKey', caseSensitive: caseSensitive);
     });
   }
 
-  QueryBuilder<Account, Account, QDistinct> distinctBySessionToken(
+  QueryBuilder<Datasource, Datasource, QDistinct> distinctBySessionToken(
       {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
       return query.addDistinctBy(r'sessionToken', caseSensitive: caseSensitive);
     });
   }
 
-  QueryBuilder<Account, Account, QDistinct> distinctByUrl(
+  QueryBuilder<Datasource, Datasource, QDistinct> distinctByUrl(
       {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
       return query.addDistinctBy(r'url', caseSensitive: caseSensitive);
     });
   }
 
-  QueryBuilder<Account, Account, QDistinct> distinctByUsername(
+  QueryBuilder<Datasource, Datasource, QDistinct> distinctByUsername(
       {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
       return query.addDistinctBy(r'username', caseSensitive: caseSensitive);
@@ -2359,81 +2415,82 @@ extension AccountQueryWhereDistinct
   }
 }
 
-extension AccountQueryProperty
-    on QueryBuilder<Account, Account, QQueryProperty> {
-  QueryBuilder<Account, int, QQueryOperations> idProperty() {
+extension DatasourceQueryProperty
+    on QueryBuilder<Datasource, Datasource, QQueryProperty> {
+  QueryBuilder<Datasource, int, QQueryOperations> idProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'id');
     });
   }
 
-  QueryBuilder<Account, String?, QQueryOperations> accesskeyProperty() {
+  QueryBuilder<Datasource, String?, QQueryOperations> accesskeyProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'accesskey');
     });
   }
 
-  QueryBuilder<Account, AccountType, QQueryOperations> accountTypeProperty() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addPropertyName(r'accountType');
-    });
-  }
-
-  QueryBuilder<Account, String?, QQueryOperations> bucketnameProperty() {
+  QueryBuilder<Datasource, String?, QQueryOperations> bucketnameProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'bucketname');
     });
   }
 
-  QueryBuilder<Account, int, QQueryOperations> createAtProperty() {
+  QueryBuilder<Datasource, int, QQueryOperations> createAtProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'createAt');
     });
   }
 
-  QueryBuilder<Account, String?, QQueryOperations> endpointProperty() {
+  QueryBuilder<Datasource, DatasourceType, QQueryOperations>
+      datasourceTypeProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'datasourceType');
+    });
+  }
+
+  QueryBuilder<Datasource, String?, QQueryOperations> endpointProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'endpoint');
     });
   }
 
-  QueryBuilder<Account, String?, QQueryOperations> nameProperty() {
+  QueryBuilder<Datasource, String?, QQueryOperations> nameProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'name');
     });
   }
 
-  QueryBuilder<Account, String?, QQueryOperations> passwordProperty() {
+  QueryBuilder<Datasource, String?, QQueryOperations> passwordProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'password');
     });
   }
 
-  QueryBuilder<Account, String?, QQueryOperations> regionProperty() {
+  QueryBuilder<Datasource, String?, QQueryOperations> regionProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'region');
     });
   }
 
-  QueryBuilder<Account, String?, QQueryOperations> sessionKeyProperty() {
+  QueryBuilder<Datasource, String?, QQueryOperations> sessionKeyProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'sessionKey');
     });
   }
 
-  QueryBuilder<Account, String?, QQueryOperations> sessionTokenProperty() {
+  QueryBuilder<Datasource, String?, QQueryOperations> sessionTokenProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'sessionToken');
     });
   }
 
-  QueryBuilder<Account, String?, QQueryOperations> urlProperty() {
+  QueryBuilder<Datasource, String?, QQueryOperations> urlProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'url');
     });
   }
 
-  QueryBuilder<Account, String?, QQueryOperations> usernameProperty() {
+  QueryBuilder<Datasource, String?, QQueryOperations> usernameProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'username');
     });

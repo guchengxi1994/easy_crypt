@@ -1,14 +1,14 @@
-import 'package:easy_crypt/account/components/modify_account_dialog.dart';
-import 'package:easy_crypt/account/notifiers/account_notifier.dart';
+import 'package:easy_crypt/datasource/components/modify_datasource_dialog.dart';
+import 'package:easy_crypt/datasource/notifiers/datasource_notifier.dart';
 import 'package:easy_crypt/file_system/s3.dart';
-import 'package:easy_crypt/isar/account.dart';
+import 'package:easy_crypt/isar/datasource.dart';
 import 'package:easy_crypt/style/app_style.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class AccountWidget extends ConsumerWidget {
-  const AccountWidget({super.key, required this.account});
-  final Account account;
+class DatasourceWidget extends ConsumerWidget {
+  const DatasourceWidget({super.key, required this.datasource});
+  final Datasource datasource;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -46,7 +46,7 @@ class AccountWidget extends ConsumerWidget {
                 width: 20,
               ),
               Text(
-                account.name ?? "",
+                datasource.name ?? "",
                 maxLines: 1,
                 softWrap: true,
                 overflow: TextOverflow.ellipsis,
@@ -65,11 +65,11 @@ class AccountWidget extends ConsumerWidget {
                       pageBuilder: (c, _, __) {
                         return Center(
                           child: S3FilePreview(
-                              accesskey: account.accesskey!,
-                              bucketname: account.bucketname!,
-                              endpoint: account.endpoint!,
-                              sessionToken: account.sessionToken,
-                              sessionkey: account.sessionKey!),
+                              accesskey: datasource.accesskey!,
+                              bucketname: datasource.bucketname!,
+                              endpoint: datasource.endpoint!,
+                              sessionToken: datasource.sessionToken,
+                              sessionkey: datasource.sessionKey!),
                         );
                       });
                 },
@@ -89,7 +89,7 @@ class AccountWidget extends ConsumerWidget {
                       context: context,
                       pageBuilder: (c, _, __) {
                         return Center(
-                          child: ModifyAccountDialog(account: account),
+                          child: ModifyDatasourceDialog(datasource: datasource),
                         );
                       });
                 },
@@ -103,7 +103,9 @@ class AccountWidget extends ConsumerWidget {
                   color: Colors.red,
                 ),
                 onTap: () {
-                  ref.read(accountProvider.notifier).removeAccount(account);
+                  ref
+                      .read(datasourceProvider.notifier)
+                      .removeAccount(datasource);
                 },
               )
             ],
@@ -114,7 +116,7 @@ class AccountWidget extends ConsumerWidget {
           Text.rich(TextSpan(children: [
             const TextSpan(
                 text: "endpoint: ", style: TextStyle(color: AppStyle.appColor)),
-            TextSpan(text: account.endpoint),
+            TextSpan(text: datasource.endpoint),
           ])),
           const SizedBox(
             height: 10,
@@ -123,7 +125,7 @@ class AccountWidget extends ConsumerWidget {
             const TextSpan(
                 text: "bucketname: ",
                 style: TextStyle(color: AppStyle.appColor)),
-            TextSpan(text: account.bucketname),
+            TextSpan(text: datasource.bucketname),
           ])),
           const SizedBox(
             height: 10,
@@ -132,7 +134,7 @@ class AccountWidget extends ConsumerWidget {
             const TextSpan(
                 text: "accesskey: ",
                 style: TextStyle(color: AppStyle.appColor)),
-            TextSpan(text: account.accesskey!.replaceRange(3, null, "***")),
+            TextSpan(text: datasource.accesskey!.replaceRange(3, null, "***")),
           ])),
           const SizedBox(
             height: 10,
@@ -141,7 +143,7 @@ class AccountWidget extends ConsumerWidget {
             const TextSpan(
                 text: "sessionKey: ",
                 style: TextStyle(color: AppStyle.appColor)),
-            TextSpan(text: account.sessionKey!.replaceRange(3, null, "***")),
+            TextSpan(text: datasource.sessionKey!.replaceRange(3, null, "***")),
           ])),
           const SizedBox(
             height: 10,
@@ -150,15 +152,16 @@ class AccountWidget extends ConsumerWidget {
             const TextSpan(
                 text: "sessionToken: ",
                 style: TextStyle(color: AppStyle.appColor)),
-            if (account.sessionToken == null || account.sessionToken == "")
+            if (datasource.sessionToken == null ||
+                datasource.sessionToken == "")
               const TextSpan(
                   text: "(It is better to have a session token)",
                   style: TextStyle(color: Colors.amberAccent)),
-            if (account.sessionToken != null &&
-                account.sessionToken != "" &&
-                account.sessionToken!.length > 5)
+            if (datasource.sessionToken != null &&
+                datasource.sessionToken != "" &&
+                datasource.sessionToken!.length > 5)
               TextSpan(
-                  text: account.sessionToken!.replaceRange(3, null, "***")),
+                  text: datasource.sessionToken!.replaceRange(3, null, "***")),
           ])),
           const SizedBox(
             height: 10,
@@ -166,7 +169,7 @@ class AccountWidget extends ConsumerWidget {
           Text.rich(TextSpan(children: [
             const TextSpan(
                 text: "region: ", style: TextStyle(color: AppStyle.appColor)),
-            TextSpan(text: account.region),
+            TextSpan(text: datasource.region),
           ])),
           const SizedBox(
             height: 10,
@@ -174,7 +177,7 @@ class AccountWidget extends ConsumerWidget {
           Text.rich(TextSpan(children: [
             const TextSpan(
                 text: "type: ", style: TextStyle(color: AppStyle.appColor)),
-            TextSpan(text: account.accountType.toStr()),
+            TextSpan(text: datasource.datasourceType.toStr()),
           ])),
         ],
       ),

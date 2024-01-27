@@ -1,6 +1,6 @@
 // ignore_for_file: constant_identifier_names
 
-import 'package:easy_crypt/isar/account.dart';
+import 'package:easy_crypt/isar/datasource.dart';
 import 'package:isar/isar.dart';
 part 'transfer_records.g.dart';
 
@@ -15,7 +15,7 @@ class TransferRecords {
   @enumerated
   late StorageType toType;
   String? to;
-  final account = IsarLink<Account>();
+  final account = IsarLink<Datasource>();
   int createAt = DateTime.now().millisecondsSinceEpoch;
 
   // transfer done?

@@ -2,7 +2,7 @@
     "layout":{
         "encryption":"工作台",
         "custom":"自定义加密算法",
-        "account":"账号"
+        "account":"数据源"
     },
     "encryption":{
         "column":{

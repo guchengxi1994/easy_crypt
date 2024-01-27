@@ -2,7 +2,7 @@
     "layout":{
         "encryption":"Workboard",
         "custom":"Custom Algorithm",
-        "account":"Account"
+        "account":"Datasource"
     },
     "encryption":{
         "column":{

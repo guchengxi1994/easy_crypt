@@ -6,7 +6,7 @@
 /// Locales: 2
 /// Strings: 40 (20 per locale)
 ///
-/// Built on 2024-01-26 at 09:10 UTC
+/// Built on 2024-01-27 at 02:38 UTC
 
 // coverage:ignore-file
 // ignore_for_file: type=lint
@@ -161,7 +161,7 @@ class _StringsLayoutEn {
 	// Translations
 	String get encryption => 'Workboard';
 	String get custom => 'Custom Algorithm';
-	String get account => 'Account';
+	String get account => 'Datasource';
 }
 
 // Path: encryption
@@ -247,7 +247,7 @@ class _StringsLayoutZhCn implements _StringsLayoutEn {
 	// Translations
 	@override String get encryption => '工作台';
 	@override String get custom => '自定义加密算法';
-	@override String get account => '账号';
+	@override String get account => '数据源';
 }
 
 // Path: encryption
@@ -304,7 +304,7 @@ extension on Translations {
 		switch (path) {
 			case 'layout.encryption': return 'Workboard';
 			case 'layout.custom': return 'Custom Algorithm';
-			case 'layout.account': return 'Account';
+			case 'layout.account': return 'Datasource';
 			case 'encryption.column.no': return 'No.';
 			case 'encryption.column.filepath': return 'File Path';
 			case 'encryption.column.encryptedPath': return 'Result Path';
@@ -332,7 +332,7 @@ extension on _StringsZhCn {
 		switch (path) {
 			case 'layout.encryption': return '工作台';
 			case 'layout.custom': return '自定义加密算法';
-			case 'layout.account': return '账号';
+			case 'layout.account': return '数据源';
 			case 'encryption.column.no': return '编号';
 			case 'encryption.column.filepath': return '文件路径';
 			case 'encryption.column.encryptedPath': return '结果路径';

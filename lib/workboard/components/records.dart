@@ -3,7 +3,7 @@ import 'dart:io';
 import 'package:data_table_2/data_table_2.dart';
 import 'package:date_format/date_format.dart';
 import 'package:desktop_drop/desktop_drop.dart';
-import 'package:easy_crypt/account/notifiers/account_notifier.dart';
+import 'package:easy_crypt/datasource/notifiers/datasource_notifier.dart';
 import 'package:easy_crypt/src/rust/api/crypt.dart' as crypt;
 import 'package:easy_crypt/src/rust/api/s3.dart' as s3;
 import 'package:easy_crypt/common/clipboard_utils.dart';
@@ -121,7 +121,7 @@ class _EncryptRecordsWidgetState extends ConsumerState<RecordsWidget> {
   }
 
   DataRow2 _buildRow(Record f, int index) {
-    final s3Accounts = ref.read(accountProvider.notifier).getS3();
+    final s3Accounts = ref.read(datasourceProvider.notifier).getS3();
 
     return DataRow2(
         decoration: BoxDecoration(

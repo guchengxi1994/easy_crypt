@@ -1,8 +1,8 @@
 import 'dart:convert';
 
 import 'package:dropdown_button2/dropdown_button2.dart';
-import 'package:easy_crypt/account/account_screen.dart';
-import 'package:easy_crypt/account/notifiers/account_notifier.dart';
+import 'package:easy_crypt/datasource/datasource_screen.dart';
+import 'package:easy_crypt/datasource/notifiers/datasource_notifier.dart';
 import 'package:easy_crypt/common/dev_utils.dart';
 import 'package:easy_crypt/file_system/components/board.dart';
 import 'package:easy_crypt/src/rust/api/simple.dart';
@@ -95,7 +95,7 @@ class _LayoutState extends ConsumerState<Layout> with TickerProviderStateMixin {
   Widget build(BuildContext context) {
     // ignore: non_constant_identifier_names
     final __ = ref.watch(settingsNotifier);
-    final _ = ref.watch(accountProvider);
+    final _ = ref.watch(datasourceProvider);
     return FutureBuilder(
         future: future,
         builder: (c, s) {
@@ -197,11 +197,11 @@ class _LayoutState extends ConsumerState<Layout> with TickerProviderStateMixin {
                                 )),
                             NavigationRailDestination(
                                 icon: const Icon(
-                                  Icons.account_box,
+                                  Icons.dataset,
                                 ),
                                 label: Text(t.layout.account),
                                 selectedIcon: Icon(
-                                  Icons.account_box,
+                                  Icons.dataset,
                                   color: AppStyle.appColor.withGreen(100),
                                 )),
                             NavigationRailDestination(
@@ -227,7 +227,7 @@ class _LayoutState extends ConsumerState<Layout> with TickerProviderStateMixin {
                         children: [
                           const Workboard(),
                           const FlowScreen(),
-                          const AccountScreen(),
+                          const DatasourceScreen(),
                           Board(
                             left: Container(
                               color: Colors.red,

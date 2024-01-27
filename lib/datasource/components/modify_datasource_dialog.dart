@@ -1,30 +1,20 @@
-import 'package:easy_crypt/account/notifiers/account_notifier.dart';
-import 'package:easy_crypt/common/toast_utils.dart';
-import 'package:easy_crypt/isar/account.dart';
+import 'package:easy_crypt/datasource/notifiers/datasource_notifier.dart';
+import 'package:easy_crypt/isar/datasource.dart';
 import 'package:easy_crypt/style/app_style.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:easy_crypt/src/rust/api/s3.dart' as s3;
 
-class AddAccountDialog extends ConsumerStatefulWidget {
-  const AddAccountDialog({super.key});
+class ModifyDatasourceDialog extends ConsumerStatefulWidget {
+  const ModifyDatasourceDialog({super.key, required this.datasource});
+  final Datasource datasource;
 
   @override
-  ConsumerState<AddAccountDialog> createState() => _AddAccountDialogState();
+  ConsumerState<ModifyDatasourceDialog> createState() =>
+      _ModifyDatasourceDialogState();
 }
 
-class _AddAccountDialogState extends ConsumerState<AddAccountDialog>
-    with TickerProviderStateMixin {
-  late final TabController tabController;
-
-  @override
-  void initState() {
-    super.initState();
-    tabController = TabController(length: 2, vsync: this);
-  }
-
-  bool isChecking = false;
-
+class _ModifyDatasourceDialogState
+    extends ConsumerState<ModifyDatasourceDialog> {
   @override
   Widget build(BuildContext context) {
     return Material(
@@ -37,84 +27,32 @@ class _AddAccountDialogState extends ConsumerState<AddAccountDialog>
             borderRadius: BorderRadius.circular(4), color: Colors.white),
         child: Column(
           children: [
-            _wrapper(
-                "Type",
-                TabBar(
-                    isScrollable: true,
-                    controller: tabController,
-                    tabs: const [
-                      Tab(
-                        child: Text("S3"),
-                      ),
-                      Tab(
-                        child: Text("Webdav"),
-                      ),
-                    ])),
-            Expanded(
-                child: TabBarView(
-                    physics: const NeverScrollableScrollPhysics(),
-                    controller: tabController,
-                    children: [_s3ConfigWidget(), _webdavWidget()])),
+            _wrapper("Type", Text(widget.datasource.datasourceType.toStr())),
+            if (widget.datasource.datasourceType == DatasourceType.S3)
+              _s3ConfigWidget(),
+            if (widget.datasource.datasourceType == DatasourceType.Webdav)
+              _webdavWidget(),
+            const Spacer(),
             Row(
               children: [
                 const Spacer(),
                 TextButton(
-                    onPressed: isChecking
-                        ? null
-                        : () {
-                            if (tabController.index == 0 &&
-                                _formKey.currentState!.validate()) {
-                              setState(() {
-                                isChecking = true;
-                              });
-
-                              s3
-                                  .checkAccountAvailable(
-                                      endpoint: s3endpointController.text,
-                                      bucketname: s3bucketController.text,
-                                      accessKey: s3accessKeyController.text,
-                                      sessionKey: s3sessionKeyController.text,
-                                      region: s3regionController.text,
-                                      sessionToken:
-                                          s3SessionTokenController.text)
-                                  .then((value) {
-                                if (value) {
-                                  ToastUtils.sucess(context, title: "checked");
-                                } else {
-                                  ToastUtils.error(context,
-                                      title: "not available");
-                                }
-                              }).then((value) {
-                                setState(() {
-                                  isChecking = false;
-                                });
-                              });
-                            }
-                          },
-                    child: isChecking
-                        ? const SizedBox.square(
-                            dimension: 20,
-                            child: CircularProgressIndicator(),
-                          )
-                        : const Text("Check")),
-                const SizedBox(
-                  width: 20,
-                ),
-                TextButton(
                     onPressed: () {
-                      if (tabController.index == 0 &&
-                          _formKey.currentState!.validate()) {
-                        Account account = Account()
+                      if (_formKey.currentState!.validate()) {
+                        Datasource datasource = Datasource()
                           ..accesskey = s3accessKeyController.text
-                          ..accountType = AccountType.S3
+                          ..datasourceType = DatasourceType.S3
                           ..name = s3nameController.text
                           ..bucketname = s3bucketController.text
                           ..endpoint = s3endpointController.text
                           ..region = s3regionController.text
                           ..sessionKey = s3sessionKeyController.text
-                          ..sessionToken = s3SessionTokenController.text;
+                          ..sessionToken = s3SessionTokenController.text
+                          ..id = widget.datasource.id;
 
-                        ref.read(accountProvider.notifier).addAccount(account);
+                        ref
+                            .read(datasourceProvider.notifier)
+                            .addAccount(datasource);
                         Navigator.of(context).pop();
                       }
                     },
@@ -129,21 +67,27 @@ class _AddAccountDialogState extends ConsumerState<AddAccountDialog>
 
   final Color textColor = Colors.black;
 
-  final TextEditingController s3nameController = TextEditingController();
-  final TextEditingController s3endpointController = TextEditingController();
-  final s3endpointFocusNode = FocusNode();
-  final TextEditingController s3regionController = TextEditingController();
-  final s3regionFocusNode = FocusNode();
-  final TextEditingController s3accessKeyController = TextEditingController();
-  final s3accessKeyFocusNode = FocusNode();
-  final TextEditingController s3sessionKeyController = TextEditingController();
-  final s3sessionKeyFocusNode = FocusNode();
-  final TextEditingController s3SessionTokenController =
-      TextEditingController();
-  final s3sessionTokenFocusNode = FocusNode();
+  late final TextEditingController s3nameController = TextEditingController()
+    ..text = widget.datasource.name ?? "";
+  late final TextEditingController s3endpointController =
+      TextEditingController()..text = widget.datasource.endpoint ?? "";
+  late final s3endpointFocusNode = FocusNode();
+  late final TextEditingController s3regionController = TextEditingController()
+    ..text = widget.datasource.region ?? "";
+  late final s3regionFocusNode = FocusNode();
+  late final TextEditingController s3accessKeyController =
+      TextEditingController()..text = widget.datasource.accesskey ?? "";
+  late final s3accessKeyFocusNode = FocusNode();
+  late final TextEditingController s3sessionKeyController =
+      TextEditingController()..text = widget.datasource.sessionKey ?? "";
+  late final s3sessionKeyFocusNode = FocusNode();
+  late final TextEditingController s3SessionTokenController =
+      TextEditingController()..text = widget.datasource.sessionToken ?? "";
+  late final s3sessionTokenFocusNode = FocusNode();
 
-  final TextEditingController s3bucketController = TextEditingController();
-  final s3bucketFocusNode = FocusNode();
+  late final TextEditingController s3bucketController = TextEditingController()
+    ..text = widget.datasource.bucketname ?? "";
+  late final s3bucketFocusNode = FocusNode();
 
   final _formKey = GlobalKey<FormState>();
 
@@ -220,7 +164,7 @@ class _AddAccountDialogState extends ConsumerState<AddAccountDialog>
                   "access key",
                   TextFormField(
                     validator: (value) {
-                      if (value == null || value == "" || value.length < 5) {
+                      if (value == null || value == "") {
                         return "";
                       }
                       return null;
@@ -240,7 +184,7 @@ class _AddAccountDialogState extends ConsumerState<AddAccountDialog>
                   "session key",
                   TextFormField(
                     validator: (value) {
-                      if (value == null || value == "" || value.length < 5) {
+                      if (value == null || value == "") {
                         return "";
                       }
                       return null;
@@ -307,13 +251,17 @@ class _AddAccountDialogState extends ConsumerState<AddAccountDialog>
 
   final _webdavformKey = GlobalKey<FormState>();
 
-  final webdavNameController = TextEditingController();
+  late final webdavNameController = TextEditingController()
+    ..text = widget.datasource.name ?? "";
   final webdavUrlFocusNode = FocusNode();
-  final webdavUrlController = TextEditingController();
+  late final webdavUrlController = TextEditingController()
+    ..text = widget.datasource.url ?? "";
   final webdavUsernameFocusNode = FocusNode();
-  final webdavUsernameController = TextEditingController();
+  late final webdavUsernameController = TextEditingController()
+    ..text = widget.datasource.username ?? "";
   final webdavPwdFocusNode = FocusNode();
-  final webdavPwdController = TextEditingController();
+  late final webdavPwdController = TextEditingController()
+    ..text = widget.datasource.password ?? "";
 
   // tested on 坚果云
   Widget _webdavWidget() {

@@ -60,7 +60,7 @@ const TransferRecordsSchema = CollectionSchema(
     r'account': LinkSchema(
       id: 8810575621791628230,
       name: r'account',
-      target: r'Account',
+      target: r'Datasource',
       single: true,
     )
   },
@@ -187,7 +187,7 @@ List<IsarLinkBase<dynamic>> _transferRecordsGetLinks(TransferRecords object) {
 void _transferRecordsAttach(
     IsarCollection<dynamic> col, Id id, TransferRecords object) {
   object.id = id;
-  object.account.attach(col, col.isar.collection<Account>(), r'account', id);
+  object.account.attach(col, col.isar.collection<Datasource>(), r'account', id);
 }
 
 extension TransferRecordsQueryWhereSort
@@ -821,7 +821,7 @@ extension TransferRecordsQueryObject
 extension TransferRecordsQueryLinks
     on QueryBuilder<TransferRecords, TransferRecords, QFilterCondition> {
   QueryBuilder<TransferRecords, TransferRecords, QAfterFilterCondition> account(
-      FilterQuery<Account> q) {
+      FilterQuery<Datasource> q) {
     return QueryBuilder.apply(this, (query) {
       return query.link(q, r'account');
     });

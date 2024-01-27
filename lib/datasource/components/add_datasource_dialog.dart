@@ -1,19 +1,31 @@
-import 'package:easy_crypt/account/notifiers/account_notifier.dart';
-import 'package:easy_crypt/isar/account.dart';
+import 'package:easy_crypt/datasource/notifiers/datasource_notifier.dart';
+import 'package:easy_crypt/common/toast_utils.dart';
+import 'package:easy_crypt/isar/datasource.dart';
 import 'package:easy_crypt/style/app_style.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:easy_crypt/src/rust/api/s3.dart' as s3;
 
-class ModifyAccountDialog extends ConsumerStatefulWidget {
-  const ModifyAccountDialog({super.key, required this.account});
-  final Account account;
+class AddDatasourceDialog extends ConsumerStatefulWidget {
+  const AddDatasourceDialog({super.key});
 
   @override
-  ConsumerState<ModifyAccountDialog> createState() =>
-      _ModifyAccountDialogState();
+  ConsumerState<AddDatasourceDialog> createState() =>
+      _AddDatasourceDialogState();
 }
 
-class _ModifyAccountDialogState extends ConsumerState<ModifyAccountDialog> {
+class _AddDatasourceDialogState extends ConsumerState<AddDatasourceDialog>
+    with TickerProviderStateMixin {
+  late final TabController tabController;
+
+  @override
+  void initState() {
+    super.initState();
+    tabController = TabController(length: 2, vsync: this);
+  }
+
+  bool isChecking = false;
+
   @override
   Widget build(BuildContext context) {
     return Material(
@@ -26,29 +38,86 @@ class _ModifyAccountDialogState extends ConsumerState<ModifyAccountDialog> {
             borderRadius: BorderRadius.circular(4), color: Colors.white),
         child: Column(
           children: [
-            _wrapper("Type", Text(widget.account.accountType.toStr())),
-            if (widget.account.accountType == AccountType.S3) _s3ConfigWidget(),
-            if (widget.account.accountType == AccountType.Webdav)
-              _webdavWidget(),
-            const Spacer(),
+            _wrapper(
+                "Type",
+                TabBar(
+                    isScrollable: true,
+                    controller: tabController,
+                    tabs: const [
+                      Tab(
+                        child: Text("S3"),
+                      ),
+                      Tab(
+                        child: Text("Webdav"),
+                      ),
+                    ])),
+            Expanded(
+                child: TabBarView(
+                    physics: const NeverScrollableScrollPhysics(),
+                    controller: tabController,
+                    children: [_s3ConfigWidget(), _webdavWidget()])),
             Row(
               children: [
                 const Spacer(),
                 TextButton(
+                    onPressed: isChecking
+                        ? null
+                        : () {
+                            if (tabController.index == 0 &&
+                                _formKey.currentState!.validate()) {
+                              setState(() {
+                                isChecking = true;
+                              });
+
+                              s3
+                                  .checkAccountAvailable(
+                                      endpoint: s3endpointController.text,
+                                      bucketname: s3bucketController.text,
+                                      accessKey: s3accessKeyController.text,
+                                      sessionKey: s3sessionKeyController.text,
+                                      region: s3regionController.text,
+                                      sessionToken:
+                                          s3SessionTokenController.text)
+                                  .then((value) {
+                                if (value) {
+                                  ToastUtils.sucess(context, title: "checked");
+                                } else {
+                                  ToastUtils.error(context,
+                                      title: "not available");
+                                }
+                              }).then((value) {
+                                setState(() {
+                                  isChecking = false;
+                                });
+                              });
+                            }
+                          },
+                    child: isChecking
+                        ? const SizedBox.square(
+                            dimension: 20,
+                            child: CircularProgressIndicator(),
+                          )
+                        : const Text("Check")),
+                const SizedBox(
+                  width: 20,
+                ),
+                TextButton(
                     onPressed: () {
-                      if (_formKey.currentState!.validate()) {
-                        Account account = Account()
+                      if (tabController.index == 0 &&
+                          _formKey.currentState!.validate()) {
+                        Datasource account = Datasource()
                           ..accesskey = s3accessKeyController.text
-                          ..accountType = AccountType.S3
+                          ..datasourceType = DatasourceType.S3
                           ..name = s3nameController.text
                           ..bucketname = s3bucketController.text
                           ..endpoint = s3endpointController.text
                           ..region = s3regionController.text
                           ..sessionKey = s3sessionKeyController.text
-                          ..sessionToken = s3SessionTokenController.text
-                          ..id = widget.account.id;
+                          ..sessionToken = s3SessionTokenController.text;
 
-                        ref.read(accountProvider.notifier).addAccount(account);
+                        ref
+                            .read(datasourceProvider.notifier)
+                            .addAccount(account);
                         Navigator.of(context).pop();
                       }
                     },
@@ -63,27 +132,21 @@ class _ModifyAccountDialogState extends ConsumerState<ModifyAccountDialog> {
 
   final Color textColor = Colors.black;
 
-  late final TextEditingController s3nameController = TextEditingController()
-    ..text = widget.account.name ?? "";
-  late final TextEditingController s3endpointController =
-      TextEditingController()..text = widget.account.endpoint ?? "";
-  late final s3endpointFocusNode = FocusNode();
-  late final TextEditingController s3regionController = TextEditingController()
-    ..text = widget.account.region ?? "";
-  late final s3regionFocusNode = FocusNode();
-  late final TextEditingController s3accessKeyController =
-      TextEditingController()..text = widget.account.accesskey ?? "";
-  late final s3accessKeyFocusNode = FocusNode();
-  late final TextEditingController s3sessionKeyController =
-      TextEditingController()..text = widget.account.sessionKey ?? "";
-  late final s3sessionKeyFocusNode = FocusNode();
-  late final TextEditingController s3SessionTokenController =
-      TextEditingController()..text = widget.account.sessionToken ?? "";
-  late final s3sessionTokenFocusNode = FocusNode();
+  final TextEditingController s3nameController = TextEditingController();
+  final TextEditingController s3endpointController = TextEditingController();
+  final s3endpointFocusNode = FocusNode();
+  final TextEditingController s3regionController = TextEditingController();
+  final s3regionFocusNode = FocusNode();
+  final TextEditingController s3accessKeyController = TextEditingController();
+  final s3accessKeyFocusNode = FocusNode();
+  final TextEditingController s3sessionKeyController = TextEditingController();
+  final s3sessionKeyFocusNode = FocusNode();
+  final TextEditingController s3SessionTokenController =
+      TextEditingController();
+  final s3sessionTokenFocusNode = FocusNode();
 
-  late final TextEditingController s3bucketController = TextEditingController()
-    ..text = widget.account.bucketname ?? "";
-  late final s3bucketFocusNode = FocusNode();
+  final TextEditingController s3bucketController = TextEditingController();
+  final s3bucketFocusNode = FocusNode();
 
   final _formKey = GlobalKey<FormState>();
 
@@ -160,7 +223,7 @@ class _ModifyAccountDialogState extends ConsumerState<ModifyAccountDialog> {
                   "access key",
                   TextFormField(
                     validator: (value) {
-                      if (value == null || value == "") {
+                      if (value == null || value == "" || value.length < 5) {
                         return "";
                       }
                       return null;
@@ -180,7 +243,7 @@ class _ModifyAccountDialogState extends ConsumerState<ModifyAccountDialog> {
                   "session key",
                   TextFormField(
                     validator: (value) {
-                      if (value == null || value == "") {
+                      if (value == null || value == "" || value.length < 5) {
                         return "";
                       }
                       return null;
@@ -247,17 +310,13 @@ class _ModifyAccountDialogState extends ConsumerState<ModifyAccountDialog> {
 
   final _webdavformKey = GlobalKey<FormState>();
 
-  late final webdavNameController = TextEditingController()
-    ..text = widget.account.name ?? "";
+  final webdavNameController = TextEditingController();
   final webdavUrlFocusNode = FocusNode();
-  late final webdavUrlController = TextEditingController()
-    ..text = widget.account.url ?? "";
+  final webdavUrlController = TextEditingController();
   final webdavUsernameFocusNode = FocusNode();
-  late final webdavUsernameController = TextEditingController()
-    ..text = widget.account.username ?? "";
+  final webdavUsernameController = TextEditingController();
   final webdavPwdFocusNode = FocusNode();
-  late final webdavPwdController = TextEditingController()
-    ..text = widget.account.password ?? "";
+  final webdavPwdController = TextEditingController();
 
   // tested on 坚果云
   Widget _webdavWidget() {
