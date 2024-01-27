@@ -5,6 +5,7 @@ import 'package:easy_crypt/datasource/datasource_screen.dart';
 import 'package:easy_crypt/datasource/notifiers/datasource_notifier.dart';
 import 'package:easy_crypt/common/dev_utils.dart';
 import 'package:easy_crypt/file_system/components/board.dart';
+import 'package:easy_crypt/file_system/enum.dart';
 import 'package:easy_crypt/file_system/local.dart';
 import 'package:easy_crypt/src/rust/api/simple.dart';
 import 'package:easy_crypt/common/logger.dart';
@@ -13,6 +14,7 @@ import 'package:easy_crypt/gen/strings.g.dart';
 import 'package:easy_crypt/layout/components/jobs_box.dart';
 import 'package:easy_crypt/layout/models/job_state.dart';
 import 'package:easy_crypt/layout/notifiers/job_notifier.dart';
+import 'package:easy_crypt/src/rust/process/datasource.dart';
 import 'package:easy_crypt/style/app_style.dart';
 import 'package:easy_crypt/workboard/notifiers/records_notifier.dart';
 import 'package:easy_crypt/workboard/workboard.dart';
@@ -230,10 +232,16 @@ class _LayoutState extends ConsumerState<Layout> with TickerProviderStateMixin {
                           const FlowScreen(),
                           const DatasourceScreen(),
                           Board(
-                            left: const LocalFilePreview(),
-                            right: Container(
-                              color: Colors.green,
+                            left: const LocalFilePreview(
+                              previewType: PreviewType.Left,
                             ),
+                            right: DragTarget<Entry>(onAccept: (data) {
+                              print(data.path);
+                            }, builder: (c, _, __) {
+                              return Container(
+                                color: Colors.green,
+                              );
+                            }),
                           )
                         ],
                       ))

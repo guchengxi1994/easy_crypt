@@ -30,6 +30,7 @@ dependencies:
   logging: ^1.2.0
   open_file: ^3.3.2
   path_provider: ^2.1.2
+  tuple: ^2.0.2
   rust_builder:
     path: rust_builder
   shared_preferences: ^2.2.2
