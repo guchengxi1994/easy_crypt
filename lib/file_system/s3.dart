@@ -1,7 +1,7 @@
 import 'package:easy_crypt/file_system/components/title_bar.dart';
 import 'package:easy_crypt/file_system/models/s3_state.dart';
 import 'package:easy_crypt/file_system/notifiers/s3_notifier.dart';
-import 'package:easy_crypt/src/rust/process/transfer.dart';
+import 'package:easy_crypt/src/rust/process/datasource.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 

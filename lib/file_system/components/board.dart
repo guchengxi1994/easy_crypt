@@ -1,4 +1,5 @@
 import 'package:easy_crypt/common/dev_utils.dart';
+import 'package:easy_crypt/style/app_style.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -45,46 +46,48 @@ class _BoardState extends ConsumerState<Board> {
   @override
   Widget build(BuildContext context) {
     final leftWidth = ref.watch(provider);
-    return Container(
-      padding: const EdgeInsets.only(top: 10, bottom: 10),
-      child: Stack(
-        children: [
-          Row(
-            children: [
-              Container(
-                padding: const EdgeInsets.all(10),
-                width: leftWidth,
-                child: Card(
-                  child: widget.left,
+    return Stack(
+      children: [
+        Row(
+          children: [
+            SizedBox(
+              width: leftWidth,
+              height: MediaQuery.of(context).size.height -
+                  AppStyle.appbarHeight -
+                  30,
+              child: Card(
+                elevation: 4,
+                child: widget.left,
+              ),
+            ),
+            SizedBox(
+              height: MediaQuery.of(context).size.height -
+                  AppStyle.appbarHeight -
+                  30,
+              width: screenWidth - leftWidth,
+              child: Card(
+                child: widget.right,
+              ),
+            )
+          ],
+        ),
+        Positioned(
+            left: leftWidth - 10,
+            child: MouseRegion(
+              cursor: SystemMouseCursors.resizeLeft,
+              child: GestureDetector(
+                onPanUpdate: (details) {
+                  ref.read(provider.notifier).changeWidth(details);
+                },
+                child: Container(
+                  color: Colors.transparent,
+                  width: 20,
+                  height: MediaQuery.of(context).size.height,
+                  // child: const SizedBox.expand(),
                 ),
               ),
-              Container(
-                padding: const EdgeInsets.all(10),
-                width: screenWidth - leftWidth,
-                child: Card(
-                  child: widget.right,
-                ),
-              )
-            ],
-          ),
-          Positioned(
-              left: leftWidth - 10,
-              child: MouseRegion(
-                cursor: SystemMouseCursors.resizeLeft,
-                child: GestureDetector(
-                  onPanUpdate: (details) {
-                    ref.read(provider.notifier).changeWidth(details);
-                  },
-                  child: Container(
-                    color: Colors.transparent,
-                    width: 20,
-                    height: MediaQuery.of(context).size.height,
-                    // child: const SizedBox.expand(),
-                  ),
-                ),
-              )),
-        ],
-      ),
+            )),
+      ],
     );
   }
 }

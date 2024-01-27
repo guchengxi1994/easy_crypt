@@ -40,4 +40,7 @@ class Datasource {
   String? url;
   String? username;
   String? password;
+
+  /* local */
+  String? path;
 }

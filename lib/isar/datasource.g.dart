@@ -53,28 +53,33 @@ const DatasourceSchema = CollectionSchema(
       name: r'password',
       type: IsarType.string,
     ),
-    r'region': PropertySchema(
+    r'path': PropertySchema(
       id: 7,
+      name: r'path',
+      type: IsarType.string,
+    ),
+    r'region': PropertySchema(
+      id: 8,
       name: r'region',
       type: IsarType.string,
     ),
     r'sessionKey': PropertySchema(
-      id: 8,
+      id: 9,
       name: r'sessionKey',
       type: IsarType.string,
     ),
     r'sessionToken': PropertySchema(
-      id: 9,
+      id: 10,
       name: r'sessionToken',
       type: IsarType.string,
     ),
     r'url': PropertySchema(
-      id: 10,
+      id: 11,
       name: r'url',
       type: IsarType.string,
     ),
     r'username': PropertySchema(
-      id: 11,
+      id: 12,
       name: r'username',
       type: IsarType.string,
     )
@@ -130,6 +135,12 @@ int _datasourceEstimateSize(
     }
   }
   {
+    final value = object.path;
+    if (value != null) {
+      bytesCount += 3 + value.length * 3;
+    }
+  }
+  {
     final value = object.region;
     if (value != null) {
       bytesCount += 3 + value.length * 3;
@@ -175,11 +186,12 @@ void _datasourceSerialize(
   writer.writeString(offsets[4], object.endpoint);
   writer.writeString(offsets[5], object.name);
   writer.writeString(offsets[6], object.password);
-  writer.writeString(offsets[7], object.region);
-  writer.writeString(offsets[8], object.sessionKey);
-  writer.writeString(offsets[9], object.sessionToken);
-  writer.writeString(offsets[10], object.url);
-  writer.writeString(offsets[11], object.username);
+  writer.writeString(offsets[7], object.path);
+  writer.writeString(offsets[8], object.region);
+  writer.writeString(offsets[9], object.sessionKey);
+  writer.writeString(offsets[10], object.sessionToken);
+  writer.writeString(offsets[11], object.url);
+  writer.writeString(offsets[12], object.username);
 }
 
 Datasource _datasourceDeserialize(
@@ -199,11 +211,12 @@ Datasource _datasourceDeserialize(
   object.id = id;
   object.name = reader.readStringOrNull(offsets[5]);
   object.password = reader.readStringOrNull(offsets[6]);
-  object.region = reader.readStringOrNull(offsets[7]);
-  object.sessionKey = reader.readStringOrNull(offsets[8]);
-  object.sessionToken = reader.readStringOrNull(offsets[9]);
-  object.url = reader.readStringOrNull(offsets[10]);
-  object.username = reader.readStringOrNull(offsets[11]);
+  object.path = reader.readStringOrNull(offsets[7]);
+  object.region = reader.readStringOrNull(offsets[8]);
+  object.sessionKey = reader.readStringOrNull(offsets[9]);
+  object.sessionToken = reader.readStringOrNull(offsets[10]);
+  object.url = reader.readStringOrNull(offsets[11]);
+  object.username = reader.readStringOrNull(offsets[12]);
   return object;
 }
 
@@ -239,6 +252,8 @@ P _datasourceDeserializeProp<P>(
     case 10:
       return (reader.readStringOrNull(offset)) as P;
     case 11:
+      return (reader.readStringOrNull(offset)) as P;
+    case 12:
       return (reader.readStringOrNull(offset)) as P;
     default:
       throw IsarError('Unknown property with id $propertyId');
@@ -1263,6 +1278,152 @@ extension DatasourceQueryFilter
     });
   }
 
+  QueryBuilder<Datasource, Datasource, QAfterFilterCondition> pathIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNull(
+        property: r'path',
+      ));
+    });
+  }
+
+  QueryBuilder<Datasource, Datasource, QAfterFilterCondition> pathIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNotNull(
+        property: r'path',
+      ));
+    });
+  }
+
+  QueryBuilder<Datasource, Datasource, QAfterFilterCondition> pathEqualTo(
+    String? value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'path',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<Datasource, Datasource, QAfterFilterCondition> pathGreaterThan(
+    String? value, {
+    bool include = false,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'path',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<Datasource, Datasource, QAfterFilterCondition> pathLessThan(
+    String? value, {
+    bool include = false,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'path',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<Datasource, Datasource, QAfterFilterCondition> pathBetween(
+    String? lower,
+    String? upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'path',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<Datasource, Datasource, QAfterFilterCondition> pathStartsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.startsWith(
+        property: r'path',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<Datasource, Datasource, QAfterFilterCondition> pathEndsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.endsWith(
+        property: r'path',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<Datasource, Datasource, QAfterFilterCondition> pathContains(
+      String value,
+      {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.contains(
+        property: r'path',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<Datasource, Datasource, QAfterFilterCondition> pathMatches(
+      String pattern,
+      {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.matches(
+        property: r'path',
+        wildcard: pattern,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<Datasource, Datasource, QAfterFilterCondition> pathIsEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'path',
+        value: '',
+      ));
+    });
+  }
+
+  QueryBuilder<Datasource, Datasource, QAfterFilterCondition> pathIsNotEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        property: r'path',
+        value: '',
+      ));
+    });
+  }
+
   QueryBuilder<Datasource, Datasource, QAfterFilterCondition> regionIsNull() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(const FilterCondition.isNull(
@@ -2109,6 +2270,18 @@ extension DatasourceQuerySortBy
     });
   }
 
+  QueryBuilder<Datasource, Datasource, QAfterSortBy> sortByPath() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'path', Sort.asc);
+    });
+  }
+
+  QueryBuilder<Datasource, Datasource, QAfterSortBy> sortByPathDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'path', Sort.desc);
+    });
+  }
+
   QueryBuilder<Datasource, Datasource, QAfterSortBy> sortByRegion() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'region', Sort.asc);
@@ -2269,6 +2442,18 @@ extension DatasourceQuerySortThenBy
     });
   }
 
+  QueryBuilder<Datasource, Datasource, QAfterSortBy> thenByPath() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'path', Sort.asc);
+    });
+  }
+
+  QueryBuilder<Datasource, Datasource, QAfterSortBy> thenByPathDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'path', Sort.desc);
+    });
+  }
+
   QueryBuilder<Datasource, Datasource, QAfterSortBy> thenByRegion() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'region', Sort.asc);
@@ -2379,6 +2564,13 @@ extension DatasourceQueryWhereDistinct
     });
   }
 
+  QueryBuilder<Datasource, Datasource, QDistinct> distinctByPath(
+      {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'path', caseSensitive: caseSensitive);
+    });
+  }
+
   QueryBuilder<Datasource, Datasource, QDistinct> distinctByRegion(
       {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
@@ -2463,6 +2655,12 @@ extension DatasourceQueryProperty
   QueryBuilder<Datasource, String?, QQueryOperations> passwordProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'password');
+    });
+  }
+
+  QueryBuilder<Datasource, String?, QQueryOperations> pathProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'path');
     });
   }
 

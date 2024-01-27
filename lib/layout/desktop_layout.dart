@@ -5,6 +5,7 @@ import 'package:easy_crypt/datasource/datasource_screen.dart';
 import 'package:easy_crypt/datasource/notifiers/datasource_notifier.dart';
 import 'package:easy_crypt/common/dev_utils.dart';
 import 'package:easy_crypt/file_system/components/board.dart';
+import 'package:easy_crypt/file_system/local.dart';
 import 'package:easy_crypt/src/rust/api/simple.dart';
 import 'package:easy_crypt/common/logger.dart';
 import 'package:easy_crypt/customize_flow/flow_screen.dart';
@@ -229,9 +230,7 @@ class _LayoutState extends ConsumerState<Layout> with TickerProviderStateMixin {
                           const FlowScreen(),
                           const DatasourceScreen(),
                           Board(
-                            left: Container(
-                              color: Colors.red,
-                            ),
+                            left: const LocalFilePreview(),
                             right: Container(
                               color: Colors.green,
                             ),
