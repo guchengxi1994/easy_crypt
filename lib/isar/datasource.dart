@@ -43,4 +43,15 @@ class Datasource {
 
   /* local */
   String? path;
+
+  @override
+  bool operator ==(Object other) {
+    if (other is! Datasource) {
+      return false;
+    }
+    return id == other.id;
+  }
+
+  @override
+  int get hashCode => id.hashCode;
 }

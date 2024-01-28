@@ -61,7 +61,8 @@ class _FlowScreenState extends State<FlowScreen> {
                 child: Preview(
                   key: globalKey,
                   onSave: () {
-                    print(dashboard.toJson());
+                    /// TODO save to isar database
+                    // print(dashboard.toJson());
                   },
                 ))
           ],

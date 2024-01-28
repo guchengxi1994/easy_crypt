@@ -85,7 +85,7 @@ class S3FilePreview extends ConsumerWidget {
             dimension: 200,
             child: Image.asset("assets/images/error.png"),
           ),
-          Text("Opps, something is wrong")
+          const Text("Opps, something is wrong")
         ],
       );
     }

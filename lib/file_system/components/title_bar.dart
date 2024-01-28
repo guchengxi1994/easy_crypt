@@ -51,22 +51,9 @@ class TitleBar extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.start,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  // ValueListenableBuilder(
-                  //     valueListenable: valueNotifier,
-                  //     builder: (c, a, b) {
-                  //       return FittedBox(
-                  //         child: valueNotifier.value
-                  //             ? Container(
-                  //                 margin: const EdgeInsets.only(left: 10),
-                  //                 child: const Icon(Icons.more_horiz),
-                  //               )
-                  //             : null,
-                  //       );
-                  //     }),
-                  //地址栏
                   Expanded(
                       child: Container(
-                    padding: const EdgeInsets.only(left: 20),
+                    padding: const EdgeInsets.only(left: 10, right: 10),
                     child: BreadCrumb(
                       controller: _controller,
                       breadcrumbItems: routers
@@ -107,9 +94,6 @@ class TitleBar extends StatelessWidget {
                   )),
                 ],
               )),
-        ),
-        const SizedBox(
-          width: 20,
         ),
       ],
     );

@@ -7,7 +7,7 @@ import 'package:easy_crypt/isar/datasource.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-typedef OnItemSelect = void Function(dynamic);
+typedef OnItemSelect = void Function(Datasource ds);
 
 class DatasourceSelection extends ConsumerStatefulWidget {
   const DatasourceSelection({super.key, required this.onItemSelect});
@@ -20,16 +20,24 @@ class DatasourceSelection extends ConsumerStatefulWidget {
 class _DatasourceSelectionState extends ConsumerState<DatasourceSelection> {
   late Datasource? selectedValue = null;
 
+  List<Datasource> items = [];
+  bool _isOpen = false;
+
   @override
   Widget build(BuildContext context) {
     final datasources = ref.watch(datasourceItemsProvider);
 
-    return Builder(builder: (c) {
-      return switch (datasources) {
-        AsyncValue<DatasourceState>(:final value?) =>
-          DropdownButtonHideUnderline(
+    return switch (datasources) {
+      AsyncValue<DatasourceState>(:final value?) => Builder(builder: (c) {
+          // items.clear();
+          items = List.of(value.datasources)
+            ..add(Datasource()
+              ..datasourceType = DatasourceType.Local
+              ..name = "Add local path...");
+
+          return DropdownButtonHideUnderline(
               child: DropdownButton2<Datasource>(
-            isExpanded: true,
+            isExpanded: false,
             hint: Text(
               'Select Item',
               style: TextStyle(
@@ -37,53 +45,75 @@ class _DatasourceSelectionState extends ConsumerState<DatasourceSelection> {
                 color: Theme.of(context).hintColor,
               ),
             ),
+            onMenuStateChange: (isOpen) {
+              setState(() {
+                _isOpen = isOpen;
+              });
+            },
             customButton: Container(
-              padding: EdgeInsets.all(4),
+              padding: const EdgeInsets.all(4),
               decoration: BoxDecoration(
                   border: Border.all(color: Colors.grey),
                   borderRadius: BorderRadius.circular(4)),
-              width: 240,
+              width: _isOpen ? 240 : 100,
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  Expanded(child: Text("${selectedValue?.name.toString()}")),
+                  Expanded(
+                      child: Text(
+                    "${selectedValue?.name.toString()}",
+                    maxLines: 1,
+                    softWrap: true,
+                    overflow: TextOverflow.clip,
+                  )),
                   const Icon(Icons.arrow_downward, size: 20, color: Colors.grey)
                 ],
               ),
             ),
-
-            /// TODO 将创建本地datasource 放到下拉菜单中
-            items: value.datasources
+            items: items
                 .map((item) => DropdownMenuItem<Datasource>(
                       value: item,
-                      child: Text(
-                        item.name.toString(),
-                        style: const TextStyle(
-                          fontSize: 14,
+                      child: SizedBox(
+                        width: 240,
+                        child: Text(
+                          item.name.toString(),
+                          style: const TextStyle(
+                            fontSize: 14,
+                          ),
+                          maxLines: 1,
+                          softWrap: true,
+                          overflow: TextOverflow.ellipsis,
                         ),
                       ),
                     ))
                 .toList(),
             value: selectedValue,
             onChanged: (v) {
-              setState(() {
-                selectedValue = v;
-              });
-              widget.onItemSelect(v);
+              if (v != null) {
+                widget.onItemSelect(v);
+
+                setState(() {
+                  selectedValue = v;
+                });
+              }
             },
-            buttonStyleData: const ButtonStyleData(
-              padding: EdgeInsets.symmetric(horizontal: 16),
-              height: 40,
-              width: 140,
+            dropdownStyleData: DropdownStyleData(
+              width: 240,
+              offset: const Offset(-140, 0),
+              scrollbarTheme: ScrollbarThemeData(
+                radius: const Radius.circular(40),
+                thickness: MaterialStateProperty.all(6),
+                thumbVisibility: MaterialStateProperty.all(true),
+              ),
             ),
             menuItemStyleData: const MenuItemStyleData(
               height: 40,
             ),
-          )),
-        _ => const Center(
-            child: CircularProgressIndicator(),
-          ),
-      };
-    });
+          ));
+        }),
+      _ => const Center(
+          child: CircularProgressIndicator(),
+        ),
+    };
   }
 }

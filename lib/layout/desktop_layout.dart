@@ -6,7 +6,7 @@ import 'package:easy_crypt/datasource/notifiers/datasource_notifier.dart';
 import 'package:easy_crypt/common/dev_utils.dart';
 import 'package:easy_crypt/file_system/components/board.dart';
 import 'package:easy_crypt/file_system/enum.dart';
-import 'package:easy_crypt/file_system/local.dart';
+import 'package:easy_crypt/file_system/fs_preview.dart';
 import 'package:easy_crypt/src/rust/api/simple.dart';
 import 'package:easy_crypt/common/logger.dart';
 import 'package:easy_crypt/customize_flow/flow_screen.dart';
@@ -211,7 +211,7 @@ class _LayoutState extends ConsumerState<Layout> with TickerProviderStateMixin {
                                 icon: const Icon(
                                   Icons.featured_play_list,
                                 ),
-                                label: Text("New Feature"),
+                                label: const Text("New Feature"),
                                 selectedIcon: Icon(
                                   Icons.featured_play_list,
                                   color: AppStyle.appColor.withGreen(100),
@@ -232,11 +232,12 @@ class _LayoutState extends ConsumerState<Layout> with TickerProviderStateMixin {
                           const FlowScreen(),
                           const DatasourceScreen(),
                           Board(
-                            left: const LocalFilePreview(
+                            left: const FsPreview(
                               previewType: PreviewType.Left,
                             ),
                             right: DragTarget<Entry>(onAccept: (data) {
-                              print(data.path);
+                              /// TODO complete drag logic
+                              // print(data.path);
                             }, builder: (c, _, __) {
                               return Container(
                                 color: Colors.green,
