@@ -30,7 +30,14 @@ class LocalNotifier extends AutoDisposeAsyncNotifier<LocalState> {
   }
 
   refresh(List<Entry> entries, String router) async {
-    final List<String> routers = List.from(state.value!.routers)..add(router);
+    final routers0 = router.split("/");
+    String router0;
+    if (routers0.length >= 2) {
+      router0 = routers0.sublist(routers0.length - 2).join("/");
+    } else {
+      router0 = routers0.join("/");
+    }
+    final List<String> routers = List.from(state.value!.routers)..add(router0);
     state = await AsyncValue.guard(
       () async {
         return LocalState(entries: entries, routers: routers);

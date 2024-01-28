@@ -57,26 +57,6 @@ class LocalFilePreview extends ConsumerWidget {
                               .prev(previewType == PreviewType.Left ? 1 : 0);
                         },
                       )),
-                      // DatasourceSelection(
-                      //   onItemSelect: (v) async {
-                      //     if (v.name == "Add local path...") {
-                      //       final String? directoryPath = await getDirectoryPath();
-                      //       if (directoryPath == null) {
-                      //         return;
-                      //       }
-                      //       final i = await ds.addLocalDatasource(p: directoryPath);
-                      //       ref.read(cachedProvider.notifier).add(i,
-                      //           Tuple2(CachedDatasourceType.Left, directoryPath));
-                      //       final list =
-                      //           await ds.listObjectsByIndex(index: i, p: "/");
-
-                      //       // print(list.length);
-                      //       if (list.isNotEmpty) {
-                      //         ref.read(localNotifier.notifier).refresh(list, "/");
-                      //       }
-                      //     }
-                      //   },
-                      // )
                     ],
                   ),
                 ),
@@ -122,6 +102,7 @@ class LocalFilePreview extends ConsumerWidget {
                       if (previewType == PreviewType.Left) {
                         final left =
                             ref.read(cachedProvider.notifier).findLeft();
+                        print(left);
                         if (left != null) {
                           final list = await ds.listObjectsByIndex(
                               index: left.item1, p: e.path);
@@ -136,6 +117,7 @@ class LocalFilePreview extends ConsumerWidget {
                       if (previewType == PreviewType.Right) {
                         final right =
                             ref.read(cachedProvider.notifier).findRight();
+                        print(right);
                         if (right != null) {
                           final list = await ds.listObjectsByIndex(
                               index: right.item1, p: right.item2);

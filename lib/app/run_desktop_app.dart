@@ -2,9 +2,12 @@ import 'dart:ui';
 
 import 'package:easy_crypt/layout/desktop_layout.dart';
 import 'package:easy_crypt/style/app_style.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:window_manager/window_manager.dart';
+
+import 'observer.dart';
 
 class AppScrollBehavior extends MaterialScrollBehavior {
   @override
@@ -26,6 +29,7 @@ void runAPP() async {
   });
   windowManager.setBackgroundColor(Colors.transparent);
   runApp(ProviderScope(
+    observers: kDebugMode ? [SimpleObserver()] : [],
     child: MaterialApp(
       scrollBehavior: AppScrollBehavior(),
       theme: ThemeData(

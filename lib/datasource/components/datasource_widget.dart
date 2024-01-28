@@ -65,6 +65,7 @@ class DatasourceWidget extends ConsumerWidget {
                       pageBuilder: (c, _, __) {
                         return Center(
                           child: S3FilePreview(
+                              isDialog: true,
                               accesskey: datasource.accesskey!,
                               bucketname: datasource.bucketname!,
                               endpoint: datasource.endpoint!,

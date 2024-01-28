@@ -28,6 +28,10 @@ pub fn transfer_from_left_to_right(
     })
 }
 
+/// TODO 将 add datasource 转为
+/// 添加到一个 hashmap，
+/// key只有 left 和 right中，
+/// 这样实现更加简单
 pub fn add_local_datasource(p: String) -> i64 {
     let mut a = DATASOURCES.write().unwrap();
     let client = LocalStorage::from(p).unwrap();

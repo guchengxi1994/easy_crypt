@@ -239,8 +239,8 @@ class _LayoutState extends ConsumerState<Layout> with TickerProviderStateMixin {
                               /// TODO complete drag logic
                               // print(data.path);
                             }, builder: (c, _, __) {
-                              return Container(
-                                color: Colors.green,
+                              return const FsPreview(
+                                previewType: PreviewType.Right,
                               );
                             }),
                           )

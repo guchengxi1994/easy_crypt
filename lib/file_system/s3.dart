@@ -17,7 +17,8 @@ class S3FilePreview extends ConsumerWidget {
       required this.sessionkey,
       this.height,
       this.width,
-      this.region = "cn-shanghai"});
+      this.region = "cn-shanghai",
+      this.isDialog = false});
   final String endpoint;
   final String accesskey;
   final String sessionkey;
@@ -26,6 +27,7 @@ class S3FilePreview extends ConsumerWidget {
   final String region;
   final double? width;
   final double? height;
+  final bool isDialog;
 
   late final s3Provider = AutoDisposeAsyncNotifierProvider<S3Notifier, S3State>(
       () => S3Notifier(
@@ -42,9 +44,9 @@ class S3FilePreview extends ConsumerWidget {
     return Material(
       borderRadius: BorderRadius.circular(4),
       child: Container(
-        padding: const EdgeInsets.all(20),
         width: width ?? 0.8 * MediaQuery.of(context).size.width,
         height: height ?? 0.8 * MediaQuery.of(context).size.height,
+        padding: isDialog ? const EdgeInsets.all(20) : null,
         decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(4), color: Colors.white),
         child: Builder(builder: (c) {
