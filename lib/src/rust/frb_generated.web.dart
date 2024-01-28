@@ -32,6 +32,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   bool dco_decode_bool(dynamic raw);
 
   @protected
+  DatasourcePreviewType dco_decode_datasource_preview_type(dynamic raw);
+
+  @protected
   EncryptItem dco_decode_encrypt_item(dynamic raw);
 
   @protected
@@ -78,6 +81,10 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   bool sse_decode_bool(SseDeserializer deserializer);
+
+  @protected
+  DatasourcePreviewType sse_decode_datasource_preview_type(
+      SseDeserializer deserializer);
 
   @protected
   EncryptItem sse_decode_encrypt_item(SseDeserializer deserializer);
@@ -127,6 +134,10 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   void sse_encode_bool(bool self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_datasource_preview_type(
+      DatasourcePreviewType self, SseSerializer serializer);
 
   @protected
   void sse_encode_encrypt_item(EncryptItem self, SseSerializer serializer);
