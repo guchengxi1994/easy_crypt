@@ -60,7 +60,10 @@ mod tests {
     use tokio::io::AsyncWriteExt;
     // use opendal::services::S3;
 
-    use crate::emit::{self, emitter::Emitter};
+    use crate::{
+        emit::{self, emitter::Emitter},
+        process::datasource::{local::LocalStorage, s3::S3Client, DATASOURCES},
+    };
 
     #[test]
     fn key() {
@@ -516,6 +519,97 @@ mod tests {
             }
 
             println!("duration : {} , json {:?}", duration, message);
+        }
+
+        anyhow::Ok(())
+    }
+
+    #[tokio::test]
+    async fn opendal_local_test() -> anyhow::Result<()> {
+        let mut builder = opendal::services::Fs::default();
+        builder.root("D:/AppFlowy");
+        let op = opendal::Operator::new(builder)?.finish();
+
+        let r = op.list_with("/").await?;
+
+        println!("{:?}", r.len());
+
+        for entry in r {
+            match entry.metadata().mode() {
+                EntryMode::FILE => {
+                    println!("Handling file")
+                }
+                EntryMode::DIR => {
+                    println!("Handling dir {}", entry.path())
+                }
+                EntryMode::Unknown => continue,
+            }
+        }
+
+        anyhow::Ok(())
+    }
+
+    #[tokio::test]
+    async fn test_cache_datasources() -> anyhow::Result<()> {
+        {
+            let mut a = DATASOURCES.write().unwrap();
+
+            let client1 = LocalStorage::from(r"D:\github_repo".to_owned()).unwrap();
+            let client2 = S3Client::from(
+                "http://127.0.0.1:9000".to_owned(),
+                "xiaoshuyui".to_owned(),
+                "nAPrblNJQUzF76NWTNMt".to_owned(),
+                "luSfM0DDSgPEQz63Pu6U5mWFTMAU7Hy5c1xIMWlM".to_owned(),
+                None,
+                "cn-shanghai".to_owned(),
+            )
+            .unwrap();
+
+            (*a).datasources.push(Box::new(client1));
+            (*a).datasources.push(Box::new(client2));
+        }
+
+        {
+            let a = DATASOURCES.read().unwrap();
+            let left = (*a).datasources.first().unwrap();
+            let right = (*a).datasources.last().unwrap();
+
+            let left_down = left.as_any().downcast_ref::<LocalStorage>().unwrap();
+            let right_down = right.as_any().downcast_ref::<S3Client>().unwrap();
+
+            let r = left_down.op.list_with("/").await?;
+
+            println!("{:?}", r.len());
+
+            for entry in r {
+                match entry.metadata().mode() {
+                    EntryMode::FILE => {
+                        println!("Handling file")
+                    }
+                    EntryMode::DIR => {
+                        println!("Handling dir {}", entry.path())
+                    }
+                    EntryMode::Unknown => continue,
+                }
+            }
+
+            println!("===============================================================");
+
+            let r = right_down.op.list_with("/").await?;
+
+            println!("{:?}", r.len());
+
+            for entry in r {
+                match entry.metadata().mode() {
+                    EntryMode::FILE => {
+                        println!("Handling file")
+                    }
+                    EntryMode::DIR => {
+                        println!("Handling dir {}", entry.path())
+                    }
+                    EntryMode::Unknown => continue,
+                }
+            }
         }
 
         anyhow::Ok(())

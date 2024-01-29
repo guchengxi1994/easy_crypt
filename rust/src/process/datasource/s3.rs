@@ -1,53 +1,18 @@
 use std::{
     fs::{self, File},
     io::Write,
-    sync::RwLock,
     time::{SystemTime, UNIX_EPOCH},
 };
 
 use async_trait::async_trait;
-use once_cell::sync::Lazy;
 use opendal::raw::oio::ReadExt;
 
 use crate::{constants::SIXTEEN_MB, emit::emitter::Emitter};
 
-#[async_trait]
-pub trait Transfer {
-    /*
-        `upload`
-        p:                  file path
-        object_path:        s3/webdav/... storage path
-        message:            message send to dart
-    */
-    async fn upload(
-        &self,
-        p: String,
-        object_path: String,
-        message: &mut crate::emit::file_transfer_message::FileTransferMessage,
-    ) -> anyhow::Result<()>;
-
-    // TODO add `message`
-    async fn download(&self, p: String, object_path: String) -> anyhow::Result<()>;
-
-    /*
-        pregisn url for S3
-        whatever for others
-    */
-    async fn share(&self, object_path: String) -> anyhow::Result<String>;
-}
-
-// a global `S3Client`
-pub static S3CLIENT: Lazy<RwLock<Option<S3Client>>> = Lazy::new(|| RwLock::new(None));
-
-pub enum EntryType {
-    File,
-    Folder,
-}
-
-pub struct Entry {
-    pub _type: EntryType,
-    pub path: String,
-}
+use super::{
+    base_trait::{ClientTrait, Transfer},
+    Entry, EntryType, S3CLIENT,
+};
 
 pub struct S3Client {
     pub endpoint: String,
@@ -57,6 +22,20 @@ pub struct S3Client {
     pub session_token: Option<String>,
     pub region: String,
     pub op: opendal::Operator,
+}
+
+impl ClientTrait for S3Client {
+    fn as_any(&self) -> &dyn std::any::Any {
+        self
+    }
+
+    fn get_op(&self) -> opendal::Operator {
+        self.op.clone()
+    }
+
+    // async fn list_objects(&self, p: String) -> Vec<Entry> {
+    //     self.list_objs(p).await
+    // }
 }
 
 impl S3Client {
@@ -82,7 +61,7 @@ impl S3Client {
         match op {
             Ok(_op) => {
                 let _o = _op.layer(opendal::layers::LoggingLayer::default()).finish();
-                let client = crate::process::transfer::S3Client {
+                let client = S3Client {
                     endpoint,
                     bucketname,
                     access_key,

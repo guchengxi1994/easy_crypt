@@ -1,8 +1,13 @@
 import 'dart:convert';
 
 import 'package:dropdown_button2/dropdown_button2.dart';
-import 'package:easy_crypt/account/account_screen.dart';
-import 'package:easy_crypt/account/notifiers/account_notifier.dart';
+import 'package:easy_crypt/datasource/datasource_screen.dart';
+import 'package:easy_crypt/datasource/notifiers/datasource_notifier.dart';
+import 'package:easy_crypt/common/dev_utils.dart';
+import 'package:easy_crypt/file_system/components/board.dart';
+import 'package:easy_crypt/file_system/enum.dart';
+import 'package:easy_crypt/file_system/fs_preview.dart';
+import 'package:easy_crypt/src/rust/api/datasource.dart';
 import 'package:easy_crypt/src/rust/api/simple.dart';
 import 'package:easy_crypt/common/logger.dart';
 import 'package:easy_crypt/customize_flow/flow_screen.dart';
@@ -10,6 +15,7 @@ import 'package:easy_crypt/gen/strings.g.dart';
 import 'package:easy_crypt/layout/components/jobs_box.dart';
 import 'package:easy_crypt/layout/models/job_state.dart';
 import 'package:easy_crypt/layout/notifiers/job_notifier.dart';
+import 'package:easy_crypt/src/rust/process/datasource.dart';
 import 'package:easy_crypt/style/app_style.dart';
 import 'package:easy_crypt/workboard/notifiers/records_notifier.dart';
 import 'package:easy_crypt/workboard/workboard.dart';
@@ -20,6 +26,7 @@ import 'package:window_manager/window_manager.dart';
 import 'notifiers/expand_collapse_notifier.dart';
 import 'notifiers/navigator_notifier.dart';
 import 'notifiers/setting_notifier.dart';
+import 'package:path/path.dart';
 
 class Layout extends ConsumerStatefulWidget {
   const Layout({super.key});
@@ -93,7 +100,7 @@ class _LayoutState extends ConsumerState<Layout> with TickerProviderStateMixin {
   Widget build(BuildContext context) {
     // ignore: non_constant_identifier_names
     final __ = ref.watch(settingsNotifier);
-    final _ = ref.watch(accountProvider);
+    final _ = ref.watch(datasourceProvider);
     return FutureBuilder(
         future: future,
         builder: (c, s) {
@@ -169,11 +176,21 @@ class _LayoutState extends ConsumerState<Layout> with TickerProviderStateMixin {
                       Container(
                         color: AppStyle.appColor,
                         child: NavigationRail(
+                          key: DevUtils.navigationKey,
                           onDestinationSelected: (value) {
                             ref.read(pageNavigator.notifier).changeState(value);
                           },
                           backgroundColor: Colors.transparent,
                           destinations: [
+                            NavigationRailDestination(
+                                icon: const Icon(
+                                  Icons.transform,
+                                ),
+                                label: Text(t.layout.workboard),
+                                selectedIcon: Icon(
+                                  Icons.transform,
+                                  color: AppStyle.appColor.withGreen(100),
+                                )),
                             NavigationRailDestination(
                                 icon: const Icon(
                                   Icons.security,
@@ -194,11 +211,11 @@ class _LayoutState extends ConsumerState<Layout> with TickerProviderStateMixin {
                                 )),
                             NavigationRailDestination(
                                 icon: const Icon(
-                                  Icons.account_box,
+                                  Icons.dataset,
                                 ),
                                 label: Text(t.layout.account),
                                 selectedIcon: Icon(
-                                  Icons.account_box,
+                                  Icons.dataset,
                                   color: AppStyle.appColor.withGreen(100),
                                 )),
                           ],
@@ -212,10 +229,30 @@ class _LayoutState extends ConsumerState<Layout> with TickerProviderStateMixin {
                           child: PageView(
                         physics: const NeverScrollableScrollPhysics(),
                         controller: PageNavigatorNotifier.controller,
-                        children: const [
-                          Workboard(),
-                          FlowScreen(),
-                          AccountScreen()
+                        children: [
+                          Board(
+                            left: const FsPreview(
+                              previewType: PreviewType.Left,
+                            ),
+                            right: DragTarget<Entry>(onAccept: (data) async {
+                              // print(data.path);
+
+                              if (data.type == EntryType.file) {
+                                final name = basename(data.path);
+                                await transferBetweenTwoDatasource(
+                                    p: data.path,
+                                    savePath: "easy_encrypt_upload/$name",
+                                    autoEncrypt: false);
+                              }
+                            }, builder: (c, _, __) {
+                              return const FsPreview(
+                                previewType: PreviewType.Right,
+                              );
+                            }),
+                          ),
+                          const Workboard(),
+                          const FlowScreen(),
+                          const DatasourceScreen(),
                         ],
                       ))
                     ],

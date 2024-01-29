@@ -1,11 +1,12 @@
 import 'package:easy_crypt/file_system/components/title_bar.dart';
 import 'package:easy_crypt/file_system/models/s3_state.dart';
 import 'package:easy_crypt/file_system/notifiers/s3_notifier.dart';
-import 'package:easy_crypt/src/rust/process/transfer.dart';
+import 'package:easy_crypt/src/rust/process/datasource.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'components/file_widget.dart';
+import 'enum.dart';
 
 class S3FilePreview extends ConsumerWidget {
   S3FilePreview(
@@ -15,13 +16,21 @@ class S3FilePreview extends ConsumerWidget {
       required this.endpoint,
       required this.sessionToken,
       required this.sessionkey,
-      this.region = "cn-shanghai"});
+      this.height,
+      this.width,
+      this.region = "cn-shanghai",
+      this.isDialog = false,
+      this.previewType});
   final String endpoint;
   final String accesskey;
   final String sessionkey;
   final String bucketname;
   final String? sessionToken;
   final String region;
+  final double? width;
+  final double? height;
+  final bool isDialog;
+  final PreviewType? previewType;
 
   late final s3Provider = AutoDisposeAsyncNotifierProvider<S3Notifier, S3State>(
       () => S3Notifier(
@@ -38,9 +47,9 @@ class S3FilePreview extends ConsumerWidget {
     return Material(
       borderRadius: BorderRadius.circular(4),
       child: Container(
-        padding: const EdgeInsets.all(20),
-        width: 0.8 * MediaQuery.of(context).size.width,
-        height: 0.8 * MediaQuery.of(context).size.height,
+        width: width ?? 0.8 * MediaQuery.of(context).size.width,
+        height: height ?? 0.8 * MediaQuery.of(context).size.height,
+        padding: isDialog ? const EdgeInsets.all(20) : null,
         decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(4), color: Colors.white),
         child: Builder(builder: (c) {
@@ -54,6 +63,9 @@ class S3FilePreview extends ConsumerWidget {
                     },
                     onIndexedItemClicked: (index) {
                       ref.read(s3Provider.notifier).skipTo(index);
+                    },
+                    onRefreshClick: () {
+                      ref.read(s3Provider.notifier).refreshCurrent();
                     },
                   ),
                   const SizedBox(
@@ -72,21 +84,38 @@ class S3FilePreview extends ConsumerWidget {
   }
 
   Widget _buildContent(List<Entry> entries, WidgetRef ref) {
+    if (entries.isEmpty) {
+      return Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          SizedBox.square(
+            dimension: 200,
+            child: Image.asset("assets/images/error.png"),
+          ),
+          const Text("Opps, something is wrong")
+        ],
+      );
+    }
+
     return Align(
       alignment: Alignment.topLeft,
-      child: Wrap(
-        spacing: 8,
-        runSpacing: 8,
-        children: entries
-            .map((e) => FileWidget(
-                  entry: e,
-                  onDoubleClick: () {
-                    if (e.type == EntryType.folder) {
-                      ref.read(s3Provider.notifier).navigateTo(e.path);
-                    }
-                  },
-                ))
-            .toList(),
+      child: SingleChildScrollView(
+        child: Wrap(
+          spacing: 8,
+          runSpacing: 8,
+          children: entries
+              .map((e) => FileWidget(
+                    draggable: previewType == PreviewType.Left,
+                    entry: e,
+                    onDoubleClick: () {
+                      if (e.type == EntryType.folder) {
+                        ref.read(s3Provider.notifier).navigateTo(e.path);
+                      }
+                    },
+                  ))
+              .toList(),
+        ),
       ),
     );
   }

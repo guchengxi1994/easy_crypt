@@ -1,9 +1,15 @@
 {
     "layout":{
-        "encryption":"Encryption",
+        "workboard":"Workboard",
+        "encryption":"Records",
         "custom":"Custom Algorithm",
-        "account":"Account"
+        "account":"Datasource"
     },
+    "workboard":{
+        "title":"Choose a datasource or select a folder",
+        "addlocal":"Add local path..."
+    },
+
     "encryption":{
         "column":{
             "no":"No.",

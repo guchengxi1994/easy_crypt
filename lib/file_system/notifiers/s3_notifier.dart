@@ -102,4 +102,23 @@ class S3Notifier extends AutoDisposeAsyncNotifier<S3State> {
       return state;
     });
   }
+
+  refreshCurrent() async {
+    List<String> routers = List.from(state.value!.routers);
+    state = const AsyncLoading();
+
+    state = await AsyncValue.guard(() async {
+      S3State state = S3State(
+          routers: routers,
+          accesskey: accesskey,
+          bucketname: bucketname,
+          endpoint: endpoint,
+          sessionToken: sessionToken,
+          sessionkey: sessionkey);
+
+      await state.getEntry();
+
+      return state;
+    });
+  }
 }

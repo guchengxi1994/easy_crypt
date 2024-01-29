@@ -2,25 +2,27 @@
 
 import 'package:isar/isar.dart';
 
-part 'account.g.dart';
+part 'datasource.g.dart';
 
-enum AccountType { S3, Webdav }
+enum DatasourceType { S3, Webdav, Local }
 
-extension ToString on AccountType {
+extension ToString on DatasourceType {
   String toStr() {
     switch (this) {
-      case AccountType.S3:
+      case DatasourceType.S3:
         return "S3";
-      case AccountType.Webdav:
+      case DatasourceType.Webdav:
         return "Webdav";
+      case DatasourceType.Local:
+        return "Local";
     }
   }
 }
 
 @collection
-class Account {
+class Datasource {
   @enumerated
-  late AccountType accountType;
+  late DatasourceType datasourceType;
   String? name;
 
   Id id = Isar.autoIncrement;
@@ -38,4 +40,18 @@ class Account {
   String? url;
   String? username;
   String? password;
+
+  /* local */
+  String? path;
+
+  @override
+  bool operator ==(Object other) {
+    if (other is! Datasource) {
+      return false;
+    }
+    return id == other.id;
+  }
+
+  @override
+  int get hashCode => id.hashCode;
 }

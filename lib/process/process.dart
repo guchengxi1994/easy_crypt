@@ -4,7 +4,7 @@ import 'package:easy_crypt/src/rust/api/crypt.dart' as crypt;
 import 'package:easy_crypt/src/rust/api/s3.dart' as s3;
 import 'package:easy_crypt/common/dev_utils.dart';
 import 'package:easy_crypt/common/logger.dart';
-import 'package:easy_crypt/isar/account.dart';
+import 'package:easy_crypt/isar/datasource.dart';
 import 'package:easy_crypt/isar/database.dart';
 import 'package:easy_crypt/isar/files.dart';
 import 'package:easy_crypt/isar/transfer_records.dart';
@@ -69,7 +69,7 @@ class IsolateProcess {
   }
 
   static void upload(
-      Account account, final String p, final String objectKey, int fileId,
+      Datasource datasource, final String p, final String objectKey, int fileId,
       {WidgetRef? ref}) async {
     ReceivePort receivePort = ReceivePort();
     receivePort.listen((message) {
@@ -82,12 +82,12 @@ class IsolateProcess {
         TransferRecords records = TransferRecords()
           ..done = true
           ..fromType = StorageType.Local
-          ..toType = account.accountType == AccountType.S3
+          ..toType = datasource.datasourceType == DatasourceType.S3
               ? StorageType.S3
               : StorageType.Webdav
           ..from = p
           ..to = objectKey
-          ..account.value = account;
+          ..account.value = datasource;
         file.transferRecords.add(records);
 
         database.isar!.writeTxnSync(() {
@@ -106,14 +106,14 @@ class IsolateProcess {
     },
         UploadMessage(
             sendPort: receivePort.sendPort,
-            endpoint: account.endpoint!,
-            accessKey: account.accesskey!,
-            bucketname: account.bucketname!,
+            endpoint: datasource.endpoint!,
+            accessKey: datasource.accesskey!,
+            bucketname: datasource.bucketname!,
             objectKey: objectKey,
             p: p,
-            region: account.region!,
-            sessionKey: account.sessionKey!,
-            sessionToken: account.sessionToken));
+            region: datasource.region!,
+            sessionKey: datasource.sessionKey!,
+            sessionToken: datasource.sessionToken));
   }
 
   static void _upload(UploadMessage message) async {

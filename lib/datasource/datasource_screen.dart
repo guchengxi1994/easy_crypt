@@ -1,20 +1,20 @@
-import 'package:easy_crypt/account/components/account_widget.dart';
-import 'package:easy_crypt/account/components/add_account_dialog.dart';
-import 'package:easy_crypt/account/notifiers/account_notifier.dart';
+import 'package:easy_crypt/datasource/components/datasource_widget.dart';
+import 'package:easy_crypt/datasource/components/add_datasource_dialog.dart';
+import 'package:easy_crypt/datasource/notifiers/datasource_notifier.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class AccountScreen extends ConsumerStatefulWidget {
-  const AccountScreen({super.key});
+class DatasourceScreen extends ConsumerStatefulWidget {
+  const DatasourceScreen({super.key});
 
   @override
-  ConsumerState<AccountScreen> createState() => _AccountScreenState();
+  ConsumerState<DatasourceScreen> createState() => _DatasourceScreenState();
 }
 
-class _AccountScreenState extends ConsumerState<AccountScreen> {
+class _DatasourceScreenState extends ConsumerState<DatasourceScreen> {
   @override
   Widget build(BuildContext context) {
-    final accounts = ref.watch(accountProvider);
+    final accounts = ref.watch(datasourceProvider);
 
     return Scaffold(
       body: Padding(
@@ -22,8 +22,8 @@ class _AccountScreenState extends ConsumerState<AccountScreen> {
         child: Wrap(
           spacing: 20,
           runSpacing: 20,
-          children: accounts.value!.accounts
-              .map((e) => AccountWidget(account: e))
+          children: accounts.value!.datasources
+              .map((e) => DatasourceWidget(datasource: e))
               .toList(),
         ),
       ),
@@ -35,7 +35,7 @@ class _AccountScreenState extends ConsumerState<AccountScreen> {
                 context: context,
                 pageBuilder: (c, _, __) {
                   return const Center(
-                    child: AddAccountDialog(),
+                    child: AddDatasourceDialog(),
                   );
                 });
           },

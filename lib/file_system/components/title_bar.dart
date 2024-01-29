@@ -14,9 +14,11 @@ class TitleBar extends StatelessWidget {
       {super.key,
       required this.routers,
       this.onPrevClick,
-      this.onIndexedItemClicked});
+      this.onIndexedItemClicked,
+      this.onRefreshClick});
   final List<String> routers;
   final VoidCallback? onPrevClick;
+  final VoidCallback? onRefreshClick;
   final OnIndexedItemClicked? onIndexedItemClicked;
 
   late final ScrollController _controller = ScrollController();
@@ -51,22 +53,9 @@ class TitleBar extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.start,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  // ValueListenableBuilder(
-                  //     valueListenable: valueNotifier,
-                  //     builder: (c, a, b) {
-                  //       return FittedBox(
-                  //         child: valueNotifier.value
-                  //             ? Container(
-                  //                 margin: const EdgeInsets.only(left: 10),
-                  //                 child: const Icon(Icons.more_horiz),
-                  //               )
-                  //             : null,
-                  //       );
-                  //     }),
-                  //地址栏
                   Expanded(
                       child: Container(
-                    padding: const EdgeInsets.only(left: 20),
+                    padding: const EdgeInsets.only(left: 10, right: 10),
                     child: BreadCrumb(
                       controller: _controller,
                       breadcrumbItems: routers
@@ -109,7 +98,19 @@ class TitleBar extends StatelessWidget {
               )),
         ),
         const SizedBox(
-          width: 20,
+          width: 10,
+        ),
+        InkWell(
+          onTap: () {
+            if (onRefreshClick != null) {
+              onRefreshClick!();
+            }
+          },
+          child: const Icon(
+            Icons.refresh,
+            color: Colors.black,
+            size: 20,
+          ),
         ),
       ],
     );
