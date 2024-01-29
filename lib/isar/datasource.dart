@@ -23,6 +23,8 @@ extension ToString on DatasourceType {
 class Datasource {
   @enumerated
   late DatasourceType datasourceType;
+
+  @Index(unique: true, type: IndexType.hash)
   String? name;
 
   Id id = Isar.autoIncrement;
@@ -42,6 +44,7 @@ class Datasource {
   String? password;
 
   /* local */
+  @Index(unique: true, type: IndexType.hash)
   String? path;
 
   @override

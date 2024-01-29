@@ -15,7 +15,9 @@ class TransferRecords {
   @enumerated
   late StorageType toType;
   String? to;
-  final account = IsarLink<Datasource>();
+
+  final fromDatasource = IsarLink<Datasource>();
+  final toDatasource = IsarLink<Datasource>();
   int createAt = DateTime.now().millisecondsSinceEpoch;
 
   // transfer done?

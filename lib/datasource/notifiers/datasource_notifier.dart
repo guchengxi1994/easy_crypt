@@ -16,7 +16,7 @@ class DatasourceNotifier extends AutoDisposeAsyncNotifier<DatasourceState> {
     return DatasourceState(datasources: datasources);
   }
 
-  addAccount(Datasource a) async {
+  addDatasource(Datasource a) async {
     state = const AsyncLoading();
     await database.isar!.writeTxn(() async {
       await database.isar!.datasources.put(a);
@@ -35,7 +35,7 @@ class DatasourceNotifier extends AutoDisposeAsyncNotifier<DatasourceState> {
         .toList();
   }
 
-  removeAccount(Datasource a) async {
+  removeDatasource(Datasource a) async {
     state = const AsyncLoading();
     await database.isar!.writeTxn(() async {
       await database.isar!.datasources.delete(a.id);

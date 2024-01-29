@@ -87,12 +87,12 @@ class IsolateProcess {
               : StorageType.Webdav
           ..from = p
           ..to = objectKey
-          ..account.value = datasource;
+          ..toDatasource.value = datasource;
         file.transferRecords.add(records);
 
         database.isar!.writeTxnSync(() {
           database.isar!.transferRecords.putSync(records);
-          records.account.saveSync();
+          records.toDatasource.saveSync();
           file.transferRecords.saveSync();
         });
 

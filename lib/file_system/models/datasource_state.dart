@@ -7,9 +7,3 @@ class CachedDatasourceState {
 
   CachedDatasourceState({this.left, this.right});
 }
-
-class DatasourceState {
-  List<Datasource> datasources;
-
-  DatasourceState({required this.datasources});
-}

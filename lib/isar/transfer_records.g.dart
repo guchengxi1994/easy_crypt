@@ -57,9 +57,15 @@ const TransferRecordsSchema = CollectionSchema(
   idName: r'id',
   indexes: {},
   links: {
-    r'account': LinkSchema(
-      id: 8810575621791628230,
-      name: r'account',
+    r'fromDatasource': LinkSchema(
+      id: 6895494504381242338,
+      name: r'fromDatasource',
+      target: r'Datasource',
+      single: true,
+    ),
+    r'toDatasource': LinkSchema(
+      id: 2050628496778277654,
+      name: r'toDatasource',
       target: r'Datasource',
       single: true,
     )
@@ -181,13 +187,16 @@ Id _transferRecordsGetId(TransferRecords object) {
 }
 
 List<IsarLinkBase<dynamic>> _transferRecordsGetLinks(TransferRecords object) {
-  return [object.account];
+  return [object.fromDatasource, object.toDatasource];
 }
 
 void _transferRecordsAttach(
     IsarCollection<dynamic> col, Id id, TransferRecords object) {
   object.id = id;
-  object.account.attach(col, col.isar.collection<Datasource>(), r'account', id);
+  object.fromDatasource
+      .attach(col, col.isar.collection<Datasource>(), r'fromDatasource', id);
+  object.toDatasource
+      .attach(col, col.isar.collection<Datasource>(), r'toDatasource', id);
 }
 
 extension TransferRecordsQueryWhereSort
@@ -820,17 +829,31 @@ extension TransferRecordsQueryObject
 
 extension TransferRecordsQueryLinks
     on QueryBuilder<TransferRecords, TransferRecords, QFilterCondition> {
-  QueryBuilder<TransferRecords, TransferRecords, QAfterFilterCondition> account(
-      FilterQuery<Datasource> q) {
+  QueryBuilder<TransferRecords, TransferRecords, QAfterFilterCondition>
+      fromDatasource(FilterQuery<Datasource> q) {
     return QueryBuilder.apply(this, (query) {
-      return query.link(q, r'account');
+      return query.link(q, r'fromDatasource');
     });
   }
 
   QueryBuilder<TransferRecords, TransferRecords, QAfterFilterCondition>
-      accountIsNull() {
+      fromDatasourceIsNull() {
     return QueryBuilder.apply(this, (query) {
-      return query.linkLength(r'account', 0, true, 0, true);
+      return query.linkLength(r'fromDatasource', 0, true, 0, true);
+    });
+  }
+
+  QueryBuilder<TransferRecords, TransferRecords, QAfterFilterCondition>
+      toDatasource(FilterQuery<Datasource> q) {
+    return QueryBuilder.apply(this, (query) {
+      return query.link(q, r'toDatasource');
+    });
+  }
+
+  QueryBuilder<TransferRecords, TransferRecords, QAfterFilterCondition>
+      toDatasourceIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.linkLength(r'toDatasource', 0, true, 0, true);
     });
   }
 }

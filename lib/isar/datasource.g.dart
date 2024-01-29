@@ -43,43 +43,48 @@ const DatasourceSchema = CollectionSchema(
       name: r'endpoint',
       type: IsarType.string,
     ),
-    r'name': PropertySchema(
+    r'hashCode': PropertySchema(
       id: 5,
+      name: r'hashCode',
+      type: IsarType.long,
+    ),
+    r'name': PropertySchema(
+      id: 6,
       name: r'name',
       type: IsarType.string,
     ),
     r'password': PropertySchema(
-      id: 6,
+      id: 7,
       name: r'password',
       type: IsarType.string,
     ),
     r'path': PropertySchema(
-      id: 7,
+      id: 8,
       name: r'path',
       type: IsarType.string,
     ),
     r'region': PropertySchema(
-      id: 8,
+      id: 9,
       name: r'region',
       type: IsarType.string,
     ),
     r'sessionKey': PropertySchema(
-      id: 9,
+      id: 10,
       name: r'sessionKey',
       type: IsarType.string,
     ),
     r'sessionToken': PropertySchema(
-      id: 10,
+      id: 11,
       name: r'sessionToken',
       type: IsarType.string,
     ),
     r'url': PropertySchema(
-      id: 11,
+      id: 12,
       name: r'url',
       type: IsarType.string,
     ),
     r'username': PropertySchema(
-      id: 12,
+      id: 13,
       name: r'username',
       type: IsarType.string,
     )
@@ -89,7 +94,34 @@ const DatasourceSchema = CollectionSchema(
   deserialize: _datasourceDeserialize,
   deserializeProp: _datasourceDeserializeProp,
   idName: r'id',
-  indexes: {},
+  indexes: {
+    r'name': IndexSchema(
+      id: 879695947855722453,
+      name: r'name',
+      unique: true,
+      replace: false,
+      properties: [
+        IndexPropertySchema(
+          name: r'name',
+          type: IndexType.hash,
+          caseSensitive: true,
+        )
+      ],
+    ),
+    r'path': IndexSchema(
+      id: 8756705481922369689,
+      name: r'path',
+      unique: true,
+      replace: false,
+      properties: [
+        IndexPropertySchema(
+          name: r'path',
+          type: IndexType.hash,
+          caseSensitive: true,
+        )
+      ],
+    )
+  },
   links: {},
   embeddedSchemas: {},
   getId: _datasourceGetId,
@@ -184,14 +216,15 @@ void _datasourceSerialize(
   writer.writeLong(offsets[2], object.createAt);
   writer.writeByte(offsets[3], object.datasourceType.index);
   writer.writeString(offsets[4], object.endpoint);
-  writer.writeString(offsets[5], object.name);
-  writer.writeString(offsets[6], object.password);
-  writer.writeString(offsets[7], object.path);
-  writer.writeString(offsets[8], object.region);
-  writer.writeString(offsets[9], object.sessionKey);
-  writer.writeString(offsets[10], object.sessionToken);
-  writer.writeString(offsets[11], object.url);
-  writer.writeString(offsets[12], object.username);
+  writer.writeLong(offsets[5], object.hashCode);
+  writer.writeString(offsets[6], object.name);
+  writer.writeString(offsets[7], object.password);
+  writer.writeString(offsets[8], object.path);
+  writer.writeString(offsets[9], object.region);
+  writer.writeString(offsets[10], object.sessionKey);
+  writer.writeString(offsets[11], object.sessionToken);
+  writer.writeString(offsets[12], object.url);
+  writer.writeString(offsets[13], object.username);
 }
 
 Datasource _datasourceDeserialize(
@@ -209,14 +242,14 @@ Datasource _datasourceDeserialize(
       DatasourceType.S3;
   object.endpoint = reader.readStringOrNull(offsets[4]);
   object.id = id;
-  object.name = reader.readStringOrNull(offsets[5]);
-  object.password = reader.readStringOrNull(offsets[6]);
-  object.path = reader.readStringOrNull(offsets[7]);
-  object.region = reader.readStringOrNull(offsets[8]);
-  object.sessionKey = reader.readStringOrNull(offsets[9]);
-  object.sessionToken = reader.readStringOrNull(offsets[10]);
-  object.url = reader.readStringOrNull(offsets[11]);
-  object.username = reader.readStringOrNull(offsets[12]);
+  object.name = reader.readStringOrNull(offsets[6]);
+  object.password = reader.readStringOrNull(offsets[7]);
+  object.path = reader.readStringOrNull(offsets[8]);
+  object.region = reader.readStringOrNull(offsets[9]);
+  object.sessionKey = reader.readStringOrNull(offsets[10]);
+  object.sessionToken = reader.readStringOrNull(offsets[11]);
+  object.url = reader.readStringOrNull(offsets[12]);
+  object.username = reader.readStringOrNull(offsets[13]);
   return object;
 }
 
@@ -240,7 +273,7 @@ P _datasourceDeserializeProp<P>(
     case 4:
       return (reader.readStringOrNull(offset)) as P;
     case 5:
-      return (reader.readStringOrNull(offset)) as P;
+      return (reader.readLong(offset)) as P;
     case 6:
       return (reader.readStringOrNull(offset)) as P;
     case 7:
@@ -254,6 +287,8 @@ P _datasourceDeserializeProp<P>(
     case 11:
       return (reader.readStringOrNull(offset)) as P;
     case 12:
+      return (reader.readStringOrNull(offset)) as P;
+    case 13:
       return (reader.readStringOrNull(offset)) as P;
     default:
       throw IsarError('Unknown property with id $propertyId');
@@ -281,6 +316,112 @@ List<IsarLinkBase<dynamic>> _datasourceGetLinks(Datasource object) {
 
 void _datasourceAttach(IsarCollection<dynamic> col, Id id, Datasource object) {
   object.id = id;
+}
+
+extension DatasourceByIndex on IsarCollection<Datasource> {
+  Future<Datasource?> getByName(String? name) {
+    return getByIndex(r'name', [name]);
+  }
+
+  Datasource? getByNameSync(String? name) {
+    return getByIndexSync(r'name', [name]);
+  }
+
+  Future<bool> deleteByName(String? name) {
+    return deleteByIndex(r'name', [name]);
+  }
+
+  bool deleteByNameSync(String? name) {
+    return deleteByIndexSync(r'name', [name]);
+  }
+
+  Future<List<Datasource?>> getAllByName(List<String?> nameValues) {
+    final values = nameValues.map((e) => [e]).toList();
+    return getAllByIndex(r'name', values);
+  }
+
+  List<Datasource?> getAllByNameSync(List<String?> nameValues) {
+    final values = nameValues.map((e) => [e]).toList();
+    return getAllByIndexSync(r'name', values);
+  }
+
+  Future<int> deleteAllByName(List<String?> nameValues) {
+    final values = nameValues.map((e) => [e]).toList();
+    return deleteAllByIndex(r'name', values);
+  }
+
+  int deleteAllByNameSync(List<String?> nameValues) {
+    final values = nameValues.map((e) => [e]).toList();
+    return deleteAllByIndexSync(r'name', values);
+  }
+
+  Future<Id> putByName(Datasource object) {
+    return putByIndex(r'name', object);
+  }
+
+  Id putByNameSync(Datasource object, {bool saveLinks = true}) {
+    return putByIndexSync(r'name', object, saveLinks: saveLinks);
+  }
+
+  Future<List<Id>> putAllByName(List<Datasource> objects) {
+    return putAllByIndex(r'name', objects);
+  }
+
+  List<Id> putAllByNameSync(List<Datasource> objects, {bool saveLinks = true}) {
+    return putAllByIndexSync(r'name', objects, saveLinks: saveLinks);
+  }
+
+  Future<Datasource?> getByPath(String? path) {
+    return getByIndex(r'path', [path]);
+  }
+
+  Datasource? getByPathSync(String? path) {
+    return getByIndexSync(r'path', [path]);
+  }
+
+  Future<bool> deleteByPath(String? path) {
+    return deleteByIndex(r'path', [path]);
+  }
+
+  bool deleteByPathSync(String? path) {
+    return deleteByIndexSync(r'path', [path]);
+  }
+
+  Future<List<Datasource?>> getAllByPath(List<String?> pathValues) {
+    final values = pathValues.map((e) => [e]).toList();
+    return getAllByIndex(r'path', values);
+  }
+
+  List<Datasource?> getAllByPathSync(List<String?> pathValues) {
+    final values = pathValues.map((e) => [e]).toList();
+    return getAllByIndexSync(r'path', values);
+  }
+
+  Future<int> deleteAllByPath(List<String?> pathValues) {
+    final values = pathValues.map((e) => [e]).toList();
+    return deleteAllByIndex(r'path', values);
+  }
+
+  int deleteAllByPathSync(List<String?> pathValues) {
+    final values = pathValues.map((e) => [e]).toList();
+    return deleteAllByIndexSync(r'path', values);
+  }
+
+  Future<Id> putByPath(Datasource object) {
+    return putByIndex(r'path', object);
+  }
+
+  Id putByPathSync(Datasource object, {bool saveLinks = true}) {
+    return putByIndexSync(r'path', object, saveLinks: saveLinks);
+  }
+
+  Future<List<Id>> putAllByPath(List<Datasource> objects) {
+    return putAllByIndex(r'path', objects);
+  }
+
+  List<Id> putAllByPathSync(List<Datasource> objects, {bool saveLinks = true}) {
+    return putAllByIndexSync(r'path', objects, saveLinks: saveLinks);
+  }
 }
 
 extension DatasourceQueryWhereSort
@@ -356,6 +497,136 @@ extension DatasourceQueryWhere
         upper: upperId,
         includeUpper: includeUpper,
       ));
+    });
+  }
+
+  QueryBuilder<Datasource, Datasource, QAfterWhereClause> nameIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addWhereClause(IndexWhereClause.equalTo(
+        indexName: r'name',
+        value: [null],
+      ));
+    });
+  }
+
+  QueryBuilder<Datasource, Datasource, QAfterWhereClause> nameIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addWhereClause(IndexWhereClause.between(
+        indexName: r'name',
+        lower: [null],
+        includeLower: false,
+        upper: [],
+      ));
+    });
+  }
+
+  QueryBuilder<Datasource, Datasource, QAfterWhereClause> nameEqualTo(
+      String? name) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addWhereClause(IndexWhereClause.equalTo(
+        indexName: r'name',
+        value: [name],
+      ));
+    });
+  }
+
+  QueryBuilder<Datasource, Datasource, QAfterWhereClause> nameNotEqualTo(
+      String? name) {
+    return QueryBuilder.apply(this, (query) {
+      if (query.whereSort == Sort.asc) {
+        return query
+            .addWhereClause(IndexWhereClause.between(
+              indexName: r'name',
+              lower: [],
+              upper: [name],
+              includeUpper: false,
+            ))
+            .addWhereClause(IndexWhereClause.between(
+              indexName: r'name',
+              lower: [name],
+              includeLower: false,
+              upper: [],
+            ));
+      } else {
+        return query
+            .addWhereClause(IndexWhereClause.between(
+              indexName: r'name',
+              lower: [name],
+              includeLower: false,
+              upper: [],
+            ))
+            .addWhereClause(IndexWhereClause.between(
+              indexName: r'name',
+              lower: [],
+              upper: [name],
+              includeUpper: false,
+            ));
+      }
+    });
+  }
+
+  QueryBuilder<Datasource, Datasource, QAfterWhereClause> pathIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addWhereClause(IndexWhereClause.equalTo(
+        indexName: r'path',
+        value: [null],
+      ));
+    });
+  }
+
+  QueryBuilder<Datasource, Datasource, QAfterWhereClause> pathIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addWhereClause(IndexWhereClause.between(
+        indexName: r'path',
+        lower: [null],
+        includeLower: false,
+        upper: [],
+      ));
+    });
+  }
+
+  QueryBuilder<Datasource, Datasource, QAfterWhereClause> pathEqualTo(
+      String? path) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addWhereClause(IndexWhereClause.equalTo(
+        indexName: r'path',
+        value: [path],
+      ));
+    });
+  }
+
+  QueryBuilder<Datasource, Datasource, QAfterWhereClause> pathNotEqualTo(
+      String? path) {
+    return QueryBuilder.apply(this, (query) {
+      if (query.whereSort == Sort.asc) {
+        return query
+            .addWhereClause(IndexWhereClause.between(
+              indexName: r'path',
+              lower: [],
+              upper: [path],
+              includeUpper: false,
+            ))
+            .addWhereClause(IndexWhereClause.between(
+              indexName: r'path',
+              lower: [path],
+              includeLower: false,
+              upper: [],
+            ));
+      } else {
+        return query
+            .addWhereClause(IndexWhereClause.between(
+              indexName: r'path',
+              lower: [path],
+              includeLower: false,
+              upper: [],
+            ))
+            .addWhereClause(IndexWhereClause.between(
+              indexName: r'path',
+              lower: [],
+              upper: [path],
+              includeUpper: false,
+            ));
+      }
     });
   }
 }
@@ -924,6 +1195,60 @@ extension DatasourceQueryFilter
       return query.addFilterCondition(FilterCondition.greaterThan(
         property: r'endpoint',
         value: '',
+      ));
+    });
+  }
+
+  QueryBuilder<Datasource, Datasource, QAfterFilterCondition> hashCodeEqualTo(
+      int value) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'hashCode',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<Datasource, Datasource, QAfterFilterCondition>
+      hashCodeGreaterThan(
+    int value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'hashCode',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<Datasource, Datasource, QAfterFilterCondition> hashCodeLessThan(
+    int value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'hashCode',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<Datasource, Datasource, QAfterFilterCondition> hashCodeBetween(
+    int lower,
+    int upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'hashCode',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
       ));
     });
   }
@@ -2246,6 +2571,18 @@ extension DatasourceQuerySortBy
     });
   }
 
+  QueryBuilder<Datasource, Datasource, QAfterSortBy> sortByHashCode() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'hashCode', Sort.asc);
+    });
+  }
+
+  QueryBuilder<Datasource, Datasource, QAfterSortBy> sortByHashCodeDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'hashCode', Sort.desc);
+    });
+  }
+
   QueryBuilder<Datasource, Datasource, QAfterSortBy> sortByName() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'name', Sort.asc);
@@ -2406,6 +2743,18 @@ extension DatasourceQuerySortThenBy
     });
   }
 
+  QueryBuilder<Datasource, Datasource, QAfterSortBy> thenByHashCode() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'hashCode', Sort.asc);
+    });
+  }
+
+  QueryBuilder<Datasource, Datasource, QAfterSortBy> thenByHashCodeDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'hashCode', Sort.desc);
+    });
+  }
+
   QueryBuilder<Datasource, Datasource, QAfterSortBy> thenById() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'id', Sort.asc);
@@ -2550,6 +2899,12 @@ extension DatasourceQueryWhereDistinct
     });
   }
 
+  QueryBuilder<Datasource, Datasource, QDistinct> distinctByHashCode() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'hashCode');
+    });
+  }
+
   QueryBuilder<Datasource, Datasource, QDistinct> distinctByName(
       {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
@@ -2643,6 +2998,12 @@ extension DatasourceQueryProperty
   QueryBuilder<Datasource, String?, QQueryOperations> endpointProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'endpoint');
+    });
+  }
+
+  QueryBuilder<Datasource, int, QQueryOperations> hashCodeProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'hashCode');
     });
   }
 

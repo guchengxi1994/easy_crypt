@@ -52,7 +52,7 @@ class _ModifyDatasourceDialogState
 
                         ref
                             .read(datasourceProvider.notifier)
-                            .addAccount(datasource);
+                            .addDatasource(datasource);
                         Navigator.of(context).pop();
                       }
                     },

@@ -284,27 +284,27 @@ class _EncryptRecordsWidgetState extends ConsumerState<RecordsWidget> {
                                                             StorageType.S3) {
                                                           final url = await s3.generatePregisnUrl(
                                                               endpoint: e
-                                                                  .account
+                                                                  .toDatasource
                                                                   .value!
                                                                   .endpoint!,
                                                               bucketname: e
-                                                                  .account
+                                                                  .toDatasource
                                                                   .value!
                                                                   .bucketname!,
                                                               accessKey: e
-                                                                  .account
+                                                                  .toDatasource
                                                                   .value!
                                                                   .accesskey!,
                                                               sessionKey: e
-                                                                  .account
+                                                                  .toDatasource
                                                                   .value!
                                                                   .sessionKey!,
                                                               region: e
-                                                                  .account
+                                                                  .toDatasource
                                                                   .value!
                                                                   .region!,
                                                               sessionToken: e
-                                                                  .account
+                                                                  .toDatasource
                                                                   .value!
                                                                   .sessionToken!,
                                                               obj: e.to!);
@@ -314,9 +314,12 @@ class _EncryptRecordsWidgetState extends ConsumerState<RecordsWidget> {
                                                           }
                                                         }
                                                       },
-                                                      label: e.account.value !=
+                                                      label: e.toDatasource
+                                                                  .value !=
                                                               null
-                                                          ? e.account.value!
+                                                          ? e
+                                                                  .toDatasource
+                                                                  .value!
                                                                   .name ??
                                                               "1"
                                                           : "2"))

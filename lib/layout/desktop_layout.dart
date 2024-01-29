@@ -26,6 +26,7 @@ import 'package:window_manager/window_manager.dart';
 import 'notifiers/expand_collapse_notifier.dart';
 import 'notifiers/navigator_notifier.dart';
 import 'notifiers/setting_notifier.dart';
+// ignore: depend_on_referenced_packages
 import 'package:path/path.dart';
 
 class Layout extends ConsumerStatefulWidget {
@@ -240,9 +241,13 @@ class _LayoutState extends ConsumerState<Layout> with TickerProviderStateMixin {
                               if (data.type == EntryType.file) {
                                 final name = basename(data.path);
                                 await transferBetweenTwoDatasource(
-                                    p: data.path,
-                                    savePath: "easy_encrypt_upload/$name",
-                                    autoEncrypt: true);
+                                        p: data.path,
+                                        savePath: "easy_encrypt_upload/$name",
+                                        autoEncrypt: true)
+                                    .then((value) {
+                                  /// TODO 将这条记录记下来
+                                  /// TODO 需要将结果透传回来
+                                });
                               }
                             }, builder: (c, _, __) {
                               return const FsPreview(

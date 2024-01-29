@@ -117,7 +117,7 @@ class _AddDatasourceDialogState extends ConsumerState<AddDatasourceDialog>
 
                         ref
                             .read(datasourceProvider.notifier)
-                            .addAccount(account);
+                            .addDatasource(account);
                         Navigator.of(context).pop();
                       }
                     },
