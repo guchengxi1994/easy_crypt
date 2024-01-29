@@ -39,7 +39,7 @@ impl TwoDatasources {
     ) -> anyhow::Result<()> {
         if let Some(_left) = &self.left {
             if let Some(_right) = &self.right {
-                Self::transfer(&_left, &_right, p, save_path, auto_encrypt).await?;
+                Self::transfer(_left, _right, p, save_path, auto_encrypt).await?;
             } else {
                 anyhow::bail!("right datasource error")
             }
@@ -117,7 +117,7 @@ impl TwoDatasources {
             let cipher = Aes256GcmSiv::new(key.clone().as_bytes().into());
             let nonce = Nonce::from_slice(b"_EasyCrypt__"); // 96-bits; unique per message
                                                             // writer.write(CUSTOM_HEADER.as_bytes()).await?;
-            let mut index = 0;
+            let index = 0;
             loop {
                 let count = reader.read(&mut buffer).await?;
                 if count == 0 {
@@ -203,7 +203,7 @@ impl CacheDatasources {
         right: &Box<dyn ClientTrait + Send + Sync>,
         p: String,
         save_path: String,
-        /* not work right now*/ auto_encrypt: bool,
+        /* not work right now*/ _auto_encrypt: bool,
     ) -> anyhow::Result<()> {
         let left_down: &dyn ClientTrait;
         if let Some(_left) = left.as_any().downcast_ref::<S3Client>() {

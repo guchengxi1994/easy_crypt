@@ -11,7 +11,7 @@ pub fn transfer_from_left_to_right(
 ) {
     let a = DATASOURCES.read().unwrap();
 
-    if (*a).datasources.len() < 2 {
+    if a.datasources.len() < 2 {
         return;
     }
 
@@ -104,8 +104,8 @@ pub fn add_s3_datasource_with_type(
 pub fn add_local_datasource(p: String) -> i64 {
     let mut a = DATASOURCES.write().unwrap();
     let client = LocalStorage::from(p).unwrap();
-    (*a).datasources.push(Box::new(client));
-    return (*a).datasources.len() as i64 - 1;
+    a.datasources.push(Box::new(client));
+    a.datasources.len() as i64 - 1
 }
 
 #[deprecated]
@@ -127,44 +127,44 @@ pub fn add_s3_datasource(
         region,
     )
     .unwrap();
-    (*a).datasources.push(Box::new(client));
-    return (*a).datasources.len() as i64 - 1;
+    a.datasources.push(Box::new(client));
+    a.datasources.len() as i64 - 1
 }
 
 #[deprecated]
 pub fn list_objects_by_index(index: usize, p: String) -> Vec<Entry> {
     let a = DATASOURCES.read().unwrap();
-    if index >= (*a).datasources.len() {
+    if index >= a.datasources.len() {
         return vec![];
     }
-    let datasource = (*a).datasources.get(index).unwrap();
+    let datasource = a.datasources.get(index).unwrap();
 
     let rt = tokio::runtime::Runtime::new().unwrap();
 
     rt.block_on(async {
         if let Some(_datasource) = datasource.as_any().downcast_ref::<S3Client>() {
-            return _datasource.list_objs(p).await;
+            _datasource.list_objs(p).await
         } else {
-            return datasource
+            datasource
                 .as_any()
                 .downcast_ref::<LocalStorage>()
                 .unwrap()
                 .list_objs(p)
-                .await;
+                .await
         }
     })
 }
 
 pub fn list_objects_left(p: String) -> Vec<Entry> {
     let a = TWODATASOURCES.read().unwrap();
-    if (*a).left.is_none() {
+    if a.left.is_none() {
         return vec![];
     }
 
     let rt = tokio::runtime::Runtime::new().unwrap();
 
     rt.block_on(async {
-        if let Some(_datasource) = &(*a).left {
+        if let Some(_datasource) = &a.left {
             if let Some(_d) = _datasource.as_any().downcast_ref::<S3Client>() {
                 return _d.list_objs(p).await;
             } else {
@@ -176,20 +176,20 @@ pub fn list_objects_left(p: String) -> Vec<Entry> {
                     .await;
             }
         }
-        return vec![];
+        vec![]
     })
 }
 
 pub fn list_objects_right(p: String) -> Vec<Entry> {
     let a = TWODATASOURCES.read().unwrap();
-    if (*a).right.is_none() {
+    if a.right.is_none() {
         return vec![];
     }
 
     let rt = tokio::runtime::Runtime::new().unwrap();
 
     rt.block_on(async {
-        if let Some(_datasource) = &(*a).right {
+        if let Some(_datasource) = &a.right {
             if let Some(_d) = _datasource.as_any().downcast_ref::<S3Client>() {
                 return _d.list_objs(p).await;
             } else {
@@ -201,6 +201,6 @@ pub fn list_objects_right(p: String) -> Vec<Entry> {
                     .await;
             }
         }
-        return vec![];
+        vec![]
     })
 }

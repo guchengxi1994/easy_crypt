@@ -565,14 +565,14 @@ mod tests {
             )
             .unwrap();
 
-            (*a).datasources.push(Box::new(client1));
-            (*a).datasources.push(Box::new(client2));
+            a.datasources.push(Box::new(client1));
+            a.datasources.push(Box::new(client2));
         }
 
         {
             let a = DATASOURCES.read().unwrap();
-            let left = (*a).datasources.first().unwrap();
-            let right = (*a).datasources.last().unwrap();
+            let left = a.datasources.first().unwrap();
+            let right = a.datasources.last().unwrap();
 
             let left_down = left.as_any().downcast_ref::<LocalStorage>().unwrap();
             let right_down = right.as_any().downcast_ref::<S3Client>().unwrap();
