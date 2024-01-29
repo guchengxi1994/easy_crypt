@@ -87,7 +87,23 @@ class _FsPreviewState extends ConsumerState<FsPreview> {
                               height: widget.height,
                             );
                           });
-                        } else {}
+                        } else {
+                          if (widget.previewType == PreviewType.Left) {
+                            ref.read(cachedProvider.notifier).setLeft(v);
+                          } else {
+                            ref.read(cachedProvider.notifier).setRight(v);
+                          }
+
+                          setState(() {
+                            txt = "Local:  ${v.path}";
+                            child = LocalFilePreview(
+                              path: v.path!,
+                              previewType: widget.previewType,
+                              width: widget.width,
+                              height: widget.height,
+                            );
+                          });
+                        }
 
                         return;
                       }

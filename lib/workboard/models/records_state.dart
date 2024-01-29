@@ -42,13 +42,13 @@ class Record {
         createAt: file.createAt,
         id: file.id,
         filePath: file.filePath,
-        savePath: file.savePath,
+        savePath: file.encryptedSavePath,
         key: file.key,
-        progress: file.savePath != null ? 0 : 1,
-        status: file.savePath != null
+        progress: file.encryptedSavePath != null ? 0 : 1,
+        status: file.encryptedSavePath != null
             ? ProgressStatus.done
             : ProgressStatus.unstart,
         transferRecords: transferRecords ?? [],
-        isEncrypt: file.jobType == JobType.decryption);
+        isEncrypt: file.jobType == JobType.decrypt);
   }
 }

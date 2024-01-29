@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:io';
 
+import 'package:easy_crypt/isar/datasource.dart';
 import 'package:easy_crypt/src/rust/api/crypt.dart' as crypt;
 import 'package:easy_crypt/isar/database.dart';
 import 'package:easy_crypt/isar/files.dart';
@@ -48,7 +49,7 @@ class RecordsNotifier extends AutoDisposeAsyncNotifier<RecordsState> {
           }
 
           record.filePath = i.path;
-          record.jobType = !b ? JobType.encryption : JobType.decryption;
+          record.jobType = !b ? JobType.encrypt : JobType.decrypt;
           records.add(record);
         }
 
@@ -62,6 +63,31 @@ class RecordsNotifier extends AutoDisposeAsyncNotifier<RecordsState> {
           .findAll();
       return RecordsState(
           list: records.map((e) => Record.fromModel(e)).toList());
+    });
+  }
+
+  newTwoDatasourceRecords(String from, String to, Datasource fromDatasource,
+      Datasource toDatasource,
+      {String? key}) async {
+    // 创建新的file
+
+    TransferRecords transferRecords = TransferRecords()
+      ..done = true
+      ..from = from
+      ..fromDatasource.value = fromDatasource
+      ..to = to
+      ..toDatasource.value = toDatasource;
+
+    Files files = Files()
+      ..filePath = from
+      ..jobType = JobType.encryptAndTransfer
+      ..key = key
+      ..transferRecords.add(transferRecords);
+
+    await database.isar!.writeTxn(() async {
+      await database.isar!.transferRecords.put(transferRecords);
+      await database.isar!.files.put(files);
+      await files.transferRecords.save();
     });
   }
 
@@ -97,7 +123,7 @@ class RecordsNotifier extends AutoDisposeAsyncNotifier<RecordsState> {
           final record =
               await database.isar!.files.filter().idEqualTo(id).findFirst();
           if (record != null) {
-            record.savePath = saved;
+            record.encryptedSavePath = saved;
             await database.isar!.files.put(record);
           }
         });
@@ -123,7 +149,7 @@ class RecordsNotifier extends AutoDisposeAsyncNotifier<RecordsState> {
       final record =
           await database.isar!.files.filter().idEqualTo(f.id).findFirst();
       if (record != null) {
-        record.savePath = null;
+        record.encryptedSavePath = null;
         await database.isar!.files.put(record);
       }
     });

@@ -22,25 +22,25 @@ const FilesSchema = CollectionSchema(
       name: r'createAt',
       type: IsarType.long,
     ),
-    r'filePath': PropertySchema(
+    r'encryptedSavePath': PropertySchema(
       id: 1,
+      name: r'encryptedSavePath',
+      type: IsarType.string,
+    ),
+    r'filePath': PropertySchema(
+      id: 2,
       name: r'filePath',
       type: IsarType.string,
     ),
     r'jobType': PropertySchema(
-      id: 2,
+      id: 3,
       name: r'jobType',
       type: IsarType.byte,
       enumMap: _FilesjobTypeEnumValueMap,
     ),
     r'key': PropertySchema(
-      id: 3,
-      name: r'key',
-      type: IsarType.string,
-    ),
-    r'savePath': PropertySchema(
       id: 4,
-      name: r'savePath',
+      name: r'key',
       type: IsarType.string,
     )
   },
@@ -72,6 +72,12 @@ int _filesEstimateSize(
 ) {
   var bytesCount = offsets.last;
   {
+    final value = object.encryptedSavePath;
+    if (value != null) {
+      bytesCount += 3 + value.length * 3;
+    }
+  }
+  {
     final value = object.filePath;
     if (value != null) {
       bytesCount += 3 + value.length * 3;
@@ -79,12 +85,6 @@ int _filesEstimateSize(
   }
   {
     final value = object.key;
-    if (value != null) {
-      bytesCount += 3 + value.length * 3;
-    }
-  }
-  {
-    final value = object.savePath;
     if (value != null) {
       bytesCount += 3 + value.length * 3;
     }
@@ -99,10 +99,10 @@ void _filesSerialize(
   Map<Type, List<int>> allOffsets,
 ) {
   writer.writeLong(offsets[0], object.createAt);
-  writer.writeString(offsets[1], object.filePath);
-  writer.writeByte(offsets[2], object.jobType.index);
-  writer.writeString(offsets[3], object.key);
-  writer.writeString(offsets[4], object.savePath);
+  writer.writeString(offsets[1], object.encryptedSavePath);
+  writer.writeString(offsets[2], object.filePath);
+  writer.writeByte(offsets[3], object.jobType.index);
+  writer.writeString(offsets[4], object.key);
 }
 
 Files _filesDeserialize(
@@ -113,13 +113,13 @@ Files _filesDeserialize(
 ) {
   final object = Files();
   object.createAt = reader.readLong(offsets[0]);
-  object.filePath = reader.readStringOrNull(offsets[1]);
+  object.encryptedSavePath = reader.readStringOrNull(offsets[1]);
+  object.filePath = reader.readStringOrNull(offsets[2]);
   object.id = id;
   object.jobType =
-      _FilesjobTypeValueEnumMap[reader.readByteOrNull(offsets[2])] ??
-          JobType.encryption;
-  object.key = reader.readStringOrNull(offsets[3]);
-  object.savePath = reader.readStringOrNull(offsets[4]);
+      _FilesjobTypeValueEnumMap[reader.readByteOrNull(offsets[3])] ??
+          JobType.encrypt;
+  object.key = reader.readStringOrNull(offsets[4]);
   return object;
 }
 
@@ -135,10 +135,10 @@ P _filesDeserializeProp<P>(
     case 1:
       return (reader.readStringOrNull(offset)) as P;
     case 2:
-      return (_FilesjobTypeValueEnumMap[reader.readByteOrNull(offset)] ??
-          JobType.encryption) as P;
-    case 3:
       return (reader.readStringOrNull(offset)) as P;
+    case 3:
+      return (_FilesjobTypeValueEnumMap[reader.readByteOrNull(offset)] ??
+          JobType.encrypt) as P;
     case 4:
       return (reader.readStringOrNull(offset)) as P;
     default:
@@ -147,12 +147,16 @@ P _filesDeserializeProp<P>(
 }
 
 const _FilesjobTypeEnumValueMap = {
-  'encryption': 0,
-  'decryption': 1,
+  'encrypt': 0,
+  'decrypt': 1,
+  'encryptAndTransfer': 2,
+  'transfer': 3,
 };
 const _FilesjobTypeValueEnumMap = {
-  0: JobType.encryption,
-  1: JobType.decryption,
+  0: JobType.encrypt,
+  1: JobType.decrypt,
+  2: JobType.encryptAndTransfer,
+  3: JobType.transfer,
 };
 
 Id _filesGetId(Files object) {
@@ -293,6 +297,155 @@ extension FilesQueryFilter on QueryBuilder<Files, Files, QFilterCondition> {
         includeLower: includeLower,
         upper: upper,
         includeUpper: includeUpper,
+      ));
+    });
+  }
+
+  QueryBuilder<Files, Files, QAfterFilterCondition> encryptedSavePathIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNull(
+        property: r'encryptedSavePath',
+      ));
+    });
+  }
+
+  QueryBuilder<Files, Files, QAfterFilterCondition>
+      encryptedSavePathIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNotNull(
+        property: r'encryptedSavePath',
+      ));
+    });
+  }
+
+  QueryBuilder<Files, Files, QAfterFilterCondition> encryptedSavePathEqualTo(
+    String? value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'encryptedSavePath',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<Files, Files, QAfterFilterCondition>
+      encryptedSavePathGreaterThan(
+    String? value, {
+    bool include = false,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'encryptedSavePath',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<Files, Files, QAfterFilterCondition> encryptedSavePathLessThan(
+    String? value, {
+    bool include = false,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'encryptedSavePath',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<Files, Files, QAfterFilterCondition> encryptedSavePathBetween(
+    String? lower,
+    String? upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'encryptedSavePath',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<Files, Files, QAfterFilterCondition> encryptedSavePathStartsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.startsWith(
+        property: r'encryptedSavePath',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<Files, Files, QAfterFilterCondition> encryptedSavePathEndsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.endsWith(
+        property: r'encryptedSavePath',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<Files, Files, QAfterFilterCondition> encryptedSavePathContains(
+      String value,
+      {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.contains(
+        property: r'encryptedSavePath',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<Files, Files, QAfterFilterCondition> encryptedSavePathMatches(
+      String pattern,
+      {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.matches(
+        property: r'encryptedSavePath',
+        wildcard: pattern,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<Files, Files, QAfterFilterCondition> encryptedSavePathIsEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'encryptedSavePath',
+        value: '',
+      ));
+    });
+  }
+
+  QueryBuilder<Files, Files, QAfterFilterCondition>
+      encryptedSavePathIsNotEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        property: r'encryptedSavePath',
+        value: '',
       ));
     });
   }
@@ -691,152 +844,6 @@ extension FilesQueryFilter on QueryBuilder<Files, Files, QFilterCondition> {
       ));
     });
   }
-
-  QueryBuilder<Files, Files, QAfterFilterCondition> savePathIsNull() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(const FilterCondition.isNull(
-        property: r'savePath',
-      ));
-    });
-  }
-
-  QueryBuilder<Files, Files, QAfterFilterCondition> savePathIsNotNull() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(const FilterCondition.isNotNull(
-        property: r'savePath',
-      ));
-    });
-  }
-
-  QueryBuilder<Files, Files, QAfterFilterCondition> savePathEqualTo(
-    String? value, {
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'savePath',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<Files, Files, QAfterFilterCondition> savePathGreaterThan(
-    String? value, {
-    bool include = false,
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.greaterThan(
-        include: include,
-        property: r'savePath',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<Files, Files, QAfterFilterCondition> savePathLessThan(
-    String? value, {
-    bool include = false,
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.lessThan(
-        include: include,
-        property: r'savePath',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<Files, Files, QAfterFilterCondition> savePathBetween(
-    String? lower,
-    String? upper, {
-    bool includeLower = true,
-    bool includeUpper = true,
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.between(
-        property: r'savePath',
-        lower: lower,
-        includeLower: includeLower,
-        upper: upper,
-        includeUpper: includeUpper,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<Files, Files, QAfterFilterCondition> savePathStartsWith(
-    String value, {
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.startsWith(
-        property: r'savePath',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<Files, Files, QAfterFilterCondition> savePathEndsWith(
-    String value, {
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.endsWith(
-        property: r'savePath',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<Files, Files, QAfterFilterCondition> savePathContains(
-      String value,
-      {bool caseSensitive = true}) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.contains(
-        property: r'savePath',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<Files, Files, QAfterFilterCondition> savePathMatches(
-      String pattern,
-      {bool caseSensitive = true}) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.matches(
-        property: r'savePath',
-        wildcard: pattern,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<Files, Files, QAfterFilterCondition> savePathIsEmpty() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'savePath',
-        value: '',
-      ));
-    });
-  }
-
-  QueryBuilder<Files, Files, QAfterFilterCondition> savePathIsNotEmpty() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.greaterThan(
-        property: r'savePath',
-        value: '',
-      ));
-    });
-  }
 }
 
 extension FilesQueryObject on QueryBuilder<Files, Files, QFilterCondition> {}
@@ -917,6 +924,18 @@ extension FilesQuerySortBy on QueryBuilder<Files, Files, QSortBy> {
     });
   }
 
+  QueryBuilder<Files, Files, QAfterSortBy> sortByEncryptedSavePath() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'encryptedSavePath', Sort.asc);
+    });
+  }
+
+  QueryBuilder<Files, Files, QAfterSortBy> sortByEncryptedSavePathDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'encryptedSavePath', Sort.desc);
+    });
+  }
+
   QueryBuilder<Files, Files, QAfterSortBy> sortByFilePath() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'filePath', Sort.asc);
@@ -952,18 +971,6 @@ extension FilesQuerySortBy on QueryBuilder<Files, Files, QSortBy> {
       return query.addSortBy(r'key', Sort.desc);
     });
   }
-
-  QueryBuilder<Files, Files, QAfterSortBy> sortBySavePath() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'savePath', Sort.asc);
-    });
-  }
-
-  QueryBuilder<Files, Files, QAfterSortBy> sortBySavePathDesc() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'savePath', Sort.desc);
-    });
-  }
 }
 
 extension FilesQuerySortThenBy on QueryBuilder<Files, Files, QSortThenBy> {
@@ -976,6 +983,18 @@ extension FilesQuerySortThenBy on QueryBuilder<Files, Files, QSortThenBy> {
   QueryBuilder<Files, Files, QAfterSortBy> thenByCreateAtDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'createAt', Sort.desc);
+    });
+  }
+
+  QueryBuilder<Files, Files, QAfterSortBy> thenByEncryptedSavePath() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'encryptedSavePath', Sort.asc);
+    });
+  }
+
+  QueryBuilder<Files, Files, QAfterSortBy> thenByEncryptedSavePathDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'encryptedSavePath', Sort.desc);
     });
   }
 
@@ -1026,24 +1045,20 @@ extension FilesQuerySortThenBy on QueryBuilder<Files, Files, QSortThenBy> {
       return query.addSortBy(r'key', Sort.desc);
     });
   }
-
-  QueryBuilder<Files, Files, QAfterSortBy> thenBySavePath() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'savePath', Sort.asc);
-    });
-  }
-
-  QueryBuilder<Files, Files, QAfterSortBy> thenBySavePathDesc() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'savePath', Sort.desc);
-    });
-  }
 }
 
 extension FilesQueryWhereDistinct on QueryBuilder<Files, Files, QDistinct> {
   QueryBuilder<Files, Files, QDistinct> distinctByCreateAt() {
     return QueryBuilder.apply(this, (query) {
       return query.addDistinctBy(r'createAt');
+    });
+  }
+
+  QueryBuilder<Files, Files, QDistinct> distinctByEncryptedSavePath(
+      {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'encryptedSavePath',
+          caseSensitive: caseSensitive);
     });
   }
 
@@ -1066,13 +1081,6 @@ extension FilesQueryWhereDistinct on QueryBuilder<Files, Files, QDistinct> {
       return query.addDistinctBy(r'key', caseSensitive: caseSensitive);
     });
   }
-
-  QueryBuilder<Files, Files, QDistinct> distinctBySavePath(
-      {bool caseSensitive = true}) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addDistinctBy(r'savePath', caseSensitive: caseSensitive);
-    });
-  }
 }
 
 extension FilesQueryProperty on QueryBuilder<Files, Files, QQueryProperty> {
@@ -1085,6 +1093,12 @@ extension FilesQueryProperty on QueryBuilder<Files, Files, QQueryProperty> {
   QueryBuilder<Files, int, QQueryOperations> createAtProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'createAt');
+    });
+  }
+
+  QueryBuilder<Files, String?, QQueryOperations> encryptedSavePathProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'encryptedSavePath');
     });
   }
 
@@ -1103,12 +1117,6 @@ extension FilesQueryProperty on QueryBuilder<Files, Files, QQueryProperty> {
   QueryBuilder<Files, String?, QQueryOperations> keyProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'key');
-    });
-  }
-
-  QueryBuilder<Files, String?, QQueryOperations> savePathProperty() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addPropertyName(r'savePath');
     });
   }
 }

@@ -79,12 +79,14 @@ class IsolateProcess {
         final file =
             database.isar!.files.filter().idEqualTo(fileId).findFirstSync()!;
 
+        final Datasource d = Datasource()
+          ..name = p
+          ..path = p
+          ..datasourceType = DatasourceType.Local;
+
         TransferRecords records = TransferRecords()
           ..done = true
-          ..fromType = StorageType.Local
-          ..toType = datasource.datasourceType == DatasourceType.S3
-              ? StorageType.S3
-              : StorageType.Webdav
+          ..fromDatasource.value = d
           ..from = p
           ..to = objectKey
           ..toDatasource.value = datasource;

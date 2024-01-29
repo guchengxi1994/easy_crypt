@@ -32,22 +32,10 @@ const TransferRecordsSchema = CollectionSchema(
       name: r'from',
       type: IsarType.string,
     ),
-    r'fromType': PropertySchema(
-      id: 3,
-      name: r'fromType',
-      type: IsarType.byte,
-      enumMap: _TransferRecordsfromTypeEnumValueMap,
-    ),
     r'to': PropertySchema(
-      id: 4,
+      id: 3,
       name: r'to',
       type: IsarType.string,
-    ),
-    r'toType': PropertySchema(
-      id: 5,
-      name: r'toType',
-      type: IsarType.byte,
-      enumMap: _TransferRecordstoTypeEnumValueMap,
     )
   },
   estimateSize: _transferRecordsEstimateSize,
@@ -107,9 +95,7 @@ void _transferRecordsSerialize(
   writer.writeLong(offsets[0], object.createAt);
   writer.writeBool(offsets[1], object.done);
   writer.writeString(offsets[2], object.from);
-  writer.writeByte(offsets[3], object.fromType.index);
-  writer.writeString(offsets[4], object.to);
-  writer.writeByte(offsets[5], object.toType.index);
+  writer.writeString(offsets[3], object.to);
 }
 
 TransferRecords _transferRecordsDeserialize(
@@ -122,14 +108,8 @@ TransferRecords _transferRecordsDeserialize(
   object.createAt = reader.readLong(offsets[0]);
   object.done = reader.readBool(offsets[1]);
   object.from = reader.readStringOrNull(offsets[2]);
-  object.fromType =
-      _TransferRecordsfromTypeValueEnumMap[reader.readByteOrNull(offsets[3])] ??
-          StorageType.S3;
   object.id = id;
-  object.to = reader.readStringOrNull(offsets[4]);
-  object.toType =
-      _TransferRecordstoTypeValueEnumMap[reader.readByteOrNull(offsets[5])] ??
-          StorageType.S3;
+  object.to = reader.readStringOrNull(offsets[3]);
   return object;
 }
 
@@ -147,40 +127,11 @@ P _transferRecordsDeserializeProp<P>(
     case 2:
       return (reader.readStringOrNull(offset)) as P;
     case 3:
-      return (_TransferRecordsfromTypeValueEnumMap[
-              reader.readByteOrNull(offset)] ??
-          StorageType.S3) as P;
-    case 4:
       return (reader.readStringOrNull(offset)) as P;
-    case 5:
-      return (_TransferRecordstoTypeValueEnumMap[
-              reader.readByteOrNull(offset)] ??
-          StorageType.S3) as P;
     default:
       throw IsarError('Unknown property with id $propertyId');
   }
 }
-
-const _TransferRecordsfromTypeEnumValueMap = {
-  'S3': 0,
-  'Webdav': 1,
-  'Local': 2,
-};
-const _TransferRecordsfromTypeValueEnumMap = {
-  0: StorageType.S3,
-  1: StorageType.Webdav,
-  2: StorageType.Local,
-};
-const _TransferRecordstoTypeEnumValueMap = {
-  'S3': 0,
-  'Webdav': 1,
-  'Local': 2,
-};
-const _TransferRecordstoTypeValueEnumMap = {
-  0: StorageType.S3,
-  1: StorageType.Webdav,
-  2: StorageType.Local,
-};
 
 Id _transferRecordsGetId(TransferRecords object) {
   return object.id;
@@ -502,62 +453,6 @@ extension TransferRecordsQueryFilter
   }
 
   QueryBuilder<TransferRecords, TransferRecords, QAfterFilterCondition>
-      fromTypeEqualTo(StorageType value) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'fromType',
-        value: value,
-      ));
-    });
-  }
-
-  QueryBuilder<TransferRecords, TransferRecords, QAfterFilterCondition>
-      fromTypeGreaterThan(
-    StorageType value, {
-    bool include = false,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.greaterThan(
-        include: include,
-        property: r'fromType',
-        value: value,
-      ));
-    });
-  }
-
-  QueryBuilder<TransferRecords, TransferRecords, QAfterFilterCondition>
-      fromTypeLessThan(
-    StorageType value, {
-    bool include = false,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.lessThan(
-        include: include,
-        property: r'fromType',
-        value: value,
-      ));
-    });
-  }
-
-  QueryBuilder<TransferRecords, TransferRecords, QAfterFilterCondition>
-      fromTypeBetween(
-    StorageType lower,
-    StorageType upper, {
-    bool includeLower = true,
-    bool includeUpper = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.between(
-        property: r'fromType',
-        lower: lower,
-        includeLower: includeLower,
-        upper: upper,
-        includeUpper: includeUpper,
-      ));
-    });
-  }
-
-  QueryBuilder<TransferRecords, TransferRecords, QAfterFilterCondition>
       idEqualTo(Id value) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.equalTo(
@@ -766,62 +661,6 @@ extension TransferRecordsQueryFilter
       ));
     });
   }
-
-  QueryBuilder<TransferRecords, TransferRecords, QAfterFilterCondition>
-      toTypeEqualTo(StorageType value) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'toType',
-        value: value,
-      ));
-    });
-  }
-
-  QueryBuilder<TransferRecords, TransferRecords, QAfterFilterCondition>
-      toTypeGreaterThan(
-    StorageType value, {
-    bool include = false,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.greaterThan(
-        include: include,
-        property: r'toType',
-        value: value,
-      ));
-    });
-  }
-
-  QueryBuilder<TransferRecords, TransferRecords, QAfterFilterCondition>
-      toTypeLessThan(
-    StorageType value, {
-    bool include = false,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.lessThan(
-        include: include,
-        property: r'toType',
-        value: value,
-      ));
-    });
-  }
-
-  QueryBuilder<TransferRecords, TransferRecords, QAfterFilterCondition>
-      toTypeBetween(
-    StorageType lower,
-    StorageType upper, {
-    bool includeLower = true,
-    bool includeUpper = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.between(
-        property: r'toType',
-        lower: lower,
-        includeLower: includeLower,
-        upper: upper,
-        includeUpper: includeUpper,
-      ));
-    });
-  }
 }
 
 extension TransferRecordsQueryObject
@@ -900,20 +739,6 @@ extension TransferRecordsQuerySortBy
     });
   }
 
-  QueryBuilder<TransferRecords, TransferRecords, QAfterSortBy>
-      sortByFromType() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'fromType', Sort.asc);
-    });
-  }
-
-  QueryBuilder<TransferRecords, TransferRecords, QAfterSortBy>
-      sortByFromTypeDesc() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'fromType', Sort.desc);
-    });
-  }
-
   QueryBuilder<TransferRecords, TransferRecords, QAfterSortBy> sortByTo() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'to', Sort.asc);
@@ -923,19 +748,6 @@ extension TransferRecordsQuerySortBy
   QueryBuilder<TransferRecords, TransferRecords, QAfterSortBy> sortByToDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'to', Sort.desc);
-    });
-  }
-
-  QueryBuilder<TransferRecords, TransferRecords, QAfterSortBy> sortByToType() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'toType', Sort.asc);
-    });
-  }
-
-  QueryBuilder<TransferRecords, TransferRecords, QAfterSortBy>
-      sortByToTypeDesc() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'toType', Sort.desc);
     });
   }
 }
@@ -982,20 +794,6 @@ extension TransferRecordsQuerySortThenBy
     });
   }
 
-  QueryBuilder<TransferRecords, TransferRecords, QAfterSortBy>
-      thenByFromType() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'fromType', Sort.asc);
-    });
-  }
-
-  QueryBuilder<TransferRecords, TransferRecords, QAfterSortBy>
-      thenByFromTypeDesc() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'fromType', Sort.desc);
-    });
-  }
-
   QueryBuilder<TransferRecords, TransferRecords, QAfterSortBy> thenById() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'id', Sort.asc);
@@ -1017,19 +815,6 @@ extension TransferRecordsQuerySortThenBy
   QueryBuilder<TransferRecords, TransferRecords, QAfterSortBy> thenByToDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'to', Sort.desc);
-    });
-  }
-
-  QueryBuilder<TransferRecords, TransferRecords, QAfterSortBy> thenByToType() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'toType', Sort.asc);
-    });
-  }
-
-  QueryBuilder<TransferRecords, TransferRecords, QAfterSortBy>
-      thenByToTypeDesc() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'toType', Sort.desc);
     });
   }
 }
@@ -1056,23 +841,10 @@ extension TransferRecordsQueryWhereDistinct
     });
   }
 
-  QueryBuilder<TransferRecords, TransferRecords, QDistinct>
-      distinctByFromType() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addDistinctBy(r'fromType');
-    });
-  }
-
   QueryBuilder<TransferRecords, TransferRecords, QDistinct> distinctByTo(
       {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
       return query.addDistinctBy(r'to', caseSensitive: caseSensitive);
-    });
-  }
-
-  QueryBuilder<TransferRecords, TransferRecords, QDistinct> distinctByToType() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addDistinctBy(r'toType');
     });
   }
 }
@@ -1103,23 +875,9 @@ extension TransferRecordsQueryProperty
     });
   }
 
-  QueryBuilder<TransferRecords, StorageType, QQueryOperations>
-      fromTypeProperty() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addPropertyName(r'fromType');
-    });
-  }
-
   QueryBuilder<TransferRecords, String?, QQueryOperations> toProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'to');
-    });
-  }
-
-  QueryBuilder<TransferRecords, StorageType, QQueryOperations>
-      toTypeProperty() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addPropertyName(r'toType');
     });
   }
 }

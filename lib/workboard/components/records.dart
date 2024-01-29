@@ -4,13 +4,13 @@ import 'package:data_table_2/data_table_2.dart';
 import 'package:date_format/date_format.dart';
 import 'package:desktop_drop/desktop_drop.dart';
 import 'package:easy_crypt/datasource/notifiers/datasource_notifier.dart';
+import 'package:easy_crypt/isar/datasource.dart';
 import 'package:easy_crypt/src/rust/api/crypt.dart' as crypt;
 import 'package:easy_crypt/src/rust/api/s3.dart' as s3;
 import 'package:easy_crypt/common/clipboard_utils.dart';
 import 'package:easy_crypt/common/dev_utils.dart';
 import 'package:easy_crypt/common/replace_name.dart';
 import 'package:easy_crypt/gen/strings.g.dart';
-import 'package:easy_crypt/isar/transfer_records.dart';
 import 'package:easy_crypt/layout/notifiers/setting_notifier.dart';
 import 'package:easy_crypt/process/process.dart';
 import 'package:easy_crypt/src/rust/process/encrypt.dart';
@@ -280,8 +280,11 @@ class _EncryptRecordsWidgetState extends ConsumerState<RecordsWidget> {
                                                   .map((e) => MenuItem(
                                                       onSelected: () async {
                                                         // print(e.to);
-                                                        if (e.toType ==
-                                                            StorageType.S3) {
+                                                        if (e
+                                                                .toDatasource
+                                                                .value!
+                                                                .datasourceType ==
+                                                            DatasourceType.S3) {
                                                           final url = await s3.generatePregisnUrl(
                                                               endpoint: e
                                                                   .toDatasource

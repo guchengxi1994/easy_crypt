@@ -7,6 +7,7 @@ import 'package:easy_crypt/common/dev_utils.dart';
 import 'package:easy_crypt/file_system/components/board.dart';
 import 'package:easy_crypt/file_system/enum.dart';
 import 'package:easy_crypt/file_system/fs_preview.dart';
+import 'package:easy_crypt/file_system/notifiers/cached_datasource_notifier.dart';
 import 'package:easy_crypt/src/rust/api/datasource.dart';
 import 'package:easy_crypt/src/rust/api/simple.dart';
 import 'package:easy_crypt/common/logger.dart';
@@ -247,6 +248,17 @@ class _LayoutState extends ConsumerState<Layout> with TickerProviderStateMixin {
                                     .then((value) {
                                   /// TODO 将这条记录记下来
                                   /// TODO 需要将结果透传回来
+                                  ref
+                                      .read(recordsProvider.notifier)
+                                      .newTwoDatasourceRecords(
+                                          data.path,
+                                          "easy_encrypt_upload/$name",
+                                          ref
+                                              .read(cachedProvider.notifier)
+                                              .findLeft()!,
+                                          ref
+                                              .read(cachedProvider.notifier)
+                                              .findRight()!);
                                 });
                               }
                             }, builder: (c, _, __) {
