@@ -14,9 +14,11 @@ class TitleBar extends StatelessWidget {
       {super.key,
       required this.routers,
       this.onPrevClick,
-      this.onIndexedItemClicked});
+      this.onIndexedItemClicked,
+      this.onRefreshClick});
   final List<String> routers;
   final VoidCallback? onPrevClick;
+  final VoidCallback? onRefreshClick;
   final OnIndexedItemClicked? onIndexedItemClicked;
 
   late final ScrollController _controller = ScrollController();
@@ -94,6 +96,21 @@ class TitleBar extends StatelessWidget {
                   )),
                 ],
               )),
+        ),
+        const SizedBox(
+          width: 10,
+        ),
+        InkWell(
+          onTap: () {
+            if (onRefreshClick != null) {
+              onRefreshClick!();
+            }
+          },
+          child: const Icon(
+            Icons.refresh,
+            color: Colors.black,
+            size: 20,
+          ),
         ),
       ],
     );

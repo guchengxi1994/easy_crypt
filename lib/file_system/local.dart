@@ -56,6 +56,13 @@ class LocalFilePreview extends ConsumerWidget {
                               .read(localNotifier.notifier)
                               .prev(previewType == PreviewType.Left ? 1 : 0);
                         },
+                        onRefreshClick: () {
+                          if (previewType == null) {
+                            return;
+                          }
+                          ref.read(localNotifier.notifier).refreshCurrent(
+                              previewType == PreviewType.Left ? 1 : 0);
+                        },
                       )),
                     ],
                   ),
@@ -91,47 +98,50 @@ class LocalFilePreview extends ConsumerWidget {
 
     return Align(
       alignment: Alignment.topLeft,
-      child: Wrap(
-        spacing: 8,
-        runSpacing: 8,
-        children: entries
-            .map((e) => FileWidget(
-                  entry: e,
-                  onDoubleClick: () async {
-                    if (e.type == EntryType.folder) {
-                      if (previewType == PreviewType.Left) {
-                        final left =
-                            ref.read(cachedProvider.notifier).findLeft();
-                        print(left);
-                        if (left != null) {
-                          final list = await ds.listObjectsByIndex(
-                              index: left.item1, p: e.path);
+      child: SingleChildScrollView(
+        child: Wrap(
+          spacing: 8,
+          runSpacing: 8,
+          children: entries
+              .map((e) => FileWidget(
+                    draggable: previewType == PreviewType.Left,
+                    entry: e,
+                    onDoubleClick: () async {
+                      if (e.type == EntryType.folder) {
+                        if (previewType == PreviewType.Left) {
+                          final left =
+                              ref.read(cachedProvider.notifier).findLeft();
 
-                          if (list.isNotEmpty) {
-                            ref
-                                .read(localNotifier.notifier)
-                                .refresh(list, e.path);
+                          // print(left);
+
+                          if (left != null) {
+                            final list = await ds.listObjectsLeft(p: e.path);
+
+                            if (list.isNotEmpty) {
+                              ref
+                                  .read(localNotifier.notifier)
+                                  .refresh(list, e.path);
+                            }
+                          }
+                        }
+                        if (previewType == PreviewType.Right) {
+                          final right =
+                              ref.read(cachedProvider.notifier).findRight();
+
+                          if (right != null) {
+                            final list = await ds.listObjectsRight(p: e.path);
+                            if (list.isNotEmpty) {
+                              ref
+                                  .read(localNotifier.notifier)
+                                  .refresh(list, e.path);
+                            }
                           }
                         }
                       }
-                      if (previewType == PreviewType.Right) {
-                        final right =
-                            ref.read(cachedProvider.notifier).findRight();
-                        print(right);
-                        if (right != null) {
-                          final list = await ds.listObjectsByIndex(
-                              index: right.item1, p: right.item2);
-                          if (list.isNotEmpty) {
-                            ref
-                                .read(localNotifier.notifier)
-                                .refresh(list, right.item2);
-                          }
-                        }
-                      }
-                    }
-                  },
-                ))
-            .toList(),
+                    },
+                  ))
+              .toList(),
+        ),
       ),
     );
   }

@@ -4,9 +4,9 @@
 /// To regenerate, run: `dart run slang`
 ///
 /// Locales: 2
-/// Strings: 40 (20 per locale)
+/// Strings: 46 (23 per locale)
 ///
-/// Built on 2024-01-27 at 02:38 UTC
+/// Built on 2024-01-29 at 02:30 UTC
 
 // coverage:ignore-file
 // ignore_for_file: type=lint
@@ -149,6 +149,7 @@ class Translations implements BaseTranslations<AppLocale, Translations> {
 
 	// Translations
 	late final _StringsLayoutEn layout = _StringsLayoutEn._(_root);
+	late final _StringsWorkboardEn workboard = _StringsWorkboardEn._(_root);
 	late final _StringsEncryptionEn encryption = _StringsEncryptionEn._(_root);
 }
 
@@ -159,9 +160,21 @@ class _StringsLayoutEn {
 	final Translations _root; // ignore: unused_field
 
 	// Translations
-	String get encryption => 'Workboard';
+	String get workboard => 'Workboard';
+	String get encryption => 'Records';
 	String get custom => 'Custom Algorithm';
 	String get account => 'Datasource';
+}
+
+// Path: workboard
+class _StringsWorkboardEn {
+	_StringsWorkboardEn._(this._root);
+
+	final Translations _root; // ignore: unused_field
+
+	// Translations
+	String get title => 'Choose a datasource or select a folder';
+	String get addlocal => 'Add local path...';
 }
 
 // Path: encryption
@@ -235,6 +248,7 @@ class _StringsZhCn implements Translations {
 
 	// Translations
 	@override late final _StringsLayoutZhCn layout = _StringsLayoutZhCn._(_root);
+	@override late final _StringsWorkboardZhCn workboard = _StringsWorkboardZhCn._(_root);
 	@override late final _StringsEncryptionZhCn encryption = _StringsEncryptionZhCn._(_root);
 }
 
@@ -245,9 +259,21 @@ class _StringsLayoutZhCn implements _StringsLayoutEn {
 	@override final _StringsZhCn _root; // ignore: unused_field
 
 	// Translations
-	@override String get encryption => '工作台';
+	@override String get workboard => '工作台';
+	@override String get encryption => '记录';
 	@override String get custom => '自定义加密算法';
 	@override String get account => '数据源';
+}
+
+// Path: workboard
+class _StringsWorkboardZhCn implements _StringsWorkboardEn {
+	_StringsWorkboardZhCn._(this._root);
+
+	@override final _StringsZhCn _root; // ignore: unused_field
+
+	// Translations
+	@override String get title => '选择一个数据源或者本地文件夹';
+	@override String get addlocal => '选择本地文件夹...';
 }
 
 // Path: encryption
@@ -302,9 +328,12 @@ class _StringsEncryptionTableZhCn implements _StringsEncryptionTableEn {
 extension on Translations {
 	dynamic _flatMapFunction(String path) {
 		switch (path) {
-			case 'layout.encryption': return 'Workboard';
+			case 'layout.workboard': return 'Workboard';
+			case 'layout.encryption': return 'Records';
 			case 'layout.custom': return 'Custom Algorithm';
 			case 'layout.account': return 'Datasource';
+			case 'workboard.title': return 'Choose a datasource or select a folder';
+			case 'workboard.addlocal': return 'Add local path...';
 			case 'encryption.column.no': return 'No.';
 			case 'encryption.column.filepath': return 'File Path';
 			case 'encryption.column.encryptedPath': return 'Result Path';
@@ -330,9 +359,12 @@ extension on Translations {
 extension on _StringsZhCn {
 	dynamic _flatMapFunction(String path) {
 		switch (path) {
-			case 'layout.encryption': return '工作台';
+			case 'layout.workboard': return '工作台';
+			case 'layout.encryption': return '记录';
 			case 'layout.custom': return '自定义加密算法';
 			case 'layout.account': return '数据源';
+			case 'workboard.title': return '选择一个数据源或者本地文件夹';
+			case 'workboard.addlocal': return '选择本地文件夹...';
 			case 'encryption.column.no': return '编号';
 			case 'encryption.column.filepath': return '文件路径';
 			case 'encryption.column.encryptedPath': return '结果路径';

@@ -34,10 +34,10 @@ impl TwoDatasources {
             if let Some(_right) = &self.right {
                 Self::transfer(&_left, &_right, p, save_path, auto_encrypt).await?;
             } else {
-                anyhow::bail!("datasource error")
+                anyhow::bail!("right datasource error")
             }
         } else {
-            anyhow::bail!("datasource error")
+            anyhow::bail!("left datasource error")
         }
 
         anyhow::Ok(())
@@ -67,6 +67,8 @@ impl TwoDatasources {
         let mut reader = left_down.get_op().reader(&p).await?;
         let mut writer = right_down.get_op().writer(&save_path).await?;
 
+        println!("from  {:?}  to {:?}", p, save_path);
+
         let mut buffer = vec![0; SIXTEEN_MB.try_into().unwrap()]; // 16MB
         let mut transfered = 0;
 
@@ -78,6 +80,10 @@ impl TwoDatasources {
             writer.write(buffer[..count].to_vec()).await?;
             transfered += count;
         }
+
+        writer.close().await?;
+
+        println!("transfered  {:?}", transfered);
 
         anyhow::Ok(())
     }

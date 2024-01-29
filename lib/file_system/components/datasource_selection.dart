@@ -3,6 +3,7 @@
 import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:easy_crypt/file_system/models/datasource_state.dart';
 import 'package:easy_crypt/file_system/notifiers/datasource_notifier.dart';
+import 'package:easy_crypt/gen/strings.g.dart';
 import 'package:easy_crypt/isar/datasource.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -33,7 +34,7 @@ class _DatasourceSelectionState extends ConsumerState<DatasourceSelection> {
           items = List.of(value.datasources)
             ..add(Datasource()
               ..datasourceType = DatasourceType.Local
-              ..name = "Add local path...");
+              ..name = t.workboard.addlocal);
 
           return DropdownButtonHideUnderline(
               child: DropdownButton2<Datasource>(
@@ -61,7 +62,9 @@ class _DatasourceSelectionState extends ConsumerState<DatasourceSelection> {
                 children: [
                   Expanded(
                       child: Text(
-                    "${selectedValue?.name.toString()}",
+                    selectedValue == null
+                        ? ""
+                        : "${selectedValue?.name.toString()}",
                     maxLines: 1,
                     softWrap: true,
                     overflow: TextOverflow.clip,

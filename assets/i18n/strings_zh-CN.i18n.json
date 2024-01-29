@@ -1,8 +1,13 @@
 {
     "layout":{
-        "encryption":"工作台",
+        "workboard":"工作台",
+        "encryption":"记录",
         "custom":"自定义加密算法",
         "account":"数据源"
+    },
+    "workboard":{
+        "title":"选择一个数据源或者本地文件夹",
+        "addlocal":"选择本地文件夹..."
     },
     "encryption":{
         "column":{

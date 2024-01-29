@@ -81,6 +81,12 @@ Future<List<Entry>> listObjectsByIndex(
         {required int index, required String p, dynamic hint}) =>
     RustLib.instance.api.listObjectsByIndex(index: index, p: p, hint: hint);
 
+Future<List<Entry>> listObjectsLeft({required String p, dynamic hint}) =>
+    RustLib.instance.api.listObjectsLeft(p: p, hint: hint);
+
+Future<List<Entry>> listObjectsRight({required String p, dynamic hint}) =>
+    RustLib.instance.api.listObjectsRight(p: p, hint: hint);
+
 enum DatasourcePreviewType {
   left,
   right,

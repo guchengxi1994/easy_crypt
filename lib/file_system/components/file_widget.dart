@@ -28,12 +28,20 @@ class _FileWidgetState extends State<FileWidget> {
             height: 20,
             color: Colors.amber,
           ),
+          childWhenDragging: Opacity(
+            opacity: 0.5,
+            child: SizedBox(
+              width: 75,
+              height: 75,
+              child: _icon(),
+            ),
+          ),
           child: _child());
     }
     return _child();
   }
 
-  Widget _child() {
+  Widget _icon() {
     Widget icon;
     List<String> paths = widget.entry.path.split("/");
     if (widget.entry.type == EntryType.file) {
@@ -49,6 +57,20 @@ class _FileWidgetState extends State<FileWidget> {
         child: Image.asset("assets/icons/Folder.png"),
       );
     }
+    return Column(
+      children: [
+        icon,
+        Text(
+          paths.length >= 2 ? paths[paths.length - 2] : paths.last,
+          maxLines: 1,
+          softWrap: true,
+          overflow: TextOverflow.ellipsis,
+        )
+      ],
+    );
+  }
+
+  Widget _child() {
     return GestureDetector(
       onDoubleTap: () {
         if (widget.onDoubleClick != null) {
@@ -82,17 +104,7 @@ class _FileWidgetState extends State<FileWidget> {
                     : Colors.transparent),
             height: 75,
             width: 75,
-            child: Column(
-              children: [
-                icon,
-                Text(
-                  paths.length >= 2 ? paths[paths.length - 2] : paths.last,
-                  maxLines: 1,
-                  softWrap: true,
-                  overflow: TextOverflow.ellipsis,
-                )
-              ],
-            ),
+            child: _icon(),
           ),
         ),
       ),

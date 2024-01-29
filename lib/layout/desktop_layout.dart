@@ -7,6 +7,7 @@ import 'package:easy_crypt/common/dev_utils.dart';
 import 'package:easy_crypt/file_system/components/board.dart';
 import 'package:easy_crypt/file_system/enum.dart';
 import 'package:easy_crypt/file_system/fs_preview.dart';
+import 'package:easy_crypt/src/rust/api/datasource.dart';
 import 'package:easy_crypt/src/rust/api/simple.dart';
 import 'package:easy_crypt/common/logger.dart';
 import 'package:easy_crypt/customize_flow/flow_screen.dart';
@@ -25,6 +26,7 @@ import 'package:window_manager/window_manager.dart';
 import 'notifiers/expand_collapse_notifier.dart';
 import 'notifiers/navigator_notifier.dart';
 import 'notifiers/setting_notifier.dart';
+import 'package:path/path.dart';
 
 class Layout extends ConsumerStatefulWidget {
   const Layout({super.key});
@@ -182,6 +184,15 @@ class _LayoutState extends ConsumerState<Layout> with TickerProviderStateMixin {
                           destinations: [
                             NavigationRailDestination(
                                 icon: const Icon(
+                                  Icons.transform,
+                                ),
+                                label: Text(t.layout.workboard),
+                                selectedIcon: Icon(
+                                  Icons.transform,
+                                  color: AppStyle.appColor.withGreen(100),
+                                )),
+                            NavigationRailDestination(
+                                icon: const Icon(
                                   Icons.security,
                                 ),
                                 label: Text(t.layout.encryption),
@@ -207,15 +218,6 @@ class _LayoutState extends ConsumerState<Layout> with TickerProviderStateMixin {
                                   Icons.dataset,
                                   color: AppStyle.appColor.withGreen(100),
                                 )),
-                            NavigationRailDestination(
-                                icon: const Icon(
-                                  Icons.featured_play_list,
-                                ),
-                                label: const Text("New Feature"),
-                                selectedIcon: Icon(
-                                  Icons.featured_play_list,
-                                  color: AppStyle.appColor.withGreen(100),
-                                )),
                           ],
                           selectedIndex: ref.watch(pageNavigator),
                           extended: notifier.isExpanded,
@@ -228,22 +230,29 @@ class _LayoutState extends ConsumerState<Layout> with TickerProviderStateMixin {
                         physics: const NeverScrollableScrollPhysics(),
                         controller: PageNavigatorNotifier.controller,
                         children: [
-                          const Workboard(),
-                          const FlowScreen(),
-                          const DatasourceScreen(),
                           Board(
                             left: const FsPreview(
                               previewType: PreviewType.Left,
                             ),
-                            right: DragTarget<Entry>(onAccept: (data) {
-                              /// TODO complete drag logic
+                            right: DragTarget<Entry>(onAccept: (data) async {
                               // print(data.path);
+
+                              if (data.type == EntryType.file) {
+                                final name = basename(data.path);
+                                await transferBetweenTwoDatasource(
+                                    p: data.path,
+                                    savePath: "easy_encrypt_upload/$name",
+                                    autoEncrypt: false);
+                              }
                             }, builder: (c, _, __) {
                               return const FsPreview(
                                 previewType: PreviewType.Right,
                               );
                             }),
-                          )
+                          ),
+                          const Workboard(),
+                          const FlowScreen(),
+                          const DatasourceScreen(),
                         ],
                       ))
                     ],

@@ -154,3 +154,53 @@ pub fn list_objects_by_index(index: usize, p: String) -> Vec<Entry> {
         }
     })
 }
+
+pub fn list_objects_left(p: String) -> Vec<Entry> {
+    let a = TWODATASOURCES.read().unwrap();
+    if (*a).left.is_none() {
+        return vec![];
+    }
+
+    let rt = tokio::runtime::Runtime::new().unwrap();
+
+    rt.block_on(async {
+        if let Some(_datasource) = &(*a).left {
+            if let Some(_d) = _datasource.as_any().downcast_ref::<S3Client>() {
+                return _d.list_objs(p).await;
+            } else {
+                return _datasource
+                    .as_any()
+                    .downcast_ref::<LocalStorage>()
+                    .unwrap()
+                    .list_objs(p)
+                    .await;
+            }
+        }
+        return vec![];
+    })
+}
+
+pub fn list_objects_right(p: String) -> Vec<Entry> {
+    let a = TWODATASOURCES.read().unwrap();
+    if (*a).right.is_none() {
+        return vec![];
+    }
+
+    let rt = tokio::runtime::Runtime::new().unwrap();
+
+    rt.block_on(async {
+        if let Some(_datasource) = &(*a).right {
+            if let Some(_d) = _datasource.as_any().downcast_ref::<S3Client>() {
+                return _d.list_objs(p).await;
+            } else {
+                return _datasource
+                    .as_any()
+                    .downcast_ref::<LocalStorage>()
+                    .unwrap()
+                    .list_objs(p)
+                    .await;
+            }
+        }
+        return vec![];
+    })
+}
