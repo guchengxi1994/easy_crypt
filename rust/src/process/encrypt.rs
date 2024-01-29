@@ -114,7 +114,7 @@ impl Enctypt {
                     zip.start_file(n, options)?;
                     let mut f = File::open(&p)?;
                     f.read_to_end(&mut buffer)?;
-                    zip.write_all(&*buffer)?;
+                    zip.write_all(&buffer)?;
                     buffer.clear();
                 } else {
                     let n = Path::new(&p.clone())
@@ -133,7 +133,7 @@ impl Enctypt {
                             zip.start_file(Self::path_to_string(name), options)?;
                             let mut f = File::open(path)?;
                             f.read_to_end(&mut buffer)?;
-                            zip.write_all(&*buffer)?;
+                            zip.write_all(&buffer)?;
                             buffer.clear();
                         } else {
                             zip.add_directory(Self::path_to_string(name), options)?;
@@ -174,7 +174,7 @@ impl Enctypt {
                 count += 1;
             }
         }
-        return count;
+        count
     }
 
     fn encrypt_file(&self, p: String, id: Option<i64>) -> anyhow::Result<String> {

@@ -24,7 +24,7 @@ impl EncryptMessage {
     }
 
     pub fn is_done(&self) -> bool {
-        return self.encrypt_size == self.total_size && self.total_size > 0;
+        self.encrypt_size == self.total_size && self.total_size > 0
     }
 }
 

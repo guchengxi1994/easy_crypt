@@ -95,7 +95,7 @@ impl Chain {
         for en in &self.decryptor {
             result = en.operate(&result).to_vec();
         }
-        return result == self.input;
+        result == self.input
     }
 }
 

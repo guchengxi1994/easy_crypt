@@ -33,6 +33,10 @@ impl ClientTrait for S3Client {
         self.op.clone()
     }
 
+    fn get_name(&self) -> String {
+        "Remote S3".to_owned()
+    }
+
     // async fn list_objects(&self, p: String) -> Vec<Entry> {
     //     self.list_objs(p).await
     // }
@@ -70,7 +74,7 @@ impl S3Client {
                     region,
                     op: _o,
                 };
-                return Some(client);
+                Some(client)
             }
             Err(_) => None,
         }
@@ -78,7 +82,7 @@ impl S3Client {
 
     pub async fn check_available(&self) -> bool {
         let r = self.op.list_with("/").await;
-        return r.is_ok();
+        r.is_ok()
     }
 
     pub async fn list_objs(&self, path: String) -> Vec<Entry> {

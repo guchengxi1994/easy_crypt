@@ -101,7 +101,7 @@ impl S3Check {
             pcount += 1;
         }
         let etag = md5compute(etags);
-        let tag = hex::encode(etag[..16].to_vec());
+        let tag = hex::encode(&etag[..16]);
 
         println!("[rust] {:?}", tag);
 

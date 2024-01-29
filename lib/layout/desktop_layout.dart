@@ -242,7 +242,7 @@ class _LayoutState extends ConsumerState<Layout> with TickerProviderStateMixin {
                                 await transferBetweenTwoDatasource(
                                     p: data.path,
                                     savePath: "easy_encrypt_upload/$name",
-                                    autoEncrypt: false);
+                                    autoEncrypt: true);
                               }
                             }, builder: (c, _, __) {
                               return const FsPreview(

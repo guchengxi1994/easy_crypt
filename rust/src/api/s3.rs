@@ -228,18 +228,19 @@ pub fn list_objects(
 
             match (*client).as_ref() {
                 Some(_c) => {
-                    return _c.list_objs(path).await;
+                    _c.list_objs(path).await
                 }
                 None => {
-                    return vec![];
+                    vec![]
                 }
             }
         });
 
-        return result;
+        result
     } else {
         let rt = tokio::runtime::Runtime::new().unwrap();
-        let result = rt.block_on(async {
+        
+        rt.block_on(async {
             let client = S3Client::from(
                 endpoint,
                 bucketname,
@@ -252,8 +253,7 @@ pub fn list_objects(
                 return _cli.list_objs(path).await;
             }
 
-            return vec![];
-        });
-        return result;
+            vec![]
+        })
     }
 }

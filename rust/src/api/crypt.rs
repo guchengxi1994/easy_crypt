@@ -25,7 +25,7 @@ pub fn encrypt(
         Ok(_s) => _s,
         Err(e) => {
             println!("[rust] error {:?}", e);
-            return "".to_owned();
+            "".to_owned()
         }
     }
 }
@@ -49,7 +49,7 @@ pub fn decrypt(
         Ok(_s) => _s,
         Err(e) => {
             println!("[rust] error {:?}", e);
-            return "".to_owned();
+            "".to_owned()
         }
     }
 }
