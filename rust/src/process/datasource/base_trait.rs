@@ -30,5 +30,7 @@ pub trait ClientTrait {
 
     fn get_op(&self) -> opendal::Operator;
 
+    fn get_name(&self) -> String;
+
     // async fn list_objects(&self, p: String) -> Vec<Entry>;
 }

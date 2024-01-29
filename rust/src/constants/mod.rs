@@ -10,3 +10,4 @@ pub const TYPE_DECRYPT: i8 = 1;
 pub const TYPE_ENCRYPT: i8 = 2;
 pub const TYPE_ZIP_FILE: i8 = 3;
 pub const TYPE_TRANSFER: i8 = 4;
+pub const TYPE_TWO_DATASOURCE_TRANSFER: i8 = 5;

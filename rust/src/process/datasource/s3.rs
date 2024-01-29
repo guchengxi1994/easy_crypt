@@ -33,6 +33,10 @@ impl ClientTrait for S3Client {
         self.op.clone()
     }
 
+    fn get_name(&self) -> String {
+        "Remote S3".to_owned()
+    }
+
     // async fn list_objects(&self, p: String) -> Vec<Entry> {
     //     self.list_objs(p).await
     // }

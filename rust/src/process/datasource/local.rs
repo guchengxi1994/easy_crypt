@@ -13,6 +13,10 @@ impl ClientTrait for LocalStorage {
     fn get_op(&self) -> opendal::Operator {
         self.op.clone()
     }
+
+    fn get_name(&self) -> String {
+        format!("Local {:?}", self.root)
+    }
 }
 
 impl LocalStorage {
