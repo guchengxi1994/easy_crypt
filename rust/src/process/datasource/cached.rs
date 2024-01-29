@@ -1,9 +1,11 @@
 use std::time::UNIX_EPOCH;
 
+use aes_gcm_siv::{aead::Aead, Aes256GcmSiv, KeyInit, Nonce};
 use opendal::raw::oio::ReadExt;
 
 use crate::{
-    constants::SIXTEEN_MB,
+    api::crypt::random_key,
+    constants::{CUSTOM_HEADER, SIXTEEN_MB},
     emit::{emitter::Emitter, two_datasource_transfer_message::TwoDatasourceTransferMessage},
 };
 
@@ -58,6 +60,12 @@ impl TwoDatasources {
         let mut message = TwoDatasourceTransferMessage::default()?;
         message.file_path = p.clone();
         message.save_path = save_path.clone();
+        message.auto_encrypt = auto_encrypt;
+        let key = random_key();
+
+        if auto_encrypt {
+            message.key = Some(key.clone());
+        }
 
         let left_down: &dyn ClientTrait;
         if let Some(_left) = left.as_any().downcast_ref::<S3Client>() {
@@ -83,25 +91,67 @@ impl TwoDatasources {
         let mut buffer = vec![0; SIXTEEN_MB.try_into().unwrap()]; // 16MB
         let mut transfered = 0;
 
-        loop {
-            let count = reader.read(&mut buffer).await?;
-            if count == 0 {
-                break;
-            }
-            writer.write(buffer[..count].to_vec()).await?;
-            transfered += count;
+        if !auto_encrypt {
+            loop {
+                let count = reader.read(&mut buffer).await?;
+                if count == 0 {
+                    break;
+                }
+                writer.write(buffer[..count].to_vec()).await?;
+                transfered += count;
 
-            let duration = std::time::SystemTime::now()
-                .duration_since(UNIX_EPOCH)
-                .unwrap()
-                .as_secs()
-                - message.start_time;
+                let duration = std::time::SystemTime::now()
+                    .duration_since(UNIX_EPOCH)
+                    .unwrap()
+                    .as_secs()
+                    - message.start_time;
 
-            if duration > 0 {
-                let speed = (transfered as f64) / (duration as f64);
-                message.set_speed(speed);
+                if duration > 0 {
+                    let speed = (transfered as f64) / (duration as f64);
+                    message.set_speed(speed);
+                }
+                message.send_message();
             }
-            message.send_message();
+        } else {
+            println!("[rust] auto encrypt");
+            let cipher = Aes256GcmSiv::new(key.clone().as_bytes().into());
+            let nonce = Nonce::from_slice(b"_EasyCrypt__"); // 96-bits; unique per message
+                                                            // writer.write(CUSTOM_HEADER.as_bytes()).await?;
+            let mut index = 0;
+            loop {
+                let count = reader.read(&mut buffer).await?;
+                if count == 0 {
+                    break;
+                }
+                let ciphertext = cipher.encrypt(nonce, &buffer[..count]);
+
+                if let Ok(text) = ciphertext {
+                    if index == 0 {
+                        let mut v = CUSTOM_HEADER.as_bytes().to_vec();
+                        v.extend(text);
+                        writer.write(v).await?;
+                    } else {
+                        writer.write(text).await?;
+                    }
+
+                    transfered += count;
+                    let duration = std::time::SystemTime::now()
+                        .duration_since(UNIX_EPOCH)
+                        .unwrap()
+                        .as_secs()
+                        - message.start_time;
+
+                    if duration > 0 {
+                        let speed = (transfered as f64) / (duration as f64);
+                        message.set_speed(speed);
+                    }
+                } else {
+                    println!("[rust] enctypt error");
+                    anyhow::bail!("encrypt err")
+                }
+
+                message.send_message();
+            }
         }
 
         writer.close().await?;

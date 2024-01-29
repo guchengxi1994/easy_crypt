@@ -17,6 +17,8 @@ pub struct TwoDatasourceTransferMessage {
     #[serde(rename = "type")]
     pub _type: i8,
     pub msg: Option<String>,
+    pub auto_encrypt: bool,
+    pub key: Option<String>,
 }
 
 impl TwoDatasourceTransferMessage {
@@ -30,6 +32,8 @@ impl TwoDatasourceTransferMessage {
             transfer_speed: "0.0 MB/s".to_owned(),
             _type: crate::constants::TYPE_TWO_DATASOURCE_TRANSFER,
             msg: None,
+            auto_encrypt: false,
+            key: None,
         })
     }
 
