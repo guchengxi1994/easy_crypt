@@ -30,6 +30,10 @@ Future<String> transferBetweenTwoDatasource(
     RustLib.instance.api.transferBetweenTwoDatasource(
         p: p, savePath: savePath, autoEncrypt: autoEncrypt, hint: hint);
 
+Future<String> getPresignUrlWithType(
+        {required String p, required DatasourcePreviewType t, dynamic hint}) =>
+    RustLib.instance.api.getPresignUrlWithType(p: p, t: t, hint: hint);
+
 Future<void> addLocalDatasourceWithType(
         {required String p, required DatasourcePreviewType t, dynamic hint}) =>
     RustLib.instance.api.addLocalDatasourceWithType(p: p, t: t, hint: hint);

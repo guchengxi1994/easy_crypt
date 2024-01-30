@@ -1,10 +1,12 @@
 import 'package:easy_crypt/file_system/enum.dart';
 import 'package:easy_crypt/file_system/notifiers/cached_datasource_notifier.dart';
 import 'package:easy_crypt/file_system/notifiers/local_notifier.dart';
+import 'package:easy_crypt/isar/datasource.dart';
 import 'package:easy_crypt/src/rust/api/datasource.dart' as ds;
 import 'package:easy_crypt/src/rust/process/datasource.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:super_clipboard/super_clipboard.dart';
 
 import 'components/file_widget.dart';
 import 'components/title_bar.dart';
@@ -81,6 +83,8 @@ class LocalFilePreview extends ConsumerWidget {
     };
   }
 
+  final clipboard = SystemClipboard.instance;
+
   Widget _buildContent(List<Entry> entries, WidgetRef ref) {
     if (entries.isEmpty) {
       return Column(
@@ -104,6 +108,18 @@ class LocalFilePreview extends ConsumerWidget {
           runSpacing: 8,
           children: entries
               .map((e) => FileWidget(
+                    onCopyPath: () async {
+                      if (clipboard == null) {
+                        return;
+                      }
+                      final item = DataWriterItem();
+
+                      final p =
+                          "${ref.read(localNotifier.notifier).path}/${e.path}";
+                      item.add(Formats.fileUri(Uri.file(p)));
+                      await clipboard!.write([item]);
+                    },
+                    datasourceType: DatasourceType.Local,
                     draggable: previewType == PreviewType.Left,
                     entry: e,
                     onDoubleClick: () async {

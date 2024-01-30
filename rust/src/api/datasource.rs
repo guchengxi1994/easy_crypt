@@ -1,5 +1,5 @@
 use crate::process::datasource::{
-    local::LocalStorage, s3::S3Client, Entry, DATASOURCES, TWODATASOURCES,
+    base_trait::Transfer, local::LocalStorage, s3::S3Client, Entry, DATASOURCES, TWODATASOURCES,
 };
 
 pub fn transfer_from_left_to_right(
@@ -41,11 +41,11 @@ pub fn transfer_between_two_datasource(p: String, save_path: String, auto_encryp
             .await;
         match r {
             Ok(_key) => {
-                return _key;
+                _key
             }
             Err(_e) => {
                 println!("error {:?}", _e);
-                return "error".to_owned();
+                "error".to_owned()
             }
         }
     })
@@ -54,6 +54,52 @@ pub fn transfer_between_two_datasource(p: String, save_path: String, auto_encryp
 pub enum DatasourcePreviewType {
     Left,
     Right,
+}
+
+pub fn get_presign_url_with_type(p: String, t: DatasourcePreviewType) -> String {
+    let a = TWODATASOURCES.read().unwrap();
+    match t {
+        DatasourcePreviewType::Left => {
+            if a.left.is_none() {
+                return "".to_owned();
+            }
+
+            let rt = tokio::runtime::Runtime::new().unwrap();
+
+            rt.block_on(async {
+                if let Some(_datasource) = &a.left {
+                    if let Some(_d) = _datasource.as_any().downcast_ref::<S3Client>() {
+                        if let Ok(url) = _d.share(p).await {
+                            return url;
+                        }
+                    } else {
+                        return "".to_owned();
+                    }
+                }
+                "".to_owned()
+            })
+        }
+        DatasourcePreviewType::Right => {
+            if a.right.is_none() {
+                return "".to_owned();
+            }
+
+            let rt = tokio::runtime::Runtime::new().unwrap();
+
+            rt.block_on(async {
+                if let Some(_datasource) = &a.right {
+                    if let Some(_d) = _datasource.as_any().downcast_ref::<S3Client>() {
+                        if let Ok(url) = _d.share(p).await {
+                            return url;
+                        }
+                    } else {
+                        return "".to_owned();
+                    }
+                }
+                "".to_owned()
+            })
+        }
+    }
 }
 
 pub fn add_local_datasource_with_type(p: String, t: DatasourcePreviewType) {
