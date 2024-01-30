@@ -227,9 +227,7 @@ pub fn list_objects(
             let client = S3CLIENT.read().unwrap();
 
             match (*client).as_ref() {
-                Some(_c) => {
-                    _c.list_objs(path).await
-                }
+                Some(_c) => _c.list_objs(path).await,
                 None => {
                     vec![]
                 }
@@ -239,7 +237,7 @@ pub fn list_objects(
         result
     } else {
         let rt = tokio::runtime::Runtime::new().unwrap();
-        
+
         rt.block_on(async {
             let client = S3Client::from(
                 endpoint,

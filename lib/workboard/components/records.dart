@@ -46,9 +46,9 @@ class _EncryptRecordsWidgetState extends ConsumerState<RecordsWidget> {
     return DropTarget(onDragDone: (details) {
       if (details.files.isNotEmpty) {
         if (details.files.length == 1) {
-          ref
-              .read(recordsProvider.notifier)
-              .newRecords(details.files, useDefaultKey: false);
+          // ref
+          //     .read(recordsProvider.notifier)
+          //     .newRecords(details.files, useDefaultKey: false);
         } else {
           /// TODO complete this logic
           showGeneralDialog(
@@ -269,64 +269,70 @@ class _EncryptRecordsWidgetState extends ConsumerState<RecordsWidget> {
                                           label: t.encryption.table.wx,
                                           value: "Wechat",
                                         ),
-                                        if (f.transferRecords.isNotEmpty)
-                                          MenuItem.submenu(
-                                              icon: const Icon(
-                                                Icons.storage,
-                                                size: AppStyle.rowIconSize,
-                                              ),
-                                              label: "by url",
-                                              items: f.transferRecords
-                                                  .map((e) => MenuItem(
-                                                      onSelected: () async {
-                                                        // print(e.to);
-                                                        if (e
-                                                                .toDatasource
-                                                                .value!
-                                                                .datasourceType ==
-                                                            DatasourceType.S3) {
-                                                          final url = await s3.generatePregisnUrl(
-                                                              endpoint: e
-                                                                  .toDatasource
-                                                                  .value!
-                                                                  .endpoint!,
-                                                              bucketname: e
-                                                                  .toDatasource
-                                                                  .value!
-                                                                  .bucketname!,
-                                                              accessKey: e
-                                                                  .toDatasource
-                                                                  .value!
-                                                                  .accesskey!,
-                                                              sessionKey: e
-                                                                  .toDatasource
-                                                                  .value!
-                                                                  .sessionKey!,
-                                                              region: e
-                                                                  .toDatasource
-                                                                  .value!
-                                                                  .region!,
-                                                              sessionToken: e
-                                                                  .toDatasource
-                                                                  .value!
-                                                                  .sessionToken!,
-                                                              obj: e.to!);
-                                                          if (url != null) {
-                                                            await copyToClipboard(
-                                                                url);
-                                                          }
-                                                        }
-                                                      },
-                                                      label: e.toDatasource
-                                                                  .value !=
-                                                              null
-                                                          ? e
-                                                                  .toDatasource
-                                                                  .value!
-                                                                  .name ??
-                                                              "1"
-                                                          : "2"))
-                                                  .toList()),
+                                        // if (f.transferRecords.isNotEmpty)
+                                        //   MenuItem.submenu(
+                                        //       icon: const Icon(
+                                        //         Icons.storage,
+                                        //         size: AppStyle.rowIconSize,
+                                        //       ),
+                                        //       label: "by url",
+                                        //       items: f.transferRecords
+                                        //           .map((e) => MenuItem(
+                                        //               onSelected: () async {
+                                        //                 // print(e.to);
+                                        //                 if (e
+                                        //                         .toDatasource
+                                        //                         .value!
+                                        //                         .datasourceType ==
+                                        //                     DatasourceType.S3) {
+                                        //                   final url = await s3.generatePregisnUrl(
+                                        //                       endpoint: e
+                                        //                           .toDatasource
+                                        //                           .value!
+                                        //                           .s3config!
+                                        //                           .endpoint!,
+                                        //                       bucketname: e
+                                        //                           .toDatasource
+                                        //                           .value!
+                                        //                           .s3config!
+                                        //                           .bucketname!,
+                                        //                       accessKey: e
+                                        //                           .toDatasource
+                                        //                           .value!
+                                        //                           .s3config!
+                                        //                           .accesskey!,
+                                        //                       sessionKey: e
+                                        //                           .toDatasource
+                                        //                           .value!
+                                        //                           .s3config!
+                                        //                           .sessionKey!,
+                                        //                       region: e
+                                        //                           .toDatasource
+                                        //                           .value!
+                                        //                           .s3config!
+                                        //                           .region!,
+                                        //                       sessionToken: e
+                                        //                           .toDatasource
+                                        //                           .value!
+                                        //                           .s3config!
+                                        //                           .sessionToken!,
+                                        //                       obj: e.to!);
+                                        //                   if (url != null) {
+                                        //                     await copyToClipboard(
+                                        //                         url);
+                                        //                   }
+                                        //                 }
+                                        //               },
+                                        //               label: e.toDatasource
+                                        //                           .value !=
+                                        //                       null
+                                        //                   ? e
+                                        //                           .toDatasource
+                                        //                           .value!
+                                        //                           .name ??
+                                        //                       "1"
+                                        //                   : "2"))
+                                        //           .toList()),
                                       ],
                                     ),
                                     MenuItem(

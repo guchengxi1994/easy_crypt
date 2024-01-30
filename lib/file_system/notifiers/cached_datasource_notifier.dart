@@ -16,16 +16,16 @@ class CachedDatasourceNotifier extends Notifier<CachedDatasourceState> {
   setLeft(Datasource left) async {
     if (left.datasourceType == DatasourceType.Local) {
       await addLocalDatasourceWithType(
-          p: left.path ?? "", t: DatasourcePreviewType.left);
+          p: left.localConfig!.path ?? "", t: DatasourcePreviewType.left);
     } else if (left.datasourceType == DatasourceType.S3) {
       await addS3DatasourceWithType(
-          endpoint: left.endpoint!,
+          endpoint: left.s3config!.endpoint!,
           t: DatasourcePreviewType.left,
-          bucketname: left.bucketname!,
-          accessKey: left.accesskey!,
-          sessionKey: left.sessionKey!,
-          region: left.region!,
-          sessionToken: left.sessionToken);
+          bucketname: left.s3config!.bucketname!,
+          accessKey: left.s3config!.accesskey!,
+          sessionKey: left.s3config!.sessionKey!,
+          region: left.s3config!.region!,
+          sessionToken: left.s3config!.sessionToken);
     }
 
     state.left = left;
@@ -35,16 +35,16 @@ class CachedDatasourceNotifier extends Notifier<CachedDatasourceState> {
   setRight(Datasource right) async {
     if (right.datasourceType == DatasourceType.Local) {
       await addLocalDatasourceWithType(
-          p: right.path ?? "", t: DatasourcePreviewType.right);
+          p: right.localConfig!.path ?? "", t: DatasourcePreviewType.right);
     } else if (right.datasourceType == DatasourceType.S3) {
       await addS3DatasourceWithType(
-          endpoint: right.endpoint!,
+          endpoint: right.s3config!.endpoint!,
           t: DatasourcePreviewType.right,
-          bucketname: right.bucketname!,
-          accessKey: right.accesskey!,
-          sessionKey: right.sessionKey!,
-          region: right.region!,
-          sessionToken: right.sessionToken);
+          bucketname: right.s3config!.bucketname!,
+          accessKey: right.s3config!.accesskey!,
+          sessionKey: right.s3config!.sessionKey!,
+          region: right.s3config!.region!,
+          sessionToken: right.s3config!.sessionToken);
     }
 
     state.right = right;

@@ -25,6 +25,8 @@ class _DatasourceSelectionState extends ConsumerState<DatasourceSelection> {
   List<Datasource> items = [];
   bool _isOpen = false;
 
+  late LocalConfig newLocalConfig = LocalConfig()..path = "selecting";
+
   @override
   Widget build(BuildContext context) {
     final datasources = ref.watch(datasourceProvider);
@@ -35,7 +37,7 @@ class _DatasourceSelectionState extends ConsumerState<DatasourceSelection> {
             ..add(Datasource()
               ..datasourceType = DatasourceType.Local
               ..name = t.workboard.addlocal
-              ..path = "selecting");
+              ..localConfig = newLocalConfig);
 
           return DropdownButtonHideUnderline(
               child: DropdownButton2<Datasource>(

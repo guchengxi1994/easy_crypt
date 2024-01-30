@@ -36,10 +36,11 @@ impl TwoDatasources {
         p: String,
         save_path: String,
         auto_encrypt: bool,
-    ) -> anyhow::Result<()> {
+    ) -> anyhow::Result<String> {
+        let mut _key: String = String::new();
         if let Some(_left) = &self.left {
             if let Some(_right) = &self.right {
-                Self::transfer(_left, _right, p, save_path, auto_encrypt).await?;
+                _key = Self::transfer(_left, _right, p, save_path, auto_encrypt).await?;
             } else {
                 anyhow::bail!("right datasource error")
             }
@@ -47,7 +48,7 @@ impl TwoDatasources {
             anyhow::bail!("left datasource error")
         }
 
-        anyhow::Ok(())
+        anyhow::Ok(_key)
     }
 
     async fn transfer(
@@ -56,7 +57,7 @@ impl TwoDatasources {
         p: String,
         save_path: String,
         /* not work right now*/ auto_encrypt: bool,
-    ) -> anyhow::Result<()> {
+    ) -> anyhow::Result<String> {
         let mut message = TwoDatasourceTransferMessage::default()?;
         message.file_path = p.clone();
         message.save_path = save_path.clone();
@@ -160,7 +161,7 @@ impl TwoDatasources {
 
         println!("transfered  {:?}", transfered);
 
-        anyhow::Ok(())
+        anyhow::Ok(key.clone())
     }
 }
 

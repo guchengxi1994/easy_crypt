@@ -2,11 +2,9 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:easy_crypt/isar/datasource.dart';
-import 'package:easy_crypt/src/rust/api/crypt.dart' as crypt;
 import 'package:easy_crypt/isar/database.dart';
 import 'package:easy_crypt/isar/files.dart';
-import 'package:easy_crypt/isar/transfer_records.dart';
-import 'package:file_selector/file_selector.dart';
+import 'package:easy_crypt/isar/process_records.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:isar/isar.dart';
 
@@ -24,70 +22,69 @@ class RecordsNotifier extends AutoDisposeAsyncNotifier<RecordsState> {
     return RecordsState(
         list: logs.map((e) {
       // print("e.transferRecords.toList()  ${e.transferRecords.toList().length}");
-      return Record.fromModel(e, transferRecords: e.transferRecords.toList());
+      return Record.fromModel(e, processRecords: e.transferRecords.toList());
     }).toList());
   }
 
-  newRecords(List<XFile> files, {bool useDefaultKey = true}) async {
-    state = const AsyncLoading();
+  // newRecords(List<XFile> files, {bool useDefaultKey = true}) async {
+  //   state = const AsyncLoading();
 
-    state = await AsyncValue.guard(() async {
-      await database.isar!.writeTxn(() async {
-        List<Files> records = [];
-        for (final i in files) {
-          Files record = Files();
-          final b = await crypt.isEasyEncryptFile(p: i.path);
+  //   state = await AsyncValue.guard(() async {
+  //     await database.isar!.writeTxn(() async {
+  //       List<Files> records = [];
+  //       for (final i in files) {
+  //         Files record = Files();
+  //         final b = await crypt.isEasyEncryptFile(p: i.path);
 
-          if (!b) {
-            if (useDefaultKey) {
-              record.key = await crypt.defaultKey();
-            } else {
-              record.key = await crypt.randomKey();
-            }
-          } else {
-            record.key = "";
-          }
+  //         if (!b) {
+  //           if (useDefaultKey) {
+  //             record.key = await crypt.defaultKey();
+  //           } else {
+  //             record.key = await crypt.randomKey();
+  //           }
+  //         } else {
+  //           record.key = "";
+  //         }
 
-          record.filePath = i.path;
-          record.jobType = !b ? JobType.encrypt : JobType.decrypt;
-          records.add(record);
-        }
+  //         record.filePath = i.path;
+  //         record.jobType = !b ? JobType.encrypt : JobType.decrypt;
+  //         records.add(record);
+  //       }
 
-        await database.isar!.files.putAll(records);
-      });
+  //       await database.isar!.files.putAll(records);
+  //     });
 
-      List<Files> records = await database.isar!.files
-          .where()
-          .offset(0)
-          .limit(pageSize)
-          .findAll();
-      return RecordsState(
-          list: records.map((e) => Record.fromModel(e)).toList());
-    });
-  }
+  //     List<Files> records = await database.isar!.files
+  //         .where()
+  //         .offset(0)
+  //         .limit(pageSize)
+  //         .findAll();
+  //     return RecordsState(
+  //         list: records.map((e) => Record.fromModel(e)).toList());
+  //   });
+  // }
 
   newTwoDatasourceRecords(String from, String to, Datasource fromDatasource,
       Datasource toDatasource,
       {String? key}) async {
     // 创建新的file
 
-    TransferRecords transferRecords = TransferRecords()
-      ..done = true
-      ..from = from
-      ..fromDatasource.value = fromDatasource
-      ..to = to
-      ..toDatasource.value = toDatasource;
+    ProcessRecords transferRecords = ProcessRecords()..done = true;
+    // ..from = from
+    // ..fromDatasource.value = fromDatasource
+    // ..to = to
+    // ..toDatasource.value = toDatasource;
 
     Files files = Files()
       ..filePath = from
-      ..jobType = JobType.encryptAndTransfer
-      ..key = key
+      ..datasource.value = fromDatasource
       ..transferRecords.add(transferRecords);
 
     await database.isar!.writeTxn(() async {
-      await database.isar!.transferRecords.put(transferRecords);
+      // await database.isar!.transferRecords.put(transferRecords);
       await database.isar!.files.put(files);
       await files.transferRecords.save();
+      await files.datasource.save();
     });
   }
 
@@ -97,13 +94,13 @@ class RecordsNotifier extends AutoDisposeAsyncNotifier<RecordsState> {
     if (item != null) {
       state = const AsyncLoading();
       state = await AsyncValue.guard(() async {
-        final records = await database.isar!.transferRecords
-            .filter()
-            .fromEqualTo(item.savePath)
+        final records = await database.isar!.processRecords
+            .where()
+            // .fromEqualTo(item.savePath)
             .sortByCreateAtDesc()
             .findAll();
 
-        item.transferRecords = records;
+        item.proccessRecords = records;
 
         return state.value!.copyWith(null, null);
       });
@@ -123,7 +120,7 @@ class RecordsNotifier extends AutoDisposeAsyncNotifier<RecordsState> {
           final record =
               await database.isar!.files.filter().idEqualTo(id).findFirst();
           if (record != null) {
-            record.encryptedSavePath = saved;
+            // record.encryptedSavePath = saved;
             await database.isar!.files.put(record);
           }
         });
@@ -149,7 +146,7 @@ class RecordsNotifier extends AutoDisposeAsyncNotifier<RecordsState> {
       final record =
           await database.isar!.files.filter().idEqualTo(f.id).findFirst();
       if (record != null) {
-        record.encryptedSavePath = null;
+        // record.encryptedSavePath = null;
         await database.isar!.files.put(record);
       }
     });
@@ -173,7 +170,7 @@ class RecordsNotifier extends AutoDisposeAsyncNotifier<RecordsState> {
 
     if (f != null) {
       state = const AsyncLoading();
-      f.key = key;
+      // f.key = key;
 
       state = await AsyncValue.guard(() async {
         await database.isar!.writeTxn(() async {
@@ -228,7 +225,7 @@ class RecordsNotifier extends AutoDisposeAsyncNotifier<RecordsState> {
       return RecordsState(
           list: records
               .map((e) => Record.fromModel(e,
-                  transferRecords: e.transferRecords.toList()))
+                  processRecords: e.transferRecords.toList()))
               .toList(),
           pageId: state.value!.pageId - 1);
     });
@@ -246,7 +243,7 @@ class RecordsNotifier extends AutoDisposeAsyncNotifier<RecordsState> {
       return RecordsState(
           list: records
               .map((e) => Record.fromModel(e,
-                  transferRecords: e.transferRecords.toList()))
+                  processRecords: e.transferRecords.toList()))
               .toList(),
           pageId: state.value!.pageId + 1);
     });

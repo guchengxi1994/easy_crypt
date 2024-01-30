@@ -126,7 +126,7 @@ abstract class RustLibApi extends BaseApi {
 
   Future<List<Entry>> listObjectsRight({required String p, dynamic hint});
 
-  Future<void> transferBetweenTwoDatasource(
+  Future<String> transferBetweenTwoDatasource(
       {required String p,
       required String savePath,
       required bool autoEncrypt,
@@ -641,7 +641,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       );
 
   @override
-  Future<void> transferBetweenTwoDatasource(
+  Future<String> transferBetweenTwoDatasource(
       {required String p,
       required String savePath,
       required bool autoEncrypt,
@@ -656,7 +656,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
             funcId: 9, port: port_);
       },
       codec: SseCodec(
-        decodeSuccessData: sse_decode_unit,
+        decodeSuccessData: sse_decode_String,
         decodeErrorData: null,
       ),
       constMeta: kTransferBetweenTwoDatasourceConstMeta,

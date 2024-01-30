@@ -67,11 +67,11 @@ class DatasourceWidget extends ConsumerWidget {
                           return Center(
                             child: S3FilePreview(
                                 isDialog: true,
-                                accesskey: datasource.accesskey!,
-                                bucketname: datasource.bucketname!,
-                                endpoint: datasource.endpoint!,
-                                sessionToken: datasource.sessionToken,
-                                sessionkey: datasource.sessionKey!),
+                                accesskey: datasource.s3config!.accesskey!,
+                                bucketname: datasource.s3config!.bucketname!,
+                                endpoint: datasource.s3config!.endpoint!,
+                                sessionToken: datasource.s3config!.sessionToken,
+                                sessionkey: datasource.s3config!.sessionKey!),
                           );
                         });
                   },
@@ -120,7 +120,7 @@ class DatasourceWidget extends ConsumerWidget {
               const TextSpan(
                   text: "endpoint: ",
                   style: TextStyle(color: AppStyle.appColor)),
-              TextSpan(text: datasource.endpoint),
+              TextSpan(text: datasource.s3config!.endpoint),
             ])),
             const SizedBox(
               height: 10,
@@ -129,7 +129,7 @@ class DatasourceWidget extends ConsumerWidget {
               const TextSpan(
                   text: "bucketname: ",
                   style: TextStyle(color: AppStyle.appColor)),
-              TextSpan(text: datasource.bucketname),
+              TextSpan(text: datasource.s3config!.bucketname),
             ])),
             const SizedBox(
               height: 10,
@@ -139,7 +139,8 @@ class DatasourceWidget extends ConsumerWidget {
                   text: "accesskey: ",
                   style: TextStyle(color: AppStyle.appColor)),
               TextSpan(
-                  text: datasource.accesskey!.replaceRange(3, null, "***")),
+                  text: datasource.s3config!.accesskey!
+                      .replaceRange(3, null, "***")),
             ])),
             const SizedBox(
               height: 10,
@@ -149,7 +150,8 @@ class DatasourceWidget extends ConsumerWidget {
                   text: "sessionKey: ",
                   style: TextStyle(color: AppStyle.appColor)),
               TextSpan(
-                  text: datasource.sessionKey!.replaceRange(3, null, "***")),
+                  text: datasource.s3config!.sessionKey!
+                      .replaceRange(3, null, "***")),
             ])),
             const SizedBox(
               height: 10,
@@ -158,17 +160,17 @@ class DatasourceWidget extends ConsumerWidget {
               const TextSpan(
                   text: "sessionToken: ",
                   style: TextStyle(color: AppStyle.appColor)),
-              if (datasource.sessionToken == null ||
-                  datasource.sessionToken == "")
+              if (datasource.s3config!.sessionToken == null ||
+                  datasource.s3config!.sessionToken == "")
                 const TextSpan(
                     text: "(It is better to have a session token)",
                     style: TextStyle(color: Colors.amberAccent)),
-              if (datasource.sessionToken != null &&
-                  datasource.sessionToken != "" &&
-                  datasource.sessionToken!.length > 5)
+              if (datasource.s3config!.sessionToken != null &&
+                  datasource.s3config!.sessionToken != "" &&
+                  datasource.s3config!.sessionToken!.length > 5)
                 TextSpan(
-                    text:
-                        datasource.sessionToken!.replaceRange(3, null, "***")),
+                    text: datasource.s3config!.sessionToken!
+                        .replaceRange(3, null, "***")),
             ])),
             const SizedBox(
               height: 10,
@@ -176,7 +178,7 @@ class DatasourceWidget extends ConsumerWidget {
             Text.rich(TextSpan(children: [
               const TextSpan(
                   text: "region: ", style: TextStyle(color: AppStyle.appColor)),
-              TextSpan(text: datasource.region),
+              TextSpan(text: datasource.s3config!.region),
             ])),
             const SizedBox(
               height: 10,

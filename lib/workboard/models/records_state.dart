@@ -1,5 +1,5 @@
 import 'package:easy_crypt/isar/files.dart';
-import 'package:easy_crypt/isar/transfer_records.dart';
+import 'package:easy_crypt/isar/process_records.dart';
 
 class RecordsState {
   List<Record> list;
@@ -22,7 +22,7 @@ class Record {
   String? key;
   ProgressStatus status;
   double progress;
-  List<TransferRecords> transferRecords;
+  List<ProcessRecords> proccessRecords;
   bool isEncrypt;
 
   Record(
@@ -33,22 +33,19 @@ class Record {
       this.savePath,
       this.status = ProgressStatus.unstart,
       this.progress = 0,
-      this.transferRecords = const [],
+      this.proccessRecords = const [],
       this.isEncrypt = false});
 
-  static Record fromModel(Files file,
-      {List<TransferRecords>? transferRecords}) {
+  static Record fromModel(Files file, {List<ProcessRecords>? processRecords}) {
     return Record(
         createAt: file.createAt,
         id: file.id,
         filePath: file.filePath,
-        savePath: file.encryptedSavePath,
-        key: file.key,
-        progress: file.encryptedSavePath != null ? 0 : 1,
-        status: file.encryptedSavePath != null
-            ? ProgressStatus.done
-            : ProgressStatus.unstart,
-        transferRecords: transferRecords ?? [],
-        isEncrypt: file.jobType == JobType.decrypt);
+        savePath: "",
+        key: "",
+        progress: 1,
+        status: ProgressStatus.unstart,
+        proccessRecords: processRecords ?? [],
+        isEncrypt: false);
   }
 }

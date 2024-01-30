@@ -105,19 +105,21 @@ class _AddDatasourceDialogState extends ConsumerState<AddDatasourceDialog>
                     onPressed: () {
                       if (tabController.index == 0 &&
                           _formKey.currentState!.validate()) {
-                        Datasource account = Datasource()
+                        final S3Config s3config = S3Config()
                           ..accesskey = s3accessKeyController.text
-                          ..datasourceType = DatasourceType.S3
-                          ..name = s3nameController.text
                           ..bucketname = s3bucketController.text
                           ..endpoint = s3endpointController.text
                           ..region = s3regionController.text
-                          ..sessionKey = s3sessionKeyController.text
-                          ..sessionToken = s3SessionTokenController.text;
+                          ..sessionKey = s3sessionKeyController.text;
+
+                        Datasource datasource = Datasource()
+                          ..s3config = s3config
+                          ..datasourceType = DatasourceType.S3
+                          ..name = s3nameController.text;
 
                         ref
                             .read(datasourceProvider.notifier)
-                            .addDatasource(account);
+                            .addDatasource(datasource);
                         Navigator.of(context).pop();
                       }
                     },

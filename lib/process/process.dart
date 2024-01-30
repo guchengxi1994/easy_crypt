@@ -7,7 +7,7 @@ import 'package:easy_crypt/common/logger.dart';
 import 'package:easy_crypt/isar/datasource.dart';
 import 'package:easy_crypt/isar/database.dart';
 import 'package:easy_crypt/isar/files.dart';
-import 'package:easy_crypt/isar/transfer_records.dart';
+import 'package:easy_crypt/isar/process_records.dart';
 import 'package:easy_crypt/src/rust/frb_generated.dart';
 import 'package:easy_crypt/src/rust/process/encrypt.dart';
 import 'package:easy_crypt/workboard/notifiers/records_notifier.dart';
@@ -79,22 +79,29 @@ class IsolateProcess {
         final file =
             database.isar!.files.filter().idEqualTo(fileId).findFirstSync()!;
 
+        final LocalConfig localConfig = LocalConfig()..path = p;
+
         final Datasource d = Datasource()
           ..name = p
-          ..path = p
+          ..localConfig = localConfig
           ..datasourceType = DatasourceType.Local;
 
-        TransferRecords records = TransferRecords()
-          ..done = true
-          ..fromDatasource.value = d
+        TransferConfig transferConfig = TransferConfig()
           ..from = p
-          ..to = objectKey
-          ..toDatasource.value = datasource;
+          ..fromDatasourceId;
+
+        ProcessRecords records = ProcessRecords()
+          ..done = true
+          ..jobType = JobType.encryptAndTransfer;
+        // ..fromDatasource.value = d
+        // ..from = p
+        // ..to = objectKey
+        // ..toDatasource.value = datasource;
         file.transferRecords.add(records);
 
         database.isar!.writeTxnSync(() {
-          database.isar!.transferRecords.putSync(records);
-          records.toDatasource.saveSync();
+          database.isar!.processRecords.putSync(records);
+          // records.toDatasource.saveSync();
           file.transferRecords.saveSync();
         });
 
@@ -108,14 +115,14 @@ class IsolateProcess {
     },
         UploadMessage(
             sendPort: receivePort.sendPort,
-            endpoint: datasource.endpoint!,
-            accessKey: datasource.accesskey!,
-            bucketname: datasource.bucketname!,
+            endpoint: datasource.s3config!.endpoint!,
+            accessKey: datasource.s3config!.accesskey!,
+            bucketname: datasource.s3config!.bucketname!,
             objectKey: objectKey,
             p: p,
-            region: datasource.region!,
-            sessionKey: datasource.sessionKey!,
-            sessionToken: datasource.sessionToken));
+            region: datasource.s3config!.region!,
+            sessionKey: datasource.s3config!.sessionKey!,
+            sessionToken: datasource.s3config!.sessionToken));
   }
 
   static void _upload(UploadMessage message) async {

@@ -56,16 +56,18 @@ class _FsPreviewState extends ConsumerState<FsPreview> {
                   DatasourceSelection(
                     onItemSelect: (v) async {
                       if (v.datasourceType == DatasourceType.Local) {
-                        if (v.path == "selecting") {
+                        if (v.localConfig!.path == "selecting") {
                           final String? directoryPath =
                               await getDirectoryPath();
                           if (directoryPath == null) {
                             return;
                           }
+                          LocalConfig localConfig = LocalConfig()
+                            ..path = directoryPath;
                           // 新建 本地数据源
                           final d = Datasource()
                             ..datasourceType = DatasourceType.Local
-                            ..path = directoryPath
+                            ..localConfig = localConfig
                             ..name = directoryPath;
 
                           ref
@@ -95,9 +97,9 @@ class _FsPreviewState extends ConsumerState<FsPreview> {
                           }
 
                           setState(() {
-                            txt = "Local:  ${v.path}";
+                            txt = "Local:  ${v.localConfig?.path}";
                             child = LocalFilePreview(
-                              path: v.path!,
+                              path: v.localConfig!.path!,
                               previewType: widget.previewType,
                               width: widget.width,
                               height: widget.height,
@@ -119,11 +121,11 @@ class _FsPreviewState extends ConsumerState<FsPreview> {
                           txt = "Remote:  ${v.name}";
                           child = S3FilePreview(
                               previewType: widget.previewType,
-                              accesskey: v.accesskey!,
-                              bucketname: v.bucketname!,
-                              endpoint: v.endpoint!,
-                              sessionToken: v.sessionToken,
-                              sessionkey: v.sessionKey!);
+                              accesskey: v.s3config!.accesskey!,
+                              bucketname: v.s3config!.bucketname!,
+                              endpoint: v.s3config!.endpoint!,
+                              sessionToken: v.s3config!.sessionToken,
+                              sessionkey: v.s3config!.sessionKey!);
                         });
                       }
                     },

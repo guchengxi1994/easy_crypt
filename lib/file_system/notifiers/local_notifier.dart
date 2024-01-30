@@ -17,13 +17,14 @@ class LocalNotifier extends AutoDisposeAsyncNotifier<LocalState> {
   @override
   FutureOr<LocalState> build() async {
     final i = await ds.addLocalDatasource(p: path);
+    final LocalConfig localConfig = LocalConfig()..path = path;
     if (previewType == PreviewType.Left) {
       ref.read(cachedProvider.notifier).setLeft(Datasource()
-        ..path = path
+        ..localConfig = localConfig
         ..datasourceType = DatasourceType.Local);
     } else {
       ref.read(cachedProvider.notifier).setRight(Datasource()
-        ..path = path
+        ..localConfig = localConfig
         ..datasourceType = DatasourceType.Local);
     }
 

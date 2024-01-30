@@ -30,7 +30,7 @@ pub fn transfer_from_left_to_right(
     })
 }
 
-pub fn transfer_between_two_datasource(p: String, save_path: String, auto_encrypt: bool) {
+pub fn transfer_between_two_datasource(p: String, save_path: String, auto_encrypt: bool) -> String {
     let a = TWODATASOURCES.read().unwrap();
 
     let rt = tokio::runtime::Runtime::new().unwrap();
@@ -40,9 +40,12 @@ pub fn transfer_between_two_datasource(p: String, save_path: String, auto_encryp
             .transfer_from_left_to_right(p, save_path, auto_encrypt)
             .await;
         match r {
-            Ok(_) => {}
+            Ok(_key) => {
+                return _key;
+            }
             Err(_e) => {
-                println!("error {:?}", _e)
+                println!("error {:?}", _e);
+                return "error".to_owned();
             }
         }
     })
