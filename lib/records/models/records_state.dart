@@ -2,18 +2,19 @@ import 'package:easy_crypt/isar/files.dart';
 import 'package:easy_crypt/isar/process_records.dart';
 
 class RecordsState {
-  List<Record> list;
+  List<ProcessRecords> list;
   int pageId;
 
   RecordsState({required this.list, this.pageId = 1});
 
-  RecordsState copyWith(List<Record>? list, int? pageId) {
+  RecordsState copyWith(List<ProcessRecords>? list, int? pageId) {
     return RecordsState(list: list ?? this.list, pageId: pageId ?? this.pageId);
   }
 }
 
 enum ProgressStatus { onProgress, done, unstart }
 
+@Deprecated("remove later")
 class Record {
   int id;
   int createAt;

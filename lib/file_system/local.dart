@@ -112,8 +112,6 @@ class LocalFilePreview extends ConsumerWidget {
                           final left =
                               ref.read(cachedProvider.notifier).findLeft();
 
-                          // print(left);
-
                           if (left != null) {
                             final list = await ds.listObjectsLeft(p: e.path);
 

@@ -2,7 +2,6 @@ import 'dart:async';
 
 import 'package:easy_crypt/file_system/enum.dart';
 import 'package:easy_crypt/file_system/models/local_state.dart';
-import 'package:easy_crypt/isar/datasource.dart';
 import 'package:easy_crypt/src/rust/api/datasource.dart';
 import 'package:easy_crypt/src/rust/process/datasource.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -16,19 +15,7 @@ class LocalNotifier extends AutoDisposeAsyncNotifier<LocalState> {
 
   @override
   FutureOr<LocalState> build() async {
-    final i = await ds.addLocalDatasource(p: path);
-    final LocalConfig localConfig = LocalConfig()..path = path;
-    if (previewType == PreviewType.Left) {
-      ref.read(cachedProvider.notifier).setLeft(Datasource()
-        ..localConfig = localConfig
-        ..datasourceType = DatasourceType.Local);
-    } else {
-      ref.read(cachedProvider.notifier).setRight(Datasource()
-        ..localConfig = localConfig
-        ..datasourceType = DatasourceType.Local);
-    }
-
-    final list = await ds.listObjectsByIndex(index: i, p: "/");
+    final list = await ds.listObjectsLeft(p: "/");
 
     return LocalState(entries: list, routers: ["/"]);
   }

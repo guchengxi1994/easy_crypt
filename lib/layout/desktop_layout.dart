@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:dropdown_button2/dropdown_button2.dart';
+import 'package:easy_crypt/common/toast_utils.dart';
 import 'package:easy_crypt/datasource/datasource_screen.dart';
 import 'package:easy_crypt/datasource/notifiers/datasource_notifier.dart';
 import 'package:easy_crypt/common/dev_utils.dart';
@@ -18,8 +19,8 @@ import 'package:easy_crypt/layout/models/job_state.dart';
 import 'package:easy_crypt/layout/notifiers/job_notifier.dart';
 import 'package:easy_crypt/src/rust/process/datasource.dart';
 import 'package:easy_crypt/style/app_style.dart';
-import 'package:easy_crypt/workboard/notifiers/records_notifier.dart';
-import 'package:easy_crypt/workboard/workboard.dart';
+import 'package:easy_crypt/records/notifiers/records_notifier.dart';
+import 'package:easy_crypt/records/process_records_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:window_manager/window_manager.dart';
@@ -238,6 +239,18 @@ class _LayoutState extends ConsumerState<Layout> with TickerProviderStateMixin {
                             ),
                             right: DragTarget<Entry>(onAccept: (data) async {
                               // print(data.path);
+                              if (ref
+                                          .read(cachedProvider.notifier)
+                                          .findLeft() ==
+                                      null ||
+                                  ref
+                                          .read(cachedProvider.notifier)
+                                          .findRight() ==
+                                      null) {
+                                ToastUtils.error(context,
+                                    title: "invalid datasource");
+                                return;
+                              }
 
                               if (data.type == EntryType.file) {
                                 final name = basename(data.path);
@@ -246,19 +259,23 @@ class _LayoutState extends ConsumerState<Layout> with TickerProviderStateMixin {
                                         savePath: "easy_encrypt_upload/$name",
                                         autoEncrypt: true)
                                     .then((value) {
-                                  /// TODO 将这条记录记下来
-                                  /// TODO 需要将结果透传回来
-                                  ref
-                                      .read(recordsProvider.notifier)
-                                      .newTwoDatasourceRecords(
-                                          data.path,
-                                          "easy_encrypt_upload/$name",
-                                          ref
-                                              .read(cachedProvider.notifier)
-                                              .findLeft()!,
-                                          ref
-                                              .read(cachedProvider.notifier)
-                                              .findRight()!);
+                                  if (value != "error") {
+                                    ref
+                                        .read(recordsProvider.notifier)
+                                        .newTwoDatasourceRecords(
+                                            data.path,
+                                            "easy_encrypt_upload/$name",
+                                            ref
+                                                .read(cachedProvider.notifier)
+                                                .findLeft()!,
+                                            ref
+                                                .read(cachedProvider.notifier)
+                                                .findRight()!,
+                                            key: value);
+                                  } else {
+                                    ToastUtils.error(context,
+                                        title: "transfer error");
+                                  }
                                 });
                               }
                             }, builder: (c, _, __) {
@@ -267,7 +284,7 @@ class _LayoutState extends ConsumerState<Layout> with TickerProviderStateMixin {
                               );
                             }),
                           ),
-                          const Workboard(),
+                          const ProcessRecordsScreen(),
                           const FlowScreen(),
                           const DatasourceScreen(),
                         ],
