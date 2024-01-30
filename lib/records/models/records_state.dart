@@ -1,19 +1,20 @@
 import 'package:easy_crypt/isar/files.dart';
-import 'package:easy_crypt/isar/transfer_records.dart';
+import 'package:easy_crypt/isar/process_records.dart';
 
 class RecordsState {
-  List<Record> list;
+  List<ProcessRecords> list;
   int pageId;
 
   RecordsState({required this.list, this.pageId = 1});
 
-  RecordsState copyWith(List<Record>? list, int? pageId) {
+  RecordsState copyWith(List<ProcessRecords>? list, int? pageId) {
     return RecordsState(list: list ?? this.list, pageId: pageId ?? this.pageId);
   }
 }
 
 enum ProgressStatus { onProgress, done, unstart }
 
+@Deprecated("remove later")
 class Record {
   int id;
   int createAt;
@@ -22,7 +23,7 @@ class Record {
   String? key;
   ProgressStatus status;
   double progress;
-  List<TransferRecords> transferRecords;
+  List<ProcessRecords> proccessRecords;
   bool isEncrypt;
 
   Record(
@@ -33,22 +34,19 @@ class Record {
       this.savePath,
       this.status = ProgressStatus.unstart,
       this.progress = 0,
-      this.transferRecords = const [],
+      this.proccessRecords = const [],
       this.isEncrypt = false});
 
-  static Record fromModel(Files file,
-      {List<TransferRecords>? transferRecords}) {
+  static Record fromModel(Files file, {List<ProcessRecords>? processRecords}) {
     return Record(
         createAt: file.createAt,
         id: file.id,
         filePath: file.filePath,
-        savePath: file.savePath,
-        key: file.key,
-        progress: file.savePath != null ? 0 : 1,
-        status: file.savePath != null
-            ? ProgressStatus.done
-            : ProgressStatus.unstart,
-        transferRecords: transferRecords ?? [],
-        isEncrypt: file.jobType == JobType.decryption);
+        savePath: "",
+        key: "",
+        progress: 1,
+        status: ProgressStatus.unstart,
+        proccessRecords: processRecords ?? [],
+        isEncrypt: false);
   }
 }

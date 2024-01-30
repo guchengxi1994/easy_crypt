@@ -1,8 +1,9 @@
 // ignore_for_file: avoid_init_to_null
 
 import 'package:dropdown_button2/dropdown_button2.dart';
-import 'package:easy_crypt/file_system/models/datasource_state.dart';
-import 'package:easy_crypt/file_system/notifiers/datasource_notifier.dart';
+import 'package:easy_crypt/datasource/models/datasource_state.dart';
+import 'package:easy_crypt/datasource/notifiers/datasource_notifier.dart';
+
 import 'package:easy_crypt/gen/strings.g.dart';
 import 'package:easy_crypt/isar/datasource.dart';
 import 'package:flutter/material.dart';
@@ -24,17 +25,19 @@ class _DatasourceSelectionState extends ConsumerState<DatasourceSelection> {
   List<Datasource> items = [];
   bool _isOpen = false;
 
+  late LocalConfig newLocalConfig = LocalConfig()..path = "selecting";
+
   @override
   Widget build(BuildContext context) {
-    final datasources = ref.watch(datasourceItemsProvider);
+    final datasources = ref.watch(datasourceProvider);
 
     return switch (datasources) {
       AsyncValue<DatasourceState>(:final value?) => Builder(builder: (c) {
-          // items.clear();
           items = List.of(value.datasources)
             ..add(Datasource()
               ..datasourceType = DatasourceType.Local
-              ..name = t.workboard.addlocal);
+              ..name = t.workboard.addlocal
+              ..localConfig = newLocalConfig);
 
           return DropdownButtonHideUnderline(
               child: DropdownButton2<Datasource>(
@@ -51,12 +54,13 @@ class _DatasourceSelectionState extends ConsumerState<DatasourceSelection> {
                 _isOpen = isOpen;
               });
             },
-            customButton: Container(
+            customButton: AnimatedContainer(
               padding: const EdgeInsets.all(4),
               decoration: BoxDecoration(
                   border: Border.all(color: Colors.grey),
                   borderRadius: BorderRadius.circular(4)),
               width: _isOpen ? 240 : 100,
+              duration: const Duration(milliseconds: 150),
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [

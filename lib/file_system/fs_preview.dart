@@ -1,3 +1,4 @@
+import 'package:easy_crypt/datasource/notifiers/datasource_notifier.dart';
 import 'package:easy_crypt/file_system/enum.dart';
 import 'package:easy_crypt/file_system/local.dart';
 import 'package:easy_crypt/file_system/s3.dart';
@@ -25,16 +26,6 @@ class FsPreview extends ConsumerStatefulWidget {
 class _FsPreviewState extends ConsumerState<FsPreview> {
   late Widget child = Container();
   late String txt = t.workboard.title;
-
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-  }
-
-  @override
-  void didUpdateWidget(covariant FsPreview oldWidget) {
-    super.didUpdateWidget(oldWidget);
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -65,33 +56,61 @@ class _FsPreviewState extends ConsumerState<FsPreview> {
                   DatasourceSelection(
                     onItemSelect: (v) async {
                       if (v.datasourceType == DatasourceType.Local) {
-                        final String? directoryPath = await getDirectoryPath();
-                        if (directoryPath == null) {
-                          return;
-                        }
-
-                        if (widget.previewType == PreviewType.Left) {
-                          ref.read(cachedProvider.notifier).setLeft(Datasource()
+                        if (v.localConfig!.path == "selecting") {
+                          final String? directoryPath =
+                              await getDirectoryPath();
+                          if (directoryPath == null) {
+                            return;
+                          }
+                          LocalConfig localConfig = LocalConfig()
+                            ..path = directoryPath;
+                          // 新建 本地数据源
+                          final d = Datasource()
                             ..datasourceType = DatasourceType.Local
-                            ..path = directoryPath);
-                        } else {
+                            ..localConfig = localConfig
+                            ..name = directoryPath;
+
                           ref
-                              .read(cachedProvider.notifier)
-                              .setRight(Datasource()
-                                ..datasourceType = DatasourceType.Local
-                                ..path = directoryPath);
+                              .read(datasourceProvider.notifier)
+                              .addDatasource(d);
+
+                          if (widget.previewType == PreviewType.Left) {
+                            ref.read(cachedProvider.notifier).setLeft(d);
+                          } else {
+                            ref.read(cachedProvider.notifier).setRight(d);
+                          }
+
+                          setState(() {
+                            txt = "Local:  $directoryPath";
+                            child = LocalFilePreview(
+                              path: directoryPath,
+                              previewType: widget.previewType,
+                              width: widget.width,
+                              height: widget.height,
+                            );
+                          });
+                        } else {
+                          if (widget.previewType == PreviewType.Left) {
+                            ref.read(cachedProvider.notifier).setLeft(v);
+                          } else {
+                            ref.read(cachedProvider.notifier).setRight(v);
+                          }
+
+                          setState(() {
+                            txt = "Local:  ${v.localConfig?.path}";
+                            child = LocalFilePreview(
+                              path: v.localConfig!.path!,
+                              previewType: widget.previewType,
+                              width: widget.width,
+                              height: widget.height,
+                            );
+                          });
                         }
 
-                        setState(() {
-                          txt = "Local:  $directoryPath";
-                          child = LocalFilePreview(
-                            path: directoryPath,
-                            previewType: widget.previewType,
-                            width: widget.width,
-                            height: widget.height,
-                          );
-                        });
-                      } else if (v.datasourceType == DatasourceType.S3) {
+                        return;
+                      }
+
+                      if (v.datasourceType == DatasourceType.S3) {
                         if (widget.previewType == PreviewType.Left) {
                           ref.read(cachedProvider.notifier).setLeft(v);
                         } else {
@@ -102,11 +121,11 @@ class _FsPreviewState extends ConsumerState<FsPreview> {
                           txt = "Remote:  ${v.name}";
                           child = S3FilePreview(
                               previewType: widget.previewType,
-                              accesskey: v.accesskey!,
-                              bucketname: v.bucketname!,
-                              endpoint: v.endpoint!,
-                              sessionToken: v.sessionToken,
-                              sessionkey: v.sessionKey!);
+                              accesskey: v.s3config!.accesskey!,
+                              bucketname: v.s3config!.bucketname!,
+                              endpoint: v.s3config!.endpoint!,
+                              sessionToken: v.s3config!.sessionToken,
+                              sessionkey: v.s3config!.sessionKey!);
                         });
                       }
                     },

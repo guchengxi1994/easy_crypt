@@ -23,26 +23,16 @@ extension ToString on DatasourceType {
 class Datasource {
   @enumerated
   late DatasourceType datasourceType;
+
+  @Index(unique: true, type: IndexType.hash)
   String? name;
 
   Id id = Isar.autoIncrement;
   int createAt = DateTime.now().millisecondsSinceEpoch;
 
-  /* S3 config */
-  String? endpoint;
-  String? bucketname;
-  String? accesskey;
-  String? sessionKey;
-  String? sessionToken;
-  String? region;
-
-  /* webdav config */
-  String? url;
-  String? username;
-  String? password;
-
-  /* local */
-  String? path;
+  S3Config? s3config;
+  WebdavConfig? webdavConfig;
+  LocalConfig? localConfig;
 
   @override
   bool operator ==(Object other) {
@@ -54,4 +44,30 @@ class Datasource {
 
   @override
   int get hashCode => id.hashCode;
+}
+
+/* S3 config */
+@embedded
+class S3Config {
+  String? endpoint;
+  String? bucketname;
+  String? accesskey;
+  String? sessionKey;
+  String? sessionToken;
+  String? region;
+}
+
+/* webdav config */
+@embedded
+class WebdavConfig {
+  String? url;
+  String? username;
+  String? password;
+}
+
+/* local */
+@embedded
+class LocalConfig {
+  /// 文件夹路径
+  String? path;
 }

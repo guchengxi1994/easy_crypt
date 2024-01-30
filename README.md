@@ -10,9 +10,15 @@
 
 **EasyCrypt** is a tool which provides encryption and decryption
 
+## How to build
 
+* install flutter
+* install rust 
+* install llvm
+* download [NotoSans](https://fonts.google.com/noto/specimen/Noto+Sans) and put `NotoSansSC-Bold.ttf` to `assets/fonts/` 
+* run `flutter run -d windows/linux/...`
 
-## key features
+## Key features
 
 * encryption and decryption
 * support S3,Webdav(WIP),... 

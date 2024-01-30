@@ -22,7 +22,7 @@ Future<void> transferFromLeftToRight(
         autoEncrypt: autoEncrypt,
         hint: hint);
 
-Future<void> transferBetweenTwoDatasource(
+Future<String> transferBetweenTwoDatasource(
         {required String p,
         required String savePath,
         required bool autoEncrypt,

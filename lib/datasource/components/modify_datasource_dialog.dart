@@ -39,20 +39,22 @@ class _ModifyDatasourceDialogState
                 TextButton(
                     onPressed: () {
                       if (_formKey.currentState!.validate()) {
-                        Datasource datasource = Datasource()
+                        final S3Config s3config = S3Config()
                           ..accesskey = s3accessKeyController.text
-                          ..datasourceType = DatasourceType.S3
-                          ..name = s3nameController.text
                           ..bucketname = s3bucketController.text
                           ..endpoint = s3endpointController.text
                           ..region = s3regionController.text
-                          ..sessionKey = s3sessionKeyController.text
-                          ..sessionToken = s3SessionTokenController.text
+                          ..sessionKey = s3sessionKeyController.text;
+
+                        Datasource datasource = Datasource()
+                          ..s3config = s3config
+                          ..datasourceType = DatasourceType.S3
+                          ..name = s3nameController.text
                           ..id = widget.datasource.id;
 
                         ref
                             .read(datasourceProvider.notifier)
-                            .addAccount(datasource);
+                            .addDatasource(datasource);
                         Navigator.of(context).pop();
                       }
                     },
@@ -70,23 +72,27 @@ class _ModifyDatasourceDialogState
   late final TextEditingController s3nameController = TextEditingController()
     ..text = widget.datasource.name ?? "";
   late final TextEditingController s3endpointController =
-      TextEditingController()..text = widget.datasource.endpoint ?? "";
+      TextEditingController()
+        ..text = widget.datasource.s3config!.endpoint ?? "";
   late final s3endpointFocusNode = FocusNode();
   late final TextEditingController s3regionController = TextEditingController()
-    ..text = widget.datasource.region ?? "";
+    ..text = widget.datasource.s3config?.region ?? "";
   late final s3regionFocusNode = FocusNode();
   late final TextEditingController s3accessKeyController =
-      TextEditingController()..text = widget.datasource.accesskey ?? "";
+      TextEditingController()
+        ..text = widget.datasource.s3config?.accesskey ?? "";
   late final s3accessKeyFocusNode = FocusNode();
   late final TextEditingController s3sessionKeyController =
-      TextEditingController()..text = widget.datasource.sessionKey ?? "";
+      TextEditingController()
+        ..text = widget.datasource.s3config?.sessionKey ?? "";
   late final s3sessionKeyFocusNode = FocusNode();
   late final TextEditingController s3SessionTokenController =
-      TextEditingController()..text = widget.datasource.sessionToken ?? "";
+      TextEditingController()
+        ..text = widget.datasource.s3config?.sessionToken ?? "";
   late final s3sessionTokenFocusNode = FocusNode();
 
   late final TextEditingController s3bucketController = TextEditingController()
-    ..text = widget.datasource.bucketname ?? "";
+    ..text = widget.datasource.s3config?.bucketname ?? "";
   late final s3bucketFocusNode = FocusNode();
 
   final _formKey = GlobalKey<FormState>();
@@ -255,13 +261,13 @@ class _ModifyDatasourceDialogState
     ..text = widget.datasource.name ?? "";
   final webdavUrlFocusNode = FocusNode();
   late final webdavUrlController = TextEditingController()
-    ..text = widget.datasource.url ?? "";
+    ..text = widget.datasource.webdavConfig?.url ?? "";
   final webdavUsernameFocusNode = FocusNode();
   late final webdavUsernameController = TextEditingController()
-    ..text = widget.datasource.username ?? "";
+    ..text = widget.datasource.webdavConfig?.username ?? "";
   final webdavPwdFocusNode = FocusNode();
   late final webdavPwdController = TextEditingController()
-    ..text = widget.datasource.password ?? "";
+    ..text = widget.datasource.webdavConfig?.password ?? "";
 
   // tested on 坚果云
   Widget _webdavWidget() {

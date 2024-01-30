@@ -6,10 +6,9 @@ class CachedDatasourceState {
   Datasource? right;
 
   CachedDatasourceState({this.left, this.right});
-}
 
-class DatasourceState {
-  List<Datasource> datasources;
-
-  DatasourceState({required this.datasources});
+  CachedDatasourceState copyWith(Datasource? left, Datasource? right) {
+    return CachedDatasourceState(
+        left: left ?? this.left, right: right ?? this.right);
+  }
 }

@@ -1,4 +1,4 @@
-import 'package:easy_crypt/workboard/components/removable_item.dart';
+import 'package:easy_crypt/records/components/removable_item.dart';
 import 'package:file_selector/file_selector.dart';
 import 'package:flutter/material.dart';
 

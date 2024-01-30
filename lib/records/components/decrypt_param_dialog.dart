@@ -1,5 +1,5 @@
 import 'package:easy_crypt/style/app_style.dart';
-import 'package:easy_crypt/workboard/models/decrypt_param_dialog_model.dart';
+import 'package:easy_crypt/records/models/decrypt_param_dialog_model.dart';
 import 'package:flutter/material.dart';
 
 class DecryptParamDialog extends StatefulWidget {

@@ -7,10 +7,10 @@ import 'package:easy_crypt/common/logger.dart';
 import 'package:easy_crypt/isar/datasource.dart';
 import 'package:easy_crypt/isar/database.dart';
 import 'package:easy_crypt/isar/files.dart';
-import 'package:easy_crypt/isar/transfer_records.dart';
+import 'package:easy_crypt/isar/process_records.dart';
 import 'package:easy_crypt/src/rust/frb_generated.dart';
 import 'package:easy_crypt/src/rust/process/encrypt.dart';
-import 'package:easy_crypt/workboard/notifiers/records_notifier.dart';
+import 'package:easy_crypt/records/notifiers/records_notifier.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:isar/isar.dart';
 
@@ -79,25 +79,34 @@ class IsolateProcess {
         final file =
             database.isar!.files.filter().idEqualTo(fileId).findFirstSync()!;
 
-        TransferRecords records = TransferRecords()
-          ..done = true
-          ..fromType = StorageType.Local
-          ..toType = datasource.datasourceType == DatasourceType.S3
-              ? StorageType.S3
-              : StorageType.Webdav
+        final LocalConfig localConfig = LocalConfig()..path = p;
+
+        final Datasource d = Datasource()
+          ..name = p
+          ..localConfig = localConfig
+          ..datasourceType = DatasourceType.Local;
+
+        TransferConfig transferConfig = TransferConfig()
           ..from = p
-          ..to = objectKey
-          ..account.value = datasource;
+          ..fromDatasourceId;
+
+        ProcessRecords records = ProcessRecords()
+          ..done = true
+          ..jobType = JobType.encryptAndTransfer;
+        // ..fromDatasource.value = d
+        // ..from = p
+        // ..to = objectKey
+        // ..toDatasource.value = datasource;
         file.transferRecords.add(records);
 
         database.isar!.writeTxnSync(() {
-          database.isar!.transferRecords.putSync(records);
-          records.account.saveSync();
+          database.isar!.processRecords.putSync(records);
+          // records.toDatasource.saveSync();
           file.transferRecords.saveSync();
         });
 
         if (ref != null) {
-          ref.read(recordsProvider.notifier).loadTransferLogs(p);
+          // ref.read(recordsProvider.notifier).loadTransferLogs(p);
         }
       }
     });
@@ -106,14 +115,14 @@ class IsolateProcess {
     },
         UploadMessage(
             sendPort: receivePort.sendPort,
-            endpoint: datasource.endpoint!,
-            accessKey: datasource.accesskey!,
-            bucketname: datasource.bucketname!,
+            endpoint: datasource.s3config!.endpoint!,
+            accessKey: datasource.s3config!.accesskey!,
+            bucketname: datasource.s3config!.bucketname!,
             objectKey: objectKey,
             p: p,
-            region: datasource.region!,
-            sessionKey: datasource.sessionKey!,
-            sessionToken: datasource.sessionToken));
+            region: datasource.s3config!.region!,
+            sessionKey: datasource.s3config!.sessionKey!,
+            sessionToken: datasource.s3config!.sessionToken));
   }
 
   static void _upload(UploadMessage message) async {
