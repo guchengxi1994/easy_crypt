@@ -23,14 +23,17 @@ class LocalFilePreview extends ConsumerWidget {
   final double? height;
   final PreviewType? previewType;
   final String path;
-  late final localNotifier =
-      AutoDisposeAsyncNotifierProvider<LocalNotifier, LocalState>(
-    () => LocalNotifier(path: path, previewType: previewType),
+  late final localNotifier = AutoDisposeAsyncNotifierProvider.family<
+      LocalNotifier, LocalState, String>(
+    () {
+      print("path   $path");
+      return LocalNotifier(path: path, previewType: previewType);
+    },
   );
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final state = ref.watch(localNotifier);
+    final state = ref.watch(localNotifier(path));
 
     return switch (state) {
       AsyncValue<LocalState>(:final value?) => Material(
@@ -55,14 +58,14 @@ class LocalFilePreview extends ConsumerWidget {
                             return;
                           }
                           ref
-                              .read(localNotifier.notifier)
+                              .read(localNotifier(path).notifier)
                               .prev(previewType == PreviewType.Left ? 1 : 0);
                         },
                         onRefreshClick: () {
                           if (previewType == null) {
                             return;
                           }
-                          ref.read(localNotifier.notifier).refreshCurrent(
+                          ref.read(localNotifier(path).notifier).refreshCurrent(
                               previewType == PreviewType.Left ? 1 : 0);
                         },
                       )),
@@ -115,7 +118,7 @@ class LocalFilePreview extends ConsumerWidget {
                       final item = DataWriterItem();
 
                       final p =
-                          "${ref.read(localNotifier.notifier).path}/${e.path}";
+                          "${ref.read(localNotifier(path).notifier).path}/${e.path}";
                       item.add(Formats.fileUri(Uri.file(p)));
                       await clipboard!.write([item]);
                     },
@@ -133,7 +136,7 @@ class LocalFilePreview extends ConsumerWidget {
 
                             if (list.isNotEmpty) {
                               ref
-                                  .read(localNotifier.notifier)
+                                  .read(localNotifier(path).notifier)
                                   .refresh(list, e.path);
                             }
                           }
@@ -146,7 +149,7 @@ class LocalFilePreview extends ConsumerWidget {
                             final list = await ds.listObjectsRight(p: e.path);
                             if (list.isNotEmpty) {
                               ref
-                                  .read(localNotifier.notifier)
+                                  .read(localNotifier(path).notifier)
                                   .refresh(list, e.path);
                             }
                           }

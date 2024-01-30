@@ -8,17 +8,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:easy_crypt/src/rust/api/datasource.dart' as ds;
 import 'cached_datasource_notifier.dart';
 
-class LocalNotifier extends AutoDisposeAsyncNotifier<LocalState> {
+class LocalNotifier extends AutoDisposeFamilyAsyncNotifier<LocalState, String> {
   final String path;
   final PreviewType? previewType;
   LocalNotifier({required this.path, required this.previewType});
-
-  @override
-  FutureOr<LocalState> build() async {
-    final list = await ds.listObjectsLeft(p: "/");
-
-    return LocalState(entries: list, routers: ["/"]);
-  }
 
   refresh(List<Entry> entries, String router) async {
     final routers0 = router.split("/");
@@ -70,6 +63,7 @@ class LocalNotifier extends AutoDisposeAsyncNotifier<LocalState> {
 
   prev(/* left = 1, right = 0 */ int leftOrRight) async {
     List<String> routers = List.from(state.value!.routers);
+    print(routers);
     if (routers.length <= 1) {
       return;
     }
@@ -103,8 +97,15 @@ class LocalNotifier extends AutoDisposeAsyncNotifier<LocalState> {
       }
     }
   }
-}
 
-// final localNotifier = AutoDisposeNotifierProvider<LocalNotifier, LocalState>(
-//   () => LocalNotifier(),
-// );
+  @override
+  FutureOr<LocalState> build(String arg) async {
+    if (previewType == PreviewType.Left) {
+      final list = await ds.listObjectsLeft(p: "/");
+      return LocalState(entries: list, routers: ["/"]);
+    } else {
+      final list = await ds.listObjectsRight(p: "/");
+      return LocalState(entries: list, routers: ["/"]);
+    }
+  }
+}
