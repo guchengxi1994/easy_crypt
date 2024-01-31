@@ -36,11 +36,13 @@ impl TwoDatasources {
         p: String,
         save_path: String,
         auto_encrypt: bool,
+        certain_key: Option<String>,
     ) -> anyhow::Result<String> {
         let mut _key: String = String::new();
         if let Some(_left) = &self.left {
             if let Some(_right) = &self.right {
-                _key = Self::transfer(_left, _right, p, save_path, auto_encrypt).await?;
+                _key =
+                    Self::transfer(_left, _right, p, save_path, auto_encrypt, certain_key).await?;
             } else {
                 anyhow::bail!("right datasource error")
             }
@@ -56,13 +58,19 @@ impl TwoDatasources {
         right: &Box<dyn ClientTrait + Send + Sync>,
         p: String,
         save_path: String,
-        /* not work right now*/ auto_encrypt: bool,
+        auto_encrypt: bool,
+        certain_key: Option<String>,
     ) -> anyhow::Result<String> {
         let mut message = TwoDatasourceTransferMessage::default()?;
         message.file_path = p.clone();
         message.save_path = save_path.clone();
         message.auto_encrypt = auto_encrypt;
-        let key = random_key();
+        let key: String;
+        if let Some(c) = certain_key {
+            key = c;
+        } else {
+            key = random_key();
+        }
 
         if auto_encrypt {
             message.key = Some(key.clone());

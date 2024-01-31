@@ -9,6 +9,8 @@ import 'package:easy_crypt/file_system/components/board.dart';
 import 'package:easy_crypt/file_system/enum.dart';
 import 'package:easy_crypt/file_system/fs_preview.dart';
 import 'package:easy_crypt/file_system/notifiers/cached_datasource_notifier.dart';
+import 'package:easy_crypt/settings/settings_notifier.dart';
+import 'package:easy_crypt/settings/settings_screen.dart';
 import 'package:easy_crypt/src/rust/api/datasource.dart';
 import 'package:easy_crypt/src/rust/api/simple.dart';
 import 'package:easy_crypt/common/logger.dart';
@@ -27,7 +29,7 @@ import 'package:window_manager/window_manager.dart';
 
 import 'notifiers/expand_collapse_notifier.dart';
 import 'notifiers/navigator_notifier.dart';
-import 'notifiers/setting_notifier.dart';
+import 'notifiers/locale_setting_notifier.dart';
 // ignore: depend_on_referenced_packages
 import 'package:path/path.dart';
 
@@ -96,13 +98,13 @@ class _LayoutState extends ConsumerState<Layout> with TickerProviderStateMixin {
   var future;
 
   initI18n() {
-    LocaleSettings.setLocaleRaw(ref.read(settingsNotifier).currentLocale);
+    LocaleSettings.setLocaleRaw(ref.read(localeSettingNotifier).currentLocale);
   }
 
   @override
   Widget build(BuildContext context) {
     // ignore: non_constant_identifier_names
-    final __ = ref.watch(settingsNotifier);
+    final __ = ref.watch(localeSettingNotifier);
     final _ = ref.watch(datasourceProvider);
     return FutureBuilder(
         future: future,
@@ -143,13 +145,13 @@ class _LayoutState extends ConsumerState<Layout> with TickerProviderStateMixin {
                           padding: EdgeInsets.only(left: 16, right: 16),
                         ),
                         items: ref
-                            .read(settingsNotifier)
+                            .read(localeSettingNotifier)
                             .supportLocales
                             .map((e) => DropdownMenuItem(
                                   value: 1,
                                   onTap: () async {
                                     ref
-                                        .read(settingsNotifier.notifier)
+                                        .read(localeSettingNotifier.notifier)
                                         .changeCurrentLocale(e);
                                   },
                                   child: Row(
@@ -221,6 +223,15 @@ class _LayoutState extends ConsumerState<Layout> with TickerProviderStateMixin {
                                   Icons.dataset,
                                   color: AppStyle.appColor.withGreen(100),
                                 )),
+                            NavigationRailDestination(
+                                icon: const Icon(
+                                  Icons.settings,
+                                ),
+                                label: Text("设置"),
+                                selectedIcon: Icon(
+                                  Icons.settings,
+                                  color: AppStyle.appColor.withGreen(100),
+                                )),
                           ],
                           selectedIndex: ref.watch(pageNavigator),
                           extended: notifier.isExpanded,
@@ -257,7 +268,10 @@ class _LayoutState extends ConsumerState<Layout> with TickerProviderStateMixin {
                                 await transferBetweenTwoDatasource(
                                         p: data.path,
                                         savePath: "easy_encrypt_upload/$name",
-                                        autoEncrypt: true)
+                                        autoEncrypt: true,
+                                        certainKey:
+                                            ref.read(settingsProvider)?.key,
+                                        overwrite: false)
                                     .then((value) {
                                   if (value != "error") {
                                     ref
@@ -287,6 +301,7 @@ class _LayoutState extends ConsumerState<Layout> with TickerProviderStateMixin {
                           const ProcessRecordsScreen(),
                           const FlowScreen(),
                           const DatasourceScreen(),
+                          const SettingsScreen()
                         ],
                       ))
                     ],

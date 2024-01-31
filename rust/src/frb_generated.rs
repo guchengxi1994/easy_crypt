@@ -247,6 +247,41 @@ fn wire_is_easy_encrypt_file_impl(
         },
     )
 }
+fn wire_is_easy_encrypt_file_with_datasource_impl(
+    port_: flutter_rust_bridge::for_generated::MessagePort,
+    ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,
+    rust_vec_len_: i32,
+    data_len_: i32,
+) {
+    FLUTTER_RUST_BRIDGE_HANDLER.wrap_normal::<flutter_rust_bridge::for_generated::SseCodec, _, _>(
+        flutter_rust_bridge::for_generated::TaskInfo {
+            debug_name: "is_easy_encrypt_file_with_datasource",
+            port: Some(port_),
+            mode: flutter_rust_bridge::for_generated::FfiCallMode::Normal,
+        },
+        move || {
+            let message = unsafe {
+                flutter_rust_bridge::for_generated::Dart2RustMessageSse::from_wire(
+                    ptr_,
+                    rust_vec_len_,
+                    data_len_,
+                )
+            };
+            let mut deserializer =
+                flutter_rust_bridge::for_generated::SseDeserializer::new(message);
+            let api_p = <String>::sse_decode(&mut deserializer);
+            let api_left = <bool>::sse_decode(&mut deserializer);
+            deserializer.end();
+            move |context| {
+                transform_result_sse((move || {
+                    Result::<_, ()>::Ok(crate::api::crypt::is_easy_encrypt_file_with_datasource(
+                        api_p, api_left,
+                    ))
+                })())
+            }
+        },
+    )
+}
 fn wire_random_key_impl(
     port_: flutter_rust_bridge::for_generated::MessagePort,
     ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,
@@ -437,6 +472,38 @@ fn wire_add_s3_datasource_with_type_impl(
         },
     )
 }
+fn wire_check_exists_impl(
+    port_: flutter_rust_bridge::for_generated::MessagePort,
+    ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,
+    rust_vec_len_: i32,
+    data_len_: i32,
+) {
+    FLUTTER_RUST_BRIDGE_HANDLER.wrap_normal::<flutter_rust_bridge::for_generated::SseCodec, _, _>(
+        flutter_rust_bridge::for_generated::TaskInfo {
+            debug_name: "check_exists",
+            port: Some(port_),
+            mode: flutter_rust_bridge::for_generated::FfiCallMode::Normal,
+        },
+        move || {
+            let message = unsafe {
+                flutter_rust_bridge::for_generated::Dart2RustMessageSse::from_wire(
+                    ptr_,
+                    rust_vec_len_,
+                    data_len_,
+                )
+            };
+            let mut deserializer =
+                flutter_rust_bridge::for_generated::SseDeserializer::new(message);
+            let api_save_path = <String>::sse_decode(&mut deserializer);
+            deserializer.end();
+            move |context| {
+                transform_result_sse((move || {
+                    Result::<_, ()>::Ok(crate::api::datasource::check_exists(api_save_path))
+                })())
+            }
+        },
+    )
+}
 fn wire_get_presign_url_with_type_impl(
     port_: flutter_rust_bridge::for_generated::MessagePort,
     ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,
@@ -597,6 +664,8 @@ fn wire_transfer_between_two_datasource_impl(
             let api_p = <String>::sse_decode(&mut deserializer);
             let api_save_path = <String>::sse_decode(&mut deserializer);
             let api_auto_encrypt = <bool>::sse_decode(&mut deserializer);
+            let api_certain_key = <Option<String>>::sse_decode(&mut deserializer);
+            let api_overwrite = <bool>::sse_decode(&mut deserializer);
             deserializer.end();
             move |context| {
                 transform_result_sse((move || {
@@ -604,6 +673,8 @@ fn wire_transfer_between_two_datasource_impl(
                         api_p,
                         api_save_path,
                         api_auto_encrypt,
+                        api_certain_key,
+                        api_overwrite,
                     ))
                 })())
             }
@@ -1145,6 +1216,20 @@ impl SseDecode for crate::process::datasource::EntryType {
     }
 }
 
+impl SseDecode for crate::api::datasource::FMetaData {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        let mut var_path = <Option<String>>::sse_decode(deserializer);
+        let mut var_createAt = <Option<i64>>::sse_decode(deserializer);
+        let mut var_md5 = <Option<String>>::sse_decode(deserializer);
+        return crate::api::datasource::FMetaData {
+            path: var_path,
+            create_at: var_createAt,
+            md5: var_md5,
+        };
+    }
+}
+
 impl SseDecode for i32 {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
@@ -1222,6 +1307,39 @@ impl SseDecode for Option<String> {
     }
 }
 
+impl SseDecode for Option<crate::api::datasource::FMetaData> {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        if (<bool>::sse_decode(deserializer)) {
+            return Some(<crate::api::datasource::FMetaData>::sse_decode(
+                deserializer,
+            ));
+        } else {
+            return None;
+        }
+    }
+}
+
+impl SseDecode for Option<i64> {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        if (<bool>::sse_decode(deserializer)) {
+            return Some(<i64>::sse_decode(deserializer));
+        } else {
+            return None;
+        }
+    }
+}
+
+impl SseDecode for (bool, Option<crate::api::datasource::FMetaData>) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        let mut var_field0 = <bool>::sse_decode(deserializer);
+        let mut var_field1 = <Option<crate::api::datasource::FMetaData>>::sse_decode(deserializer);
+        return (var_field0, var_field1);
+    }
+}
+
 impl SseDecode for u8 {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
@@ -1256,27 +1374,29 @@ fn pde_ffi_dispatcher_primary_impl(
         3 => wire_encrypt_impl(port, ptr, rust_vec_len, data_len),
         6 => wire_flow_preview_impl(port, ptr, rust_vec_len, data_len),
         7 => wire_is_easy_encrypt_file_impl(port, ptr, rust_vec_len, data_len),
+        8 => wire_is_easy_encrypt_file_with_datasource_impl(port, ptr, rust_vec_len, data_len),
         2 => wire_random_key_impl(port, ptr, rust_vec_len, data_len),
-        13 => wire_add_local_datasource_impl(port, ptr, rust_vec_len, data_len),
-        11 => wire_add_local_datasource_with_type_impl(port, ptr, rust_vec_len, data_len),
-        14 => wire_add_s3_datasource_impl(port, ptr, rust_vec_len, data_len),
-        12 => wire_add_s3_datasource_with_type_impl(port, ptr, rust_vec_len, data_len),
-        10 => wire_get_presign_url_with_type_impl(port, ptr, rust_vec_len, data_len),
-        15 => wire_list_objects_by_index_impl(port, ptr, rust_vec_len, data_len),
-        16 => wire_list_objects_left_impl(port, ptr, rust_vec_len, data_len),
-        17 => wire_list_objects_right_impl(port, ptr, rust_vec_len, data_len),
-        9 => wire_transfer_between_two_datasource_impl(port, ptr, rust_vec_len, data_len),
-        8 => wire_transfer_from_left_to_right_impl(port, ptr, rust_vec_len, data_len),
-        23 => wire_check_account_available_impl(port, ptr, rust_vec_len, data_len),
-        21 => wire_download_from_s3_impl(port, ptr, rust_vec_len, data_len),
-        22 => wire_generate_pregisn_url_impl(port, ptr, rust_vec_len, data_len),
-        18 => wire_init_s3_client_impl(port, ptr, rust_vec_len, data_len),
-        24 => wire_list_objects_impl(port, ptr, rust_vec_len, data_len),
-        19 => wire_upload_to_s3_impl(port, ptr, rust_vec_len, data_len),
-        20 => wire_upload_to_s3_with_config_impl(port, ptr, rust_vec_len, data_len),
-        26 => wire_init_app_impl(port, ptr, rust_vec_len, data_len),
-        28 => wire_native_message_stream_impl(port, ptr, rust_vec_len, data_len),
-        27 => wire_test_encrypt_impl(port, ptr, rust_vec_len, data_len),
+        15 => wire_add_local_datasource_impl(port, ptr, rust_vec_len, data_len),
+        13 => wire_add_local_datasource_with_type_impl(port, ptr, rust_vec_len, data_len),
+        16 => wire_add_s3_datasource_impl(port, ptr, rust_vec_len, data_len),
+        14 => wire_add_s3_datasource_with_type_impl(port, ptr, rust_vec_len, data_len),
+        11 => wire_check_exists_impl(port, ptr, rust_vec_len, data_len),
+        12 => wire_get_presign_url_with_type_impl(port, ptr, rust_vec_len, data_len),
+        17 => wire_list_objects_by_index_impl(port, ptr, rust_vec_len, data_len),
+        18 => wire_list_objects_left_impl(port, ptr, rust_vec_len, data_len),
+        19 => wire_list_objects_right_impl(port, ptr, rust_vec_len, data_len),
+        10 => wire_transfer_between_two_datasource_impl(port, ptr, rust_vec_len, data_len),
+        9 => wire_transfer_from_left_to_right_impl(port, ptr, rust_vec_len, data_len),
+        25 => wire_check_account_available_impl(port, ptr, rust_vec_len, data_len),
+        23 => wire_download_from_s3_impl(port, ptr, rust_vec_len, data_len),
+        24 => wire_generate_pregisn_url_impl(port, ptr, rust_vec_len, data_len),
+        20 => wire_init_s3_client_impl(port, ptr, rust_vec_len, data_len),
+        26 => wire_list_objects_impl(port, ptr, rust_vec_len, data_len),
+        21 => wire_upload_to_s3_impl(port, ptr, rust_vec_len, data_len),
+        22 => wire_upload_to_s3_with_config_impl(port, ptr, rust_vec_len, data_len),
+        28 => wire_init_app_impl(port, ptr, rust_vec_len, data_len),
+        30 => wire_native_message_stream_impl(port, ptr, rust_vec_len, data_len),
+        29 => wire_test_encrypt_impl(port, ptr, rust_vec_len, data_len),
         _ => unreachable!(),
     }
 }
@@ -1289,7 +1409,7 @@ fn pde_ffi_dispatcher_sync_impl(
 ) -> flutter_rust_bridge::for_generated::WireSyncRust2DartSse {
     // Codec=Pde (Serialization + dispatch), see doc to use other codecs
     match func_id {
-        25 => wire_greet_impl(ptr, rust_vec_len, data_len),
+        27 => wire_greet_impl(ptr, rust_vec_len, data_len),
         _ => unreachable!(),
     }
 }
@@ -1378,6 +1498,28 @@ impl flutter_rust_bridge::IntoIntoDart<crate::process::datasource::EntryType>
         self
     }
 }
+// Codec=Dco (DartCObject based), see doc to use other codecs
+impl flutter_rust_bridge::IntoDart for crate::api::datasource::FMetaData {
+    fn into_dart(self) -> flutter_rust_bridge::for_generated::DartAbi {
+        [
+            self.path.into_into_dart().into_dart(),
+            self.create_at.into_into_dart().into_dart(),
+            self.md5.into_into_dart().into_dart(),
+        ]
+        .into_dart()
+    }
+}
+impl flutter_rust_bridge::for_generated::IntoDartExceptPrimitive
+    for crate::api::datasource::FMetaData
+{
+}
+impl flutter_rust_bridge::IntoIntoDart<crate::api::datasource::FMetaData>
+    for crate::api::datasource::FMetaData
+{
+    fn into_into_dart(self) -> crate::api::datasource::FMetaData {
+        self
+    }
+}
 
 impl SseEncode for flutter_rust_bridge::for_generated::anyhow::Error {
     // Codec=Sse (Serialization based), see doc to use other codecs
@@ -1448,6 +1590,15 @@ impl SseEncode for crate::process::datasource::EntryType {
     }
 }
 
+impl SseEncode for crate::api::datasource::FMetaData {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        <Option<String>>::sse_encode(self.path, serializer);
+        <Option<i64>>::sse_encode(self.create_at, serializer);
+        <Option<String>>::sse_encode(self.md5, serializer);
+    }
+}
+
 impl SseEncode for i32 {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
@@ -1509,6 +1660,34 @@ impl SseEncode for Option<String> {
         if let Some(value) = self {
             <String>::sse_encode(value, serializer);
         }
+    }
+}
+
+impl SseEncode for Option<crate::api::datasource::FMetaData> {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        <bool>::sse_encode(self.is_some(), serializer);
+        if let Some(value) = self {
+            <crate::api::datasource::FMetaData>::sse_encode(value, serializer);
+        }
+    }
+}
+
+impl SseEncode for Option<i64> {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        <bool>::sse_encode(self.is_some(), serializer);
+        if let Some(value) = self {
+            <i64>::sse_encode(value, serializer);
+        }
+    }
+}
+
+impl SseEncode for (bool, Option<crate::api::datasource::FMetaData>) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        <bool>::sse_encode(self.0, serializer);
+        <Option<crate::api::datasource::FMetaData>>::sse_encode(self.1, serializer);
     }
 }
 

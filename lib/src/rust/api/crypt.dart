@@ -46,3 +46,8 @@ Future<List<String>> flowPreview(
 
 Future<bool> isEasyEncryptFile({required String p, dynamic hint}) =>
     RustLib.instance.api.isEasyEncryptFile(p: p, hint: hint);
+
+Future<bool> isEasyEncryptFileWithDatasource(
+        {required String p, required bool left, dynamic hint}) =>
+    RustLib.instance.api
+        .isEasyEncryptFileWithDatasource(p: p, left: left, hint: hint);

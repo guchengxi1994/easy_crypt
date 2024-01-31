@@ -32,6 +32,12 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   bool dco_decode_bool(dynamic raw);
 
   @protected
+  FMetaData dco_decode_box_autoadd_f_meta_data(dynamic raw);
+
+  @protected
+  int dco_decode_box_autoadd_i_64(dynamic raw);
+
+  @protected
   DatasourcePreviewType dco_decode_datasource_preview_type(dynamic raw);
 
   @protected
@@ -42,6 +48,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   EntryType dco_decode_entry_type(dynamic raw);
+
+  @protected
+  FMetaData dco_decode_f_meta_data(dynamic raw);
 
   @protected
   int dco_decode_i_32(dynamic raw);
@@ -65,6 +74,16 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   String? dco_decode_opt_String(dynamic raw);
 
   @protected
+  FMetaData? dco_decode_opt_box_autoadd_f_meta_data(dynamic raw);
+
+  @protected
+  int? dco_decode_opt_box_autoadd_i_64(dynamic raw);
+
+  @protected
+  (bool, FMetaData?) dco_decode_record_bool_opt_box_autoadd_f_meta_data(
+      dynamic raw);
+
+  @protected
   int dco_decode_u_8(dynamic raw);
 
   @protected
@@ -83,6 +102,12 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   bool sse_decode_bool(SseDeserializer deserializer);
 
   @protected
+  FMetaData sse_decode_box_autoadd_f_meta_data(SseDeserializer deserializer);
+
+  @protected
+  int sse_decode_box_autoadd_i_64(SseDeserializer deserializer);
+
+  @protected
   DatasourcePreviewType sse_decode_datasource_preview_type(
       SseDeserializer deserializer);
 
@@ -94,6 +119,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   EntryType sse_decode_entry_type(SseDeserializer deserializer);
+
+  @protected
+  FMetaData sse_decode_f_meta_data(SseDeserializer deserializer);
 
   @protected
   int sse_decode_i_32(SseDeserializer deserializer);
@@ -117,6 +145,17 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   String? sse_decode_opt_String(SseDeserializer deserializer);
 
   @protected
+  FMetaData? sse_decode_opt_box_autoadd_f_meta_data(
+      SseDeserializer deserializer);
+
+  @protected
+  int? sse_decode_opt_box_autoadd_i_64(SseDeserializer deserializer);
+
+  @protected
+  (bool, FMetaData?) sse_decode_record_bool_opt_box_autoadd_f_meta_data(
+      SseDeserializer deserializer);
+
+  @protected
   int sse_decode_u_8(SseDeserializer deserializer);
 
   @protected
@@ -136,6 +175,13 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   void sse_encode_bool(bool self, SseSerializer serializer);
 
   @protected
+  void sse_encode_box_autoadd_f_meta_data(
+      FMetaData self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_box_autoadd_i_64(int self, SseSerializer serializer);
+
+  @protected
   void sse_encode_datasource_preview_type(
       DatasourcePreviewType self, SseSerializer serializer);
 
@@ -147,6 +193,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   void sse_encode_entry_type(EntryType self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_f_meta_data(FMetaData self, SseSerializer serializer);
 
   @protected
   void sse_encode_i_32(int self, SseSerializer serializer);
@@ -170,6 +219,17 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   void sse_encode_opt_String(String? self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_opt_box_autoadd_f_meta_data(
+      FMetaData? self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_opt_box_autoadd_i_64(int? self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_record_bool_opt_box_autoadd_f_meta_data(
+      (bool, FMetaData?) self, SseSerializer serializer);
 
   @protected
   void sse_encode_u_8(int self, SseSerializer serializer);

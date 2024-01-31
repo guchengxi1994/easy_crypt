@@ -1,3 +1,7 @@
+use core::result::Result::Ok;
+
+use crate::process::datasource::{s3::S3Client, TWODATASOURCES};
+
 pub fn default_key() -> String {
     crate::emit::random_key_message::RandomKeyMessage::default().key
 }
@@ -66,6 +70,7 @@ pub fn flow_preview(operators: Vec<String>) -> Vec<String> {
     crate::process::chain::get_results(operators)
 }
 
+#[deprecated = "use opendal reader instead"]
 pub fn is_easy_encrypt_file(p: String) -> bool {
     let file = std::fs::File::open(p);
     if let Ok(file) = file {
@@ -76,4 +81,31 @@ pub fn is_easy_encrypt_file(p: String) -> bool {
     }
 
     false
+}
+
+pub fn is_easy_encrypt_file_with_datasource(p: String, left: bool) -> bool {
+    let a = TWODATASOURCES.read().unwrap();
+    if left {
+        if a.left.is_none() {
+            return false;
+        }
+    } else if a.right.is_none() {
+        return false;
+    }
+
+    let rt = tokio::runtime::Runtime::new().unwrap();
+
+    rt.block_on(async {
+        if left {
+            if let Some(_datasource) = &a.left {
+                if let Some(_d) = _datasource.as_any().downcast_ref::<S3Client>() {
+                    if let Ok(b) = _d.is_easy_encrypt_file(p).await {
+                        return b;
+                    }
+                }
+            }
+        }
+
+        false
+    })
 }

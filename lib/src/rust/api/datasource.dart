@@ -26,9 +26,20 @@ Future<String> transferBetweenTwoDatasource(
         {required String p,
         required String savePath,
         required bool autoEncrypt,
+        String? certainKey,
+        required bool overwrite,
         dynamic hint}) =>
     RustLib.instance.api.transferBetweenTwoDatasource(
-        p: p, savePath: savePath, autoEncrypt: autoEncrypt, hint: hint);
+        p: p,
+        savePath: savePath,
+        autoEncrypt: autoEncrypt,
+        certainKey: certainKey,
+        overwrite: overwrite,
+        hint: hint);
+
+Future<(bool, FMetaData?)> checkExists(
+        {required String savePath, dynamic hint}) =>
+    RustLib.instance.api.checkExists(savePath: savePath, hint: hint);
 
 Future<String> getPresignUrlWithType(
         {required String p, required DatasourcePreviewType t, dynamic hint}) =>
@@ -94,4 +105,28 @@ Future<List<Entry>> listObjectsRight({required String p, dynamic hint}) =>
 enum DatasourcePreviewType {
   left,
   right,
+}
+
+class FMetaData {
+  final String? path;
+  final int? createAt;
+  final String? md5;
+
+  const FMetaData({
+    this.path,
+    this.createAt,
+    this.md5,
+  });
+
+  @override
+  int get hashCode => path.hashCode ^ createAt.hashCode ^ md5.hashCode;
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is FMetaData &&
+          runtimeType == other.runtimeType &&
+          path == other.path &&
+          createAt == other.createAt &&
+          md5 == other.md5;
 }

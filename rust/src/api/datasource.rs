@@ -1,7 +1,11 @@
 use crate::process::datasource::{
-    base_trait::Transfer, local::LocalStorage, s3::S3Client, Entry, DATASOURCES, TWODATASOURCES,
+    base_trait::{ClientTrait, Transfer},
+    local::LocalStorage,
+    s3::S3Client,
+    Entry, DATASOURCES, TWODATASOURCES,
 };
 
+#[deprecated]
 pub fn transfer_from_left_to_right(
     left_index: usize,
     right_index: usize,
@@ -30,25 +34,71 @@ pub fn transfer_from_left_to_right(
     })
 }
 
-pub fn transfer_between_two_datasource(p: String, save_path: String, auto_encrypt: bool) -> String {
+pub fn transfer_between_two_datasource(
+    p: String,
+    save_path: String,
+    auto_encrypt: bool,
+    certain_key: Option<String>,
+    /* overwrite object if exists with same name, not work right now, default `false` */
+    _overwrite: bool,
+) -> String {
     let a = TWODATASOURCES.read().unwrap();
 
     let rt = tokio::runtime::Runtime::new().unwrap();
 
     rt.block_on(async {
         let r = (*a)
-            .transfer_from_left_to_right(p, save_path, auto_encrypt)
+            .transfer_from_left_to_right(p, save_path, auto_encrypt, certain_key)
             .await;
         match r {
-            Ok(_key) => {
-                _key
-            }
+            Ok(_key) => _key,
             Err(_e) => {
                 println!("error {:?}", _e);
                 "error".to_owned()
             }
         }
     })
+}
+
+pub struct FMetaData {
+    pub path: Option<String>,
+    pub create_at: Option<i64>,
+    pub md5: Option<String>,
+}
+
+pub fn check_exists(save_path: String) -> (bool, Option<FMetaData>) {
+    let rt = tokio::runtime::Runtime::new().unwrap();
+
+    let r = rt.block_on(async {
+        let a = TWODATASOURCES.read().unwrap();
+        if let Some(right) = &a.right {
+            let right_down: &dyn ClientTrait;
+            if let Some(_right) = right.as_any().downcast_ref::<S3Client>() {
+                right_down = _right;
+            } else {
+                right_down = right.as_any().downcast_ref::<LocalStorage>().unwrap();
+            }
+
+            if let Ok(e) = right_down.get_op().is_exist(&save_path).await {
+                if e {
+                    let meta = right_down.get_op().stat(&save_path).await.unwrap();
+                    return (
+                        e,
+                        Some(FMetaData {
+                            path: Some(save_path.clone()),
+                            create_at: Some(meta.last_modified().unwrap().timestamp()),
+                            md5: Some(meta.content_md5().unwrap().to_owned()),
+                        }),
+                    );
+                }
+
+                return (e, None);
+            }
+        }
+        (false, None)
+    });
+
+    r
 }
 
 pub enum DatasourcePreviewType {

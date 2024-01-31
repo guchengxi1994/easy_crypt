@@ -4,7 +4,7 @@ import 'package:easy_crypt/file_system/local.dart';
 import 'package:easy_crypt/file_system/s3.dart';
 import 'package:easy_crypt/gen/strings.g.dart';
 import 'package:easy_crypt/isar/datasource.dart';
-import 'package:easy_crypt/layout/notifiers/setting_notifier.dart';
+import 'package:easy_crypt/layout/notifiers/locale_setting_notifier.dart';
 import 'package:file_selector/file_selector.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -29,7 +29,7 @@ class _FsPreviewState extends ConsumerState<FsPreview> {
 
   @override
   Widget build(BuildContext context) {
-    final _ = ref.watch(settingsNotifier);
+    final _ = ref.watch(localeSettingNotifier);
 
     return Material(
       borderRadius: BorderRadius.circular(4),

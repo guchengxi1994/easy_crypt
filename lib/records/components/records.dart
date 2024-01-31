@@ -3,13 +3,12 @@ import 'package:date_format/date_format.dart';
 import 'package:easy_crypt/isar/database.dart';
 import 'package:easy_crypt/isar/process_records.dart';
 import 'package:easy_crypt/gen/strings.g.dart';
-import 'package:easy_crypt/layout/notifiers/setting_notifier.dart';
+import 'package:easy_crypt/layout/notifiers/locale_setting_notifier.dart';
 import 'package:easy_crypt/records/notifiers/records_notifier.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 // ignore: depend_on_referenced_packages
 import 'package:collection/collection.dart';
-import 'package:super_clipboard/super_clipboard.dart';
 
 import '../models/records_state.dart';
 
@@ -21,11 +20,9 @@ class RecordsWidget extends ConsumerStatefulWidget {
 }
 
 class _EncryptRecordsWidgetState extends ConsumerState<RecordsWidget> {
-  final clipboard = SystemClipboard.instance;
-
   @override
   Widget build(BuildContext context) {
-    final _ = ref.watch(settingsNotifier);
+    final _ = ref.watch(localeSettingNotifier);
     final encrypts = ref.watch(recordsProvider);
     return switch (encrypts) {
       AsyncValue<RecordsState>(:final value?) => _buildTable(value),

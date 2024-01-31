@@ -3,7 +3,7 @@ import 'package:easy_crypt/gen/strings.g.dart';
 import 'package:easy_crypt/layout/models/setting_state.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class SettingsNotifier extends Notifier<SettingsState> {
+class LocaleSettingsNotifier extends Notifier<SettingsState> {
   final LocalStorage localStorage = LocalStorage();
 
   @override
@@ -24,5 +24,6 @@ class SettingsNotifier extends Notifier<SettingsState> {
   }
 }
 
-final settingsNotifier =
-    NotifierProvider<SettingsNotifier, SettingsState>(() => SettingsNotifier());
+final localeSettingNotifier =
+    NotifierProvider<LocaleSettingsNotifier, SettingsState>(
+        () => LocaleSettingsNotifier());

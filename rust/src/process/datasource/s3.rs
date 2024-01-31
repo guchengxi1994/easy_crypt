@@ -81,8 +81,21 @@ impl S3Client {
     }
 
     pub async fn check_available(&self) -> bool {
-        let r = self.op.list_with("/").await;
+        let r = self.op.check().await;
+
         r.is_ok()
+    }
+
+    pub async fn is_easy_encrypt_file(&self, p: String) -> anyhow::Result<bool> {
+        let mut reader = self.op.reader(&p).await?;
+        let mut custom_header_buffer = vec![0; crate::constants::CUSTOM_HEADER.len()];
+        if let Ok(_d) = reader.read(&mut custom_header_buffer).await {
+            if let Ok(s) = String::from_utf8(custom_header_buffer) {
+                return anyhow::Ok(crate::constants::CUSTOM_HEADER == s);
+            }
+        }
+
+        anyhow::Ok(false)
     }
 
     pub async fn list_objs(&self, path: String) -> Vec<Entry> {
