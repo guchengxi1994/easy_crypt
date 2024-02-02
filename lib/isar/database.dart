@@ -1,3 +1,4 @@
+import 'package:easy_crypt/common/logger.dart';
 import 'package:easy_crypt/isar/datasource.dart';
 import 'package:easy_crypt/isar/encrypt_algo.dart';
 import 'package:easy_crypt/isar/files.dart';
@@ -28,7 +29,9 @@ class IsarDatabase {
     if (isar != null && isar!.isOpen) {
       return;
     }
-    final dir = await getApplicationDocumentsDirectory();
+    final dir = await getApplicationSupportDirectory();
+    logger.info("create database in ${dir.path}");
+
     isar = await Isar.open(
       schemas,
       name: "EasyCrypt",

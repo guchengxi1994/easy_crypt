@@ -14,18 +14,36 @@ class DatasourceScreen extends ConsumerStatefulWidget {
 class _DatasourceScreenState extends ConsumerState<DatasourceScreen> {
   @override
   Widget build(BuildContext context) {
-    final accounts = ref.watch(datasourceProvider);
+    final state = ref.watch(datasourceProvider);
 
     return Scaffold(
       body: Padding(
         padding: const EdgeInsets.all(20),
-        child: Wrap(
-          spacing: 20,
-          runSpacing: 20,
-          children: accounts.value!.datasources
-              .map((e) => DatasourceWidget(datasource: e))
-              .toList(),
-        ),
+        child: state.value!.datasources.isEmpty
+            ? Align(
+                alignment: Alignment.center,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    SizedBox(
+                      width: 300,
+                      height: 300,
+                      child: Image.asset("assets/images/nodatasource.png"),
+                    ),
+
+                    /// TODO slang
+                    const Text("You should add a datasource first")
+                  ],
+                ),
+              )
+            : Wrap(
+                spacing: 20,
+                runSpacing: 20,
+                children: state.value!.datasources
+                    .map((e) => DatasourceWidget(datasource: e))
+                    .toList(),
+              ),
       ),
       floatingActionButton: FloatingActionButton(
           onPressed: () {
