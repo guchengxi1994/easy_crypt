@@ -95,7 +95,10 @@ class LocalFilePreview extends ConsumerWidget {
             dimension: 200,
             child: Image.asset("assets/images/nodata.png"),
           ),
-          const Text("Select a folder first")
+          const Text(
+            "This folder is empty\nSelect another",
+            textAlign: TextAlign.center,
+          )
         ],
       );
     }
@@ -126,11 +129,9 @@ class LocalFilePreview extends ConsumerWidget {
                           if (left != null) {
                             final list = await ds.listObjectsLeft(p: e.path);
 
-                            if (list.isNotEmpty) {
-                              ref
-                                  .read(localNotifier(path).notifier)
-                                  .refresh(list, e.path);
-                            }
+                            ref
+                                .read(localNotifier(path).notifier)
+                                .refresh(list, e.path);
                           }
                         }
                         if (previewType == PreviewType.Right) {

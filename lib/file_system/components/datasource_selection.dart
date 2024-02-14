@@ -6,6 +6,7 @@ import 'package:easy_crypt/datasource/notifiers/datasource_notifier.dart';
 
 import 'package:easy_crypt/gen/strings.g.dart';
 import 'package:easy_crypt/isar/datasource.dart';
+import 'package:easy_crypt/style/app_style.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -82,11 +83,21 @@ class _DatasourceSelectionState extends ConsumerState<DatasourceSelection> {
                       value: item,
                       child: SizedBox(
                         width: 240,
-                        child: Text(
-                          item.name.toString(),
-                          style: const TextStyle(
-                            fontSize: 14,
-                          ),
+                        child: Text.rich(
+                          TextSpan(children: [
+                            if (item.localConfig?.path != "selecting")
+                              TextSpan(
+                                text: "[${item.datasourceType.name}]  ",
+                                style: const TextStyle(
+                                    fontSize: 14, color: AppStyle.appColor),
+                              ),
+                            TextSpan(
+                              text: item.name.toString(),
+                              style: const TextStyle(
+                                fontSize: 14,
+                              ),
+                            )
+                          ]),
                           maxLines: 1,
                           softWrap: true,
                           overflow: TextOverflow.ellipsis,
